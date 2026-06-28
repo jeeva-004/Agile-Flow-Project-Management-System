@@ -38,7 +38,12 @@ public class AdminDataInitializer implements CommandLineRunner {
         Role adminRole = roleRepository.findByName(RoleName.ADMIN)
                 .orElseGet(() ->
                         roleRepository.save(
-                                new Role(1L, RoleName.ADMIN)));
+
+                                        roleRepository.findByName(RoleName.ADMIN)
+                                                .orElseThrow(() ->
+                                                        new IllegalStateException(
+                                                                "ADMIN role not found"
+                                                        ))));
 
         roleRepository.findByName(RoleName.PROJECT_MANAGER)
                 .orElseGet(() ->

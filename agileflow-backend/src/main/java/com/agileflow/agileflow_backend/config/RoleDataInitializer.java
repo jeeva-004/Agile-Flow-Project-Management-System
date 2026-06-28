@@ -24,8 +24,17 @@ public class RoleDataInitializer implements CommandLineRunner {
             return;
         }
 
-        roleRepository.save(new Role(1L, RoleName.ADMIN));
-        roleRepository.save(new Role(2L, RoleName.PROJECT_MANAGER));
-        roleRepository.save(new Role(3L, RoleName.DEVELOPER));
+        Role admin = new Role();
+        admin.setName(RoleName.ADMIN);
+
+        Role pm = new Role();
+        pm.setName(RoleName.PROJECT_MANAGER);
+
+        Role developer = new Role();
+        developer.setName(RoleName.DEVELOPER);
+
+        roleRepository.save(admin);
+        roleRepository.save(pm);
+        roleRepository.save(developer);
     }
 }
