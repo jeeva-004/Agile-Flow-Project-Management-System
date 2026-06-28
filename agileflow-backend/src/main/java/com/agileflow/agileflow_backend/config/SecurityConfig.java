@@ -96,6 +96,28 @@ public class SecurityConfig {
                                 "/api/v1/auth/login"
                         ).permitAll().requestMatchers("/api/v1/users/**")
                         .hasRole("ADMIN")
+                        .requestMatchers(
+                                "/api/v1/projects/**"
+                        )
+                        .hasAnyRole(
+                                "ADMIN",
+                                "PROJECT_MANAGER"
+                        )
+                        .requestMatchers(
+
+                                "/api/v1/project-members/**",
+
+                                "/api/v1/projects/*/members"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER"
+
+                        )
                         .anyRequest()
                         .authenticated()
                 )
