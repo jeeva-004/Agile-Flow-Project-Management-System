@@ -118,6 +118,42 @@ public class SecurityConfig {
                                 "PROJECT_MANAGER"
 
                         )
+                        .requestMatchers(
+
+                                "/api/v1/sprints/**",
+
+                                "/api/v1/projects/*/sprints"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER"
+
+                        )
+                        .requestMatchers(
+
+                                "/api/v1/issues/**",
+
+                                "/api/v1/projects/*/issues",
+
+                                "/api/v1/sprints/*/issues",
+
+                                "/api/v1/users/*/issues"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
+
+                                "DEVELOPER"
+
+                        )
                         .anyRequest()
                         .authenticated()
                 )

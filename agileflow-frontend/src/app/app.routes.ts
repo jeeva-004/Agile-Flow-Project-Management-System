@@ -10,6 +10,12 @@ import { ProjectListComponent } from './features/projects/project-list/project-l
 import { ProjectCreateComponent } from './features/projects/project-create/project-create';
 import { ProjectEditComponent } from './features/projects/project-edit/project-edit';
 import { ProjectMembersComponent } from './features/project-members/project-members';
+import { SprintCreateComponent } from './features/sprints/sprint-create/sprint-create';
+import { SprintEditComponent } from './features/sprints/sprint-edit/sprint-edit';
+import { SprintListComponent } from './features/sprints/sprint-list/sprint-list';
+import { IssueCreate } from './features/issues/issue-create/issue-create';
+import { IssueEdit } from './features/issues/issue-edit/issue-edit';
+import { IssueListComponent } from './features/issues/issue-list/issue-list';
 
 export const routes: Routes = [
 
@@ -92,16 +98,73 @@ export const routes: Routes = [
   },
   {
 
-path:
+    path:
 
-'projects/:id/members',
+      'projects/:id/members',
 
-component:
+    component:
 
-ProjectMembersComponent
+      ProjectMembersComponent
 
-}
-  ,
+  },
+  {
+    path:
+      'projects/:id/sprints',
+
+    component:
+      SprintListComponent
+  },
+
+  {
+    path:
+      'projects/:id/sprints/create',
+
+    component:
+      SprintCreateComponent
+  },
+
+  {
+    path:
+      'sprints/:id/edit',
+
+    component:
+      SprintEditComponent
+  },
+  {
+
+    path:
+
+      'projects/:id/issues',
+
+    component:
+
+      IssueListComponent
+
+  },
+
+  {
+
+    path:
+
+      'projects/:id/issues/create',
+
+    component:
+
+      IssueCreate
+
+  },
+
+  {
+
+    path:
+
+
+      'issues/:id/edit',
+
+    component:
+
+      IssueEdit
+  },
   {
     path: '',
     redirectTo: 'login',
