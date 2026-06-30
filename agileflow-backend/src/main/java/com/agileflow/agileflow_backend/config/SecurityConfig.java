@@ -154,6 +154,42 @@ public class SecurityConfig {
                                 "DEVELOPER"
 
                         )
+                        .requestMatchers(
+
+                                "/api/v1/comments/**",
+
+                                "/api/v1/issues/*/comments"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
+
+                                "DEVELOPER"
+
+                        )
+                        .requestMatchers(
+
+                                "/api/v1/worklogs/**",
+
+                                "/api/v1/issues/*/worklogs",
+
+                                "/api/v1/users/*/worklogs"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
+
+                                "DEVELOPER"
+
+                        )
                         .anyRequest()
                         .authenticated()
                 )

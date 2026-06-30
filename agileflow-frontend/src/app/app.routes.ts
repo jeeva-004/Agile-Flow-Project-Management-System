@@ -16,6 +16,9 @@ import { SprintListComponent } from './features/sprints/sprint-list/sprint-list'
 import { IssueCreate } from './features/issues/issue-create/issue-create';
 import { IssueEdit } from './features/issues/issue-edit/issue-edit';
 import { IssueListComponent } from './features/issues/issue-list/issue-list';
+import { CommentEditComponent } from './features/comments/comment-edit/comment-edit';
+import { CommentCreateComponent } from './features/comments/comment-create/comment-create';
+import { CommentListComponent } from './features/comments/comment-list/comment-list';
 
 export const routes: Routes = [
 
@@ -165,6 +168,44 @@ export const routes: Routes = [
 
       IssueEdit
   },
+
+  {
+
+    path:
+
+      'issues/:id/comments',
+
+    component:
+
+      CommentListComponent
+
+  },
+
+  {
+
+    path:
+
+      'issues/:id/comments/create',
+
+    component:
+
+      CommentCreateComponent
+
+  },
+
+  {
+
+    path:
+
+      'comments/:id/edit',
+
+    component:
+
+      CommentEditComponent
+
+  }
+
+  ,
   {
     path: '',
     redirectTo: 'login',

@@ -9,6 +9,7 @@ import com.agileflow.agileflow_backend.project.dto.UpdateProjectRequest;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
 import com.agileflow.agileflow_backend.project.service.ProjectService;
+import com.agileflow.agileflow_backend.security.CurrentUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,25 +20,22 @@ public class ProjectServiceImpl
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
-
+    private final CurrentUserService currentUserService;
     public ProjectServiceImpl(
             ProjectRepository projectRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            CurrentUserService currentUserService) {
 
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.currentUserService = currentUserService;
     }
 
     @Override
     public ProjectResponse create(
             CreateProjectRequest request) {
 
-        User owner =
-                userRepository.findById(
-                                request.getOwnerId())
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Owner not found"));
+        User owner = currentUserService.getCurrentUser();
 
         Project project =
                 new Project();

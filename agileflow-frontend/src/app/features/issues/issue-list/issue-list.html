@@ -1,12 +1,10 @@
 <h2>
 
-Issues
+    Issues
 
 </h2>
 
-<a
-
-[routerLink]="[
+<a [routerLink]="[
 
 '/projects',
 
@@ -18,112 +16,113 @@ projectId,
 
 ]">
 
-Create Issue
+    Create Issue
 
 </a>
 
 <table>
 
-<thead>
+    <thead>
 
-<tr>
+        <tr>
 
-<th>ID</th>
+            <th>ID</th>
 
-<th>Title</th>
+            <th>Title</th>
 
-<th>Status</th>
+            <th>Status</th>
 
-<th>Priority</th>
+            <th>Priority</th>
 
-<th>Type</th>
+            <th>Type</th>
 
-<th>Assignee</th>
+            <th>Assignee</th>
 
-<th>Action</th>
+            <th>Action</th>
 
-</tr>
+        </tr>
 
-</thead>
+    </thead>
 
-<tbody>
+    <tbody>
 
-<tr
+        <tr *ngFor="let issue of issues">
 
-*ngFor=
+            <td>
 
-"let issue of issues">
+                {{issue.id}}
 
-<td>
+            </td>
 
-{{issue.id}}
+            <td>
 
-</td>
+                {{issue.title}}
 
-<td>
+            </td>
 
-{{issue.title}}
+            <td>
 
-</td>
+                {{issue.status}}
 
-<td>
+            </td>
 
-{{issue.status}}
+            <td>
 
-</td>
+                {{issue.priority}}
 
-<td>
+            </td>
 
-{{issue.priority}}
+            <td>
 
-</td>
+                {{issue.type}}
 
-<td>
+            </td>
 
-{{issue.type}}
+            <td>
 
-</td>
+                {{issue.assigneeName}}
 
-<td>
+            </td>
 
-{{issue.assigneeName}}
+            <td>
 
-</td>
-
-<td>
-
-<button
-
-(click)=
-
-"editIssue(
+                <button (click)="editIssue(
 
 issue.id
 
 )">
 
-Edit
+                    Edit
 
-</button>
+                </button>
 
-<button
-
-(click)=
-
-"deleteIssue(
+                <button (click)="deleteIssue(
 
 issue.id
 
 )">
 
-Delete
+                    Delete
 
-</button>
+                </button>
 
-</td>
+                <button [routerLink]="[
 
-</tr>
+'/issues',
 
-</tbody>
+issue.id,
+
+'comments'
+
+]">
+
+                    Comments
+
+                </button>
+            </td>
+
+        </tr>
+
+    </tbody>
 
 </table>

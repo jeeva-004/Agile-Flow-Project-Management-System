@@ -10,6 +10,7 @@ import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
 import com.agileflow.agileflow_backend.issue.service.IssueService;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
+import com.agileflow.agileflow_backend.security.CurrentUserService;
 import com.agileflow.agileflow_backend.sprint.entity.Sprint;
 import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class IssueServiceImpl
 
     private final UserRepository userRepository;
 
+    private final CurrentUserService currentUserService;
+
     public IssueServiceImpl(
 
             IssueRepository issueRepository,
@@ -36,7 +39,10 @@ public class IssueServiceImpl
 
             SprintRepository sprintRepository,
 
-            UserRepository userRepository) {
+            UserRepository userRepository,
+
+            CurrentUserService currentUserService
+            ) {
 
         this.issueRepository =
                 issueRepository;
@@ -49,6 +55,8 @@ public class IssueServiceImpl
 
         this.userRepository =
                 userRepository;
+
+        this.currentUserService = currentUserService;
 
     }
 
@@ -107,11 +115,9 @@ public class IssueServiceImpl
 
         User createdBy =
 
-                userRepository.findById(
+                currentUserService
 
-                                1L)
-
-                        .orElseThrow();
+                        .getCurrentUser();
 
         Issue issue =
 
