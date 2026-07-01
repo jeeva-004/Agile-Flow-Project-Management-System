@@ -190,6 +190,56 @@ public class SecurityConfig {
                                 "DEVELOPER"
 
                         )
+                        .requestMatchers(
+
+                                "/api/v1/dashboard/**"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
+
+                                "DEVELOPER"
+
+                        )
+                        .requestMatchers(
+
+                                "/api/v1/dashboard/admin"
+
+                        )
+
+                        .hasRole(
+
+                                "ADMIN"
+
+                        )
+
+                        .requestMatchers(
+
+                                "/api/v1/dashboard/pm"
+
+                        )
+
+                        .hasRole(
+
+                                "PROJECT_MANAGER"
+
+                        )
+
+                        .requestMatchers(
+
+                                "/api/v1/dashboard/developer"
+
+                        )
+
+                        .hasRole(
+
+                                "DEVELOPER"
+
+                        )
                         .anyRequest()
                         .authenticated()
                 )

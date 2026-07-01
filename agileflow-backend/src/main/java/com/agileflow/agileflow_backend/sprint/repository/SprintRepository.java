@@ -12,4 +12,10 @@ public interface SprintRepository
     findByProjectId(
             Long projectId);
 
+    long countByProjectOwnerId(
+
+            Long ownerId
+
+    );
+
 }

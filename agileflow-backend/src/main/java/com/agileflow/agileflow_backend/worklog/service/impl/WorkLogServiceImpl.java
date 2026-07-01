@@ -59,7 +59,6 @@ public class WorkLogServiceImpl
         User currentUser =
 
                 currentUserService
-
                         .getCurrentUser();
 
         WorkLog workLog =

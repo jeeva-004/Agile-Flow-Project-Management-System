@@ -1,5 +1,6 @@
 package com.agileflow.agileflow_backend.issue.repository;
 
+import com.agileflow.agileflow_backend.common.enums.IssueStatus;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -17,4 +18,19 @@ public interface IssueRepository
     List<Issue> findByAssigneeId(
             Long userId);
 
+    long countByStatus(IssueStatus status);
+
+    long countByAssigneeId(
+
+            Long assigneeId
+
+    );
+
+    long countByAssigneeIdAndStatus(
+
+            Long assigneeId,
+
+            IssueStatus status
+
+    );
 }

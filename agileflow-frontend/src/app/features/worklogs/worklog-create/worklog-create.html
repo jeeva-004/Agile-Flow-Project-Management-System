@@ -1,0 +1,23 @@
+<h2>
+
+    Create Work Log
+
+</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+    <input type="number" placeholder="Hours" formControlName="hoursSpent">
+
+    <textarea placeholder="Description" formControlName="description">
+
+</textarea>
+
+    <input type="date" formControlName="workDate">
+
+    <button type="submit">
+
+        Save
+
+    </button>
+
+</form>

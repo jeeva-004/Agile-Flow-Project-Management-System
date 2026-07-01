@@ -24,4 +24,9 @@ public interface WorkLogRepository
 
     );
 
+    long countByUserId(
+
+            Long userId
+
+    );
 }

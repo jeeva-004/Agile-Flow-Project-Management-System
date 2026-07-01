@@ -32,7 +32,6 @@ export class AuthService {
           'access_token',
           response.data.token
         );
-
         localStorage.setItem(
           'role',
           response.data.role

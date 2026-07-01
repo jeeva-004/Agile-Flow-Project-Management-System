@@ -20,4 +20,5 @@ public interface ProjectMemberRepository
 
             Long userId);
 
+    long countByProjectOwnerId(Long ownerId);
 }

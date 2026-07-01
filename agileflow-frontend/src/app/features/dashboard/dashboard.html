@@ -1,1 +1,23 @@
-<p>dashboard works!</p>
+<a
+*ngIf="role==='ADMIN'"
+routerLink="/users">
+
+Users
+
+</a>
+
+<a
+*ngIf="role==='PROJECT_MANAGER'"
+routerLink="/projects">
+
+Projects
+
+</a>
+
+<a
+*ngIf="role==='DEVELOPER'"
+routerLink="/issues">
+
+My Tasks
+
+</a>

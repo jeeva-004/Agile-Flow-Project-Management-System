@@ -19,6 +19,9 @@ import { IssueListComponent } from './features/issues/issue-list/issue-list';
 import { CommentEditComponent } from './features/comments/comment-edit/comment-edit';
 import { CommentCreateComponent } from './features/comments/comment-create/comment-create';
 import { CommentListComponent } from './features/comments/comment-list/comment-list';
+import { DeveloperDashboardComponent } from './features/dashboard/developer-dashboard/developer-dashboard';
+import { PmDashboardComponent } from './features/dashboard/pm-dashboard/pm-dashboard';
+import { AdminDashboardComponent } from './features/dashboard/admin-dashboard/admin-dashboard';
 
 export const routes: Routes = [
 
@@ -204,7 +207,95 @@ export const routes: Routes = [
       CommentEditComponent
 
   }
+  ,
+  {
 
+    path:
+
+      'issues/:issueId/worklogs',
+
+    loadComponent: () => import(
+
+      './features/worklogs/worklog-list/worklog-list'
+
+    )
+
+      .then(
+
+        m => m.WorkLogListComponent
+
+      )
+
+  },
+
+  {
+
+    path:
+
+      'issues/:issueId/worklogs/create',
+
+    loadComponent: () => import(
+
+      './features/worklogs/worklog-create/worklog-create'
+
+    )
+
+      .then(
+
+        m => m.WorkLogCreateComponent
+
+      )
+
+  },
+
+  {
+
+    path:
+
+      'worklogs/:id/edit',
+
+    loadComponent: () => import(
+
+      './features/worklogs/worklog-edit/worklog-edit'
+
+    )
+
+      .then(
+
+        m => m.WorkLogEditComponent
+
+      )
+
+  },
+  {
+
+    path: 'dashboard/admin',
+
+    component:
+
+      AdminDashboardComponent
+
+  },
+
+  {
+
+    path: 'dashboard/pm',
+
+    component:
+
+      PmDashboardComponent
+
+  },
+
+  {
+
+    path: 'dashboard/developer',
+
+    component:
+
+      DeveloperDashboardComponent
+
+  }
   ,
   {
     path: '',

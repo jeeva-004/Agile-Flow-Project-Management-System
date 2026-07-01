@@ -16,4 +16,10 @@ public interface CommentRepository
 
     );
 
+    long countByAuthorId(
+
+            Long userId
+
+    );
+
 }
