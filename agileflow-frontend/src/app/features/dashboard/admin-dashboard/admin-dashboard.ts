@@ -32,7 +32,9 @@ from '../../../core/services/dashboard.service';
 
   templateUrl:
 
-    './admin-dashboard.html'
+    './admin-dashboard.html',
+    
+  styleUrl:'./admin-dashboard.scss'
 
 })
 export class AdminDashboardComponent

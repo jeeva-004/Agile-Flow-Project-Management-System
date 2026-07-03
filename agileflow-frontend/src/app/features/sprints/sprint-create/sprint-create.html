@@ -1,39 +1,34 @@
-<h2>
+<div class="page-header">
+  <div>
+    <h2>Create Sprint</h2>
+    <p class="page-subtitle">Plan a new timebox for project work</p>
+  </div>
+  <button class="btn btn-secondary" onclick="window.history.back()">
+    Cancel
+  </button>
+</div>
 
-Create Sprint
+<div class="card" style="max-width: 600px;">
+  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
+    <div class="form-group">
+      <label>Sprint Name</label>
+      <input class="form-control" placeholder="Enter sprint name (e.g. Sprint 1)" formControlName="name">
+    </div>
 
-</h2>
+    <div class="flex gap-md">
+      <div class="form-group" style="flex:1">
+        <label>Start Date</label>
+        <input class="form-control" type="date" formControlName="startDate">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>End Date</label>
+        <input class="form-control" type="date" formControlName="endDate">
+      </div>
+    </div>
 
-<form
-
-[formGroup]="form"
-
-(ngSubmit)="submit()">
-
-<input
-
-placeholder="Name"
-
-formControlName="name">
-
-<input
-
-type="date"
-
-formControlName="startDate">
-
-<input
-
-type="date"
-
-formControlName="endDate">
-
-<button
-
-type="submit">
-
-Save
-
-</button>
-
-</form>
+    <div class="flex justify-end gap-sm mt-lg">
+      <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Create Sprint</button>
+    </div>
+  </form>
+</div>

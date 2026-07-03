@@ -1,183 +1,90 @@
-<h2>
-
-Edit Issue
-
-</h2>
-
-<form
-
-[formGroup]="form"
-
-(ngSubmit)="submit()">
-
-<input
-
-formControlName="title">
-
-<textarea
-
-formControlName="description">
-
-</textarea>
-
-<select
-
-formControlName="status">
-
-<option value="TODO">
-
-TODO
-
-</option>
-
-<option value="IN_PROGRESS">
-
-IN_PROGRESS
-
-</option>
-
-<option value="DONE">
-
-DONE
-
-</option>
-
-</select>
-
-<select
-
-formControlName="priority">
-
-<option value="LOW">
-
-LOW
-
-</option>
-
-<option value="MEDIUM">
-
-MEDIUM
-
-</option>
-
-<option value="HIGH">
-
-HIGH
-
-</option>
-
-<option value="CRITICAL">
-
-CRITICAL
-
-</option>
-
-</select>
-
-<select
-
-formControlName="type">
-
-<option value="TASK">
-
-TASK
-
-</option>
-
-<option value="STORY">
-
-STORY
-
-</option>
-
-<option value="BUG">
-
-BUG
-
-</option>
-
-<option value="EPIC">
-
-EPIC
-
-</option>
-
-</select>
-
-<input
-
-type="number"
-
-formControlName="estimateHours">
-
-<input
-
-type="date"
-
-formControlName="dueDate">
-
-<select
-
-formControlName="sprintId">
-
-<option
-
-[ngValue]="null">
-
-No Sprint
-
-</option>
-
-<option
-
-*ngFor=
-
-"let sprint of sprints"
-
-[ngValue]=
-
-"sprint.id">
-
-{{sprint.name}}
-
-</option>
-
-</select>
-
-<select
-
-formControlName="assigneeId">
-
-<option
-
-[ngValue]="null">
-
-Unassigned
-
-</option>
-
-<option
-
-*ngFor=
-
-"let member of members"
-
-[ngValue]=
-
-"member.userId">
-
-{{member.userName}}
-
-</option>
-
-</select>
-
-<button
-
-type="submit">
-
-Update
-
-</button>
-
-</form>
+<div class="page-header">
+  <div>
+    <h2>Edit Issue</h2>
+    <p class="page-subtitle">Update issue details and status</p>
+  </div>
+  <!-- We don't have projectId here easily from route without TS, so just use browser back or history back if possible.
+       Let's assume we can navigate back via browser or use a basic link back to the issue list if we had projectId.
+       Since we don't, we will just omit the cancel route link and let the user navigate via sidebar.
+       Actually, we can just put a simple go-back button using javascript or just link to Dashboard. -->
+  <button class="btn btn-secondary" onclick="window.history.back()">
+    Cancel
+  </button>
+</div>
+
+<div class="card" style="max-width: 800px;">
+  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
+    
+    <div class="form-group">
+      <label>Title</label>
+      <input class="form-control" placeholder="Enter issue title" formControlName="title">
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea class="form-control" placeholder="Enter detailed description..." formControlName="description" style="min-height: 120px;"></textarea>
+    </div>
+
+    <div class="flex gap-md">
+      <div class="form-group" style="flex:1">
+        <label>Status</label>
+        <select class="form-control" formControlName="status">
+          <option value="TODO">TODO</option>
+          <option value="IN_PROGRESS">IN PROGRESS</option>
+          <option value="DONE">DONE</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>Type</label>
+        <select class="form-control" formControlName="type">
+          <option value="TASK">TASK</option>
+          <option value="STORY">STORY</option>
+          <option value="BUG">BUG</option>
+          <option value="EPIC">EPIC</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>Priority</label>
+        <select class="form-control" formControlName="priority">
+          <option value="LOW">LOW</option>
+          <option value="MEDIUM">MEDIUM</option>
+          <option value="HIGH">HIGH</option>
+          <option value="CRITICAL">CRITICAL</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex gap-md">
+      <div class="form-group" style="flex:1">
+        <label>Estimate Hours</label>
+        <input class="form-control" type="number" placeholder="e.g. 4" formControlName="estimateHours">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>Due Date</label>
+        <input class="form-control" type="date" formControlName="dueDate">
+      </div>
+    </div>
+
+    <div class="flex gap-md">
+      <div class="form-group" style="flex:1">
+        <label>Sprint</label>
+        <select class="form-control" formControlName="sprintId">
+          <option [ngValue]="null">No Sprint</option>
+          <option *ngFor="let sprint of sprints" [ngValue]="sprint.id">{{sprint.name}}</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>Assignee</label>
+        <select class="form-control" formControlName="assigneeId">
+          <option [ngValue]="null">Unassigned</option>
+          <option *ngFor="let member of members" [ngValue]="member.userId">{{member.userName}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-sm mt-lg">
+      <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Update Issue</button>
+    </div>
+  </form>
+</div>

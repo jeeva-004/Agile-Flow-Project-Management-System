@@ -1,36 +1,44 @@
-<h2>Edit User</h2>
-
-<form
-  [formGroup]="form"
-  (ngSubmit)="submit()">
-
-  <input
-    formControlName="firstName">
-
-  <input
-    formControlName="lastName">
-
-  <input
-    formControlName="email">
-
-  <select
-    formControlName="status">
-
-    <option value="ACTIVE">
-      ACTIVE
-    </option>
-
-    <option value="INACTIVE">
-      INACTIVE
-    </option>
-
-  </select>
-
-  <button
-    type="submit">
-
-    Update
-
+<div class="page-header">
+  <div>
+    <h2>Edit User</h2>
+    <p class="page-subtitle">Update user profile and status</p>
+  </div>
+  <button class="btn btn-secondary" routerLink="/users">
+    Cancel
   </button>
+</div>
 
-</form>
+<div class="card" style="max-width: 600px;">
+  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
+    
+    <div class="flex gap-md">
+      <div class="form-group" style="flex:1">
+        <label>First Name</label>
+        <input class="form-control" placeholder="Enter first name" formControlName="firstName">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>Last Name</label>
+        <input class="form-control" placeholder="Enter last name" formControlName="lastName">
+      </div>
+    </div>
+
+    <div class="flex gap-md">
+      <div class="form-group" style="flex:1">
+        <label>Email</label>
+        <input class="form-control" type="email" placeholder="Enter email address" formControlName="email">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>Status</label>
+        <select class="form-control" formControlName="status">
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="INACTIVE">INACTIVE</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-sm mt-lg">
+      <button class="btn btn-secondary" type="button" routerLink="/users">Cancel</button>
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Update User</button>
+    </div>
+  </form>
+</div>

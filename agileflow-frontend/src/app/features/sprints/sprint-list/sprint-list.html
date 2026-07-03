@@ -1,133 +1,54 @@
-<h2>
-
-Sprints
-
-</h2>
-
-<a
-
-[routerLink]="[
-
-'/projects',
-
-projectId,
-
-'sprints',
-
-'create'
-
-]">
-
-Create Sprint
-
-</a>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>
-
-ID
-
-</th>
-
-<th>
-
-Name
-
-</th>
-
-<th>
-
-Start
-
-</th>
-
-<th>
-
-End
-
-</th>
-
-<th>
-
-Action
-
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr
-
-*ngFor=
-
-"let sprint of sprints">
-
-<td>
-
-{{sprint.id}}
-
-</td>
-
-<td>
-
-{{sprint.name}}
-
-</td>
-
-<td>
-
-{{sprint.startDate}}
-
-</td>
-
-<td>
-
-{{sprint.endDate}}
-
-</td>
-
-<td>
-
-<button
-
-(click)=
-
-"editSprint(
-
-sprint.id
-
-)">
-
-Edit
-
-</button>
-
-<button
-
-(click)=
-
-"deleteSprint(
-
-sprint.id
-
-)">
-
-Delete
-
-</button>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
+<div class="page-header">
+  <div>
+    <h2>Sprints</h2>
+    <p class="page-subtitle">Track your project sprints</p>
+  </div>
+  <button class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    New Sprint
+  </button>
+</div>
+
+<div class="table-container">
+  <table class="table data-table">
+    <thead>
+      <tr>
+        <th>Sprint ID</th>
+        <th>Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th style="width: 100px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sprint of sprints">
+        <td><span class="badge badge-todo">{{sprint.id}}</span></td>
+        <td class="font-weight-600">{{sprint.name}}</td>
+        <td style="color:var(--text-secondary)">{{sprint.startDate}}</td>
+        <td style="color:var(--text-secondary)">{{sprint.endDate}}</td>
+        <td>
+          <div class="action-buttons" style="margin-bottom:0">
+            <button class="btn btn-outline btn-icon" (click)="editSprint(sprint.id)" title="Edit">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="btn btn-danger btn-icon" (click)="deleteSprint(sprint.id)" title="Delete">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="sprints.length === 0">
+        <td colspan="5">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </div>
+            <h3 class="empty-state-title">No sprints found</h3>
+            <p class="empty-state-description">Plan your first sprint to start tracking work.</p>
+            <button class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">Create Sprint</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

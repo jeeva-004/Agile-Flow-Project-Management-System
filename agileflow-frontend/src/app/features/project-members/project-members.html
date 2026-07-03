@@ -1,115 +1,62 @@
-<h2>
+<div class="page-header">
+  <div>
+    <h2>Project Members</h2>
+    <p class="page-subtitle">Manage users assigned to this project</p>
+  </div>
+  <button class="btn btn-secondary" routerLink="/projects">
+    Back to Projects
+  </button>
+</div>
 
-Project Members
+<div class="card" style="margin-bottom: var(--spacing-xl);">
+  <form class="flex align-center gap-sm" [formGroup]="form" (ngSubmit)="submit()" style="margin:0;">
+    <div style="flex-grow: 1; max-width: 300px;">
+      <input class="form-control" type="number" placeholder="Enter User ID to add..." formControlName="userId">
+    </div>
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      Add Member
+    </button>
+  </form>
+</div>
 
-</h2>
-
-<form
-
-[formGroup]="form"
-
-(ngSubmit)="submit()">
-
-<input
-
-type="number"
-
-placeholder=
-
-"User Id"
-
-formControlName=
-
-"userId">
-
-<button
-
-type="submit">
-
-Add Member
-
-</button>
-
-</form>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>
-
-ID
-
-</th>
-
-<th>
-
-User
-
-</th>
-
-<th>
-
-Email
-
-</th>
-
-<th>
-
-Action
-
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr
-
-*ngFor=
-
-"let member of members">
-
-<td>
-
-{{member.id}}
-
-</td>
-
-<td>
-
-{{member.userName}}
-
-</td>
-
-<td>
-
-{{member.email}}
-
-</td>
-
-<td>
-
-<button
-
-(click)=
-
-"remove(
-
-member.id)">
-
-Remove
-
-</button>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
+<div class="table-container">
+  <table class="table data-table">
+    <thead>
+      <tr>
+        <th>Member ID</th>
+        <th>User Name</th>
+        <th>Email</th>
+        <th style="width: 100px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let member of members">
+        <td><span class="badge badge-todo">{{member.id}}</span></td>
+        <td class="font-weight-600">
+          <div class="header-user" style="padding:0">
+            <div class="avatar" style="width:24px;height:24px;font-size:10px">{{member.userName?.charAt(0) || 'U'}}</div>
+            <span style="font-size:13px">{{member.userName}}</span>
+          </div>
+        </td>
+        <td style="color:var(--text-secondary)">{{member.email}}</td>
+        <td>
+          <button class="btn btn-danger btn-icon" (click)="remove(member.id)" title="Remove Member">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="members.length === 0">
+        <td colspan="4">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <h3 class="empty-state-title">No members yet</h3>
+            <p class="empty-state-description">Add a member using their User ID above.</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

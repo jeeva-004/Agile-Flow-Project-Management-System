@@ -1,57 +1,65 @@
-<h2>
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Admin Dashboard</h1>
+    <p class="page-subtitle">Overview of system metrics and statistics</p>
+  </div>
 
-    Admin Dashboard
+  <ng-container *ngIf="dashboard; else loadingSkeleton">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Total Users</span>
+          <span class="stat-value">{{dashboard.totalUsers}}</span>
+        </div>
+      </div>
 
-</h2>
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Total Projects</span>
+          <span class="stat-value">{{dashboard.totalProjects}}</span>
+        </div>
+      </div>
 
-<div *ngIf="dashboard">
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Total Issues</span>
+          <span class="stat-value">{{dashboard.totalIssues}}</span>
+        </div>
+      </div>
 
-    <p>
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Open Issues</span>
+          <span class="stat-value">{{dashboard.openIssues}}</span>
+        </div>
+      </div>
 
-        Total Users
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Completed Issues</span>
+          <span class="stat-value">{{dashboard.completedIssues}}</span>
+        </div>
+      </div>
 
-        {{dashboard.totalUsers}}
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Total Worklogs</span>
+          <span class="stat-value">{{dashboard.totalWorkLogs}}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 
-    </p>
-
-    <p>
-
-        Total Projects
-
-        {{dashboard.totalProjects}}
-
-    </p>
-
-    <p>
-
-        Total Issues
-
-        {{dashboard.totalIssues}}
-
-    </p>
-
-    <p>
-
-        Open Issues
-
-        {{dashboard.openIssues}}
-
-    </p>
-
-    <p>
-
-        Completed Issues
-
-        {{dashboard.completedIssues}}
-
-    </p>
-
-    <p>
-
-        Total Worklogs
-
-        {{dashboard.totalWorkLogs}}
-
-    </p>
-
+  <ng-template #loadingSkeleton>
+    <div class="stats-grid">
+      <!-- Create exactly 6 skeleton cards to mirror the final loaded state -->
+      <div class="stat-card skeleton" *ngFor="let item of [1,2,3,4,5,6]">
+        <div class="stat-content">
+          <div class="skeleton-label"></div>
+          <div class="skeleton-value"></div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </div>
+

@@ -1,0 +1,205 @@
+:host {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-body);
+}
+
+.app-sidebar {
+  width: 240px;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.sidebar-brand {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+  gap: var(--spacing-sm);
+
+  h2 {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+  }
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md) var(--spacing-sm);
+  gap: 4px;
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 8px var(--spacing-md);
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
+    gap: var(--spacing-sm);
+
+    .nav-icon {
+      color: var(--text-muted);
+      transition: color 0.15s;
+    }
+
+    &:hover {
+      background-color: var(--bg-surface-hover);
+      color: var(--text-main);
+      
+      .nav-icon {
+        color: var(--primary-color);
+      }
+    }
+
+    &.active {
+      background-color: #ebf3ff;
+      color: var(--primary-color);
+
+      .nav-icon {
+        color: var(--primary-color);
+      }
+    }
+  }
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.app-header {
+  height: 64px;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-lg);
+  flex-shrink: 0;
+  z-index: 5;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 300px;
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+  }
+
+  .form-control {
+    padding-left: 36px;
+    border-color: transparent;
+    background-color: var(--bg-surface-hover);
+    border-radius: 20px;
+    
+    &:focus {
+      border-color: var(--primary-color);
+      background-color: var(--bg-surface);
+    }
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--border-radius-md);
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: var(--bg-surface-hover);
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+.app-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl);
+  background-color: var(--bg-body);
+}
+
+/* Global utility for inner pages if they still use .page-container */
+::ng-deep .page-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+::ng-deep .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+
+  h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}

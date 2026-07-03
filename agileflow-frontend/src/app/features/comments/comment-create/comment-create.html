@@ -1,31 +1,24 @@
-<h2>
+<div class="page-header">
+  <div>
+    <h2>Add Comment</h2>
+    <p class="page-subtitle">Add a new comment to the issue</p>
+  </div>
+  <button class="btn btn-secondary" onclick="window.history.back()">
+    Cancel
+  </button>
+</div>
 
-Add Comment
+<div class="card" style="max-width: 600px;">
+  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
+    
+    <div class="form-group">
+      <label>Message</label>
+      <textarea class="form-control" placeholder="Write your comment here..." formControlName="message" style="min-height: 120px;"></textarea>
+    </div>
 
-</h2>
-
-<form
-
-[formGroup]="form"
-
-(ngSubmit)="submit()">
-
-<textarea
-
-rows="5"
-
-formControlName=
-
-"message">
-
-</textarea>
-
-<button
-
-type="submit">
-
-Save
-
-</button>
-
-</form>
+    <div class="flex justify-end gap-sm mt-lg">
+      <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Post Comment</button>
+    </div>
+  </form>
+</div>

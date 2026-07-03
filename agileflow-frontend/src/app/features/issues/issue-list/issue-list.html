@@ -1,142 +1,81 @@
-<h2>
+<div class="page-header">
+  <div>
+    <h2>Issues</h2>
+    <p class="page-subtitle">Track and manage all issues</p>
+  </div>
+  <button class="btn btn-primary" [routerLink]="['/projects', projectId, 'issues', 'create']">
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    New Issue
+  </button>
+</div>
 
-    Issues
-
-</h2>
-
-<a [routerLink]="[
-
-'/projects',
-
-projectId,
-
-'issues',
-
-'create'
-
-]">
-
-    Create Issue
-
-</a>
-
-<table>
-
+<div class="table-container">
+  <table class="table data-table">
     <thead>
-
-        <tr>
-
-            <th>ID</th>
-
-            <th>Title</th>
-
-            <th>Status</th>
-
-            <th>Priority</th>
-
-            <th>Type</th>
-
-            <th>Assignee</th>
-
-            <th>Action</th>
-
-        </tr>
-
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Type</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Assignee</th>
+        <th style="width: 140px;">Actions</th>
+      </tr>
     </thead>
-
     <tbody>
-
-        <tr *ngFor="let issue of issues">
-
-            <td>
-
-                {{issue.id}}
-
-            </td>
-
-            <td>
-
-                {{issue.title}}
-
-            </td>
-
-            <td>
-
-                {{issue.status}}
-
-            </td>
-
-            <td>
-
-                {{issue.priority}}
-
-            </td>
-
-            <td>
-
-                {{issue.type}}
-
-            </td>
-
-            <td>
-
-                {{issue.assigneeName}}
-
-            </td>
-
-            <td>
-
-                <button (click)="editIssue(
-
-issue.id
-
-)">
-
-                    Edit
-
-                </button>
-
-                <button (click)="deleteIssue(
-
-issue.id
-
-)">
-
-                    Delete
-
-                </button>
-
-                <button [routerLink]="[
-
-'/issues',
-
-issue.id,
-
-'comments'
-
-]">
-
-                    Comments
-
-                </button>
-
-                <button [routerLink]="[
-
-'/issues',
-
-issue.id,
-
-'worklogs'
-
-]">
-
-                    Work Logs
-
-                </button>
-            </td>
-
-        </tr>
-
+      <tr *ngFor="let issue of issues">
+        <td><span class="badge badge-todo">{{issue.id}}</span></td>
+        <td class="font-weight-600">{{issue.title}}</td>
+        <td>
+          <span class="badge" [ngClass]="{'badge-danger': issue.type === 'BUG', 'badge-primary': issue.type === 'TASK', 'badge-success': issue.type === 'STORY'}">
+            {{issue.type}}
+          </span>
+        </td>
+        <td>
+          <span class="badge" [ngClass]="{'badge-danger': issue.priority === 'HIGH', 'badge-warning': issue.priority === 'MEDIUM', 'badge-todo': issue.priority === 'LOW'}">
+            {{issue.priority}}
+          </span>
+        </td>
+        <td>
+          <span class="badge" [ngClass]="{'badge-todo': issue.status === 'TODO', 'badge-in-progress': issue.status === 'IN_PROGRESS', 'badge-done': issue.status === 'DONE'}">
+            {{issue.status}}
+          </span>
+        </td>
+        <td>
+          <div class="header-user" style="padding:0">
+            <div class="avatar" style="width:24px;height:24px;font-size:10px">{{issue.assigneeName?.charAt(0) || 'U'}}</div>
+            <span style="font-size:13px">{{issue.assigneeName}}</span>
+          </div>
+        </td>
+        <td>
+          <div class="action-buttons" style="margin-bottom:0">
+            <button class="btn btn-outline btn-icon" (click)="editIssue(issue.id)" title="Edit">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="btn btn-outline btn-icon" [routerLink]="['/issues', issue.id, 'comments']" title="Comments">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </button>
+            <button class="btn btn-outline btn-icon" [routerLink]="['/issues', issue.id, 'worklogs']" title="Work Logs">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </button>
+            <button class="btn btn-danger btn-icon" (click)="deleteIssue(issue.id)" title="Delete">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="issues.length === 0">
+        <td colspan="7">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <h3 class="empty-state-title">No issues found</h3>
+            <p class="empty-state-description">Create an issue to start tracking your work.</p>
+            <button class="btn btn-primary" [routerLink]="['/projects', projectId, 'issues', 'create']">Create Issue</button>
+          </div>
+        </td>
+      </tr>
     </tbody>
-
-</table>
+  </table>
+</div>

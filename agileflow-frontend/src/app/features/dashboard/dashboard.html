@@ -1,23 +1,62 @@
-<a
-*ngIf="role==='ADMIN'"
-routerLink="/users">
+<div class="page-header">
+  <div>
+    <h2>Dashboard</h2>
+    <p class="page-subtitle">Overview of your projects and progress</p>
+  </div>
+</div>
 
-Users
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-content">
+      <span class="stat-label">Total Projects</span>
+      <span class="stat-value">12</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-content">
+      <span class="stat-label">Total Issues</span>
+      <span class="stat-value">245</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-content">
+      <span class="stat-label">Open Issues</span>
+      <span class="stat-value" style="color: var(--warning-color);">68</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-content">
+      <span class="stat-label">Completed Issues</span>
+      <span class="stat-value" style="color: var(--success-color);">177</span>
+    </div>
+  </div>
+</div>
 
-</a>
-
-<a
-*ngIf="role==='PROJECT_MANAGER'"
-routerLink="/projects">
-
-Projects
-
-</a>
-
-<a
-*ngIf="role==='DEVELOPER'"
-routerLink="/issues">
-
-My Tasks
-
-</a>
+<div class="mt-lg flex gap-lg">
+  <div class="card" style="flex: 2;">
+    <h3 style="font-size: 16px; margin-bottom: var(--spacing-md);">Recent Activity</h3>
+    <div class="empty-state" style="padding: var(--spacing-lg);">
+      <div class="empty-state-icon" style="font-size: 32px;">
+        <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+      <p class="empty-state-description" style="margin-bottom: 0;">No recent activity to show.</p>
+    </div>
+  </div>
+  <div class="card" style="flex: 1;">
+    <h3 style="font-size: 16px; margin-bottom: var(--spacing-md);">Quick Links</h3>
+    <div class="flex flex-column gap-sm">
+      <a href="/projects" class="btn btn-secondary" style="justify-content: flex-start;">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 8px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        All Projects
+      </a>
+      <a href="/issues" class="btn btn-secondary" style="justify-content: flex-start;">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 8px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        My Issues
+      </a>
+      <a href="/users" class="btn btn-secondary" style="justify-content: flex-start;">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 8px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        User Management
+      </a>
+    </div>
+  </div>
+</div>

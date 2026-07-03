@@ -1,51 +1,44 @@
-<h2>
+<div class="page-header">
+  <div>
+    <h2>Create Project</h2>
+    <p class="page-subtitle">Add a new project to your workspace</p>
+  </div>
+  <button class="btn btn-secondary" routerLink="/projects">
+    Cancel
+  </button>
+</div>
 
-Create Project
+<div class="card" style="max-width: 600px;">
+  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
+    <div class="form-group">
+      <label>Project Name</label>
+      <input class="form-control" placeholder="Enter project name" formControlName="name">
+    </div>
 
-</h2>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea class="form-control" placeholder="Enter project description" formControlName="description"></textarea>
+    </div>
 
-<form
+    <div class="flex gap-md">
+      <div class="form-group" style="flex:1">
+        <label>Start Date</label>
+        <input class="form-control" type="date" formControlName="startDate">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>End Date</label>
+        <input class="form-control" type="date" formControlName="endDate">
+      </div>
+    </div>
 
-[formGroup]="form"
+    <div class="form-group">
+      <label>Owner ID</label>
+      <input class="form-control" type="number" formControlName="ownerId" placeholder="Enter Owner ID">
+    </div>
 
-(ngSubmit)="submit()">
-
-<input
-
-placeholder="Project Name"
-
-formControlName="name">
-
-<textarea
-
-formControlName="description">
-
-</textarea>
-
-<input
-
-type="date"
-
-formControlName="startDate">
-
-<input
-
-type="date"
-
-formControlName="endDate">
-
-<input
-
-type="number"
-
-formControlName="ownerId">
-
-<button
-
-type="submit">
-
-Save
-
-</button>
-
-</form>
+    <div class="flex justify-end gap-sm mt-lg">
+      <button class="btn btn-secondary" type="button" routerLink="/projects">Cancel</button>
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Create Project</button>
+    </div>
+  </form>
+</div>

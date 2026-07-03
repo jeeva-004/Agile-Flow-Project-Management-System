@@ -1,122 +1,70 @@
-<h2>
+<div class="page-header">
+  <div>
+    <h2>Projects</h2>
+    <p class="page-subtitle">Manage and track all your projects</p>
+  </div>
+  <button class="btn btn-primary" routerLink="/projects/create">
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    New Project
+  </button>
+</div>
 
-  Projects
-
-</h2>
-
-<a routerLink="/projects/create">
-
-  Create Project
-
-</a>
-
-<table>
-
-  <thead>
-
-    <tr>
-
-      <th>ID</th>
-
-      <th>Name</th>
-
-      <th>Owner</th>
-
-      <th>Start</th>
-
-      <th>End</th>
-
-      <th>Action</th>
-
-    </tr>
-
-  </thead>
-
-  <tbody>
-
-    <tr *ngFor="let project of projects">
-
-      <td>
-
-        {{project.id}}
-
-      </td>
-
-      <td>
-
-        {{project.name}}
-
-      </td>
-
-      <td>
-
-        {{project.ownerName}}
-
-      </td>
-
-      <td>
-
-        {{project.startDate}}
-
-      </td>
-
-      <td>
-
-        {{project.endDate}}
-
-      </td>
-
-      <td>
-
-        <button (click)="editProject(project.id)">
-          Edit
-        </button>
-
-        <button (click)="deleteProject(project.id)">
-          Delete
-        </button>
-
-        <button [routerLink]="[
-'/projects',
-project.id,
-'members'
-]">
-          Members
-        </button>
-        <button [routerLink]="[
-
-'/projects',
-
-project.id,
-
-'sprints'
-
-]">
-
-          Sprints
-
-        </button>
-
-        <button
-
-[routerLink]="[
-
-'/projects',
-
-project.id,
-
-'issues'
-
-]">
-
-Issues
-
-</button>
-
-      </td>
-
-    </tr>
-
-  </tbody>
-
-</table>
+<div class="table-container">
+  <table class="data-table table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let project of projects">
+        <td><span class="badge badge-todo">{{project.id}}</span></td>
+        <td class="font-weight-600">{{project.name}}</td>
+        <td>
+          <div class="header-user" style="padding:0">
+            <div class="avatar" style="width:24px;height:24px;font-size:10px">{{project.ownerName?.charAt(0) || 'U'}}</div>
+            <span style="font-size:13px">{{project.ownerName}}</span>
+          </div>
+        </td>
+        <td style="color:var(--text-secondary)">{{project.startDate}}</td>
+        <td style="color:var(--text-secondary)">{{project.endDate}}</td>
+        <td>
+          <div class="action-buttons" style="margin-bottom:0">
+            <button class="btn btn-outline btn-icon" (click)="editProject(project.id)" title="Edit">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'members']" title="Members">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </button>
+            <button class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'sprints']" title="Sprints">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </button>
+            <button class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'issues']" title="Issues">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </button>
+            <button class="btn btn-danger btn-icon" (click)="deleteProject(project.id)" title="Delete">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="projects.length === 0">
+        <td colspan="6">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <h3 class="empty-state-title">No projects found</h3>
+            <p class="empty-state-description">Get started by creating your first project.</p>
+            <button class="btn btn-primary" routerLink="/projects/create">Create Project</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

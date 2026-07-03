@@ -1,37 +1,38 @@
-<h2>
+<div class="page-header">
+  <div>
+    <h2>Edit Sprint</h2>
+    <p class="page-subtitle">Update sprint details</p>
+  </div>
+  <button class="btn btn-secondary" onclick="window.history.back()">
+    Cancel
+  </button>
+</div>
 
-Edit Sprint
+<div class="card" style="max-width: 600px;">
+  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
+    <div class="form-group">
+      <label>Sprint Name</label>
+      <input class="form-control" placeholder="Enter sprint name" formControlName="name">
+    </div>
 
-</h2>
+    <div class="flex gap-md">
+      <div class="form-group" style="flex:1">
+        <label>Start Date</label>
+        <input class="form-control" type="date" formControlName="startDate">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>End Date</label>
+        <input class="form-control" type="date" formControlName="endDate">
+      </div>
+    </div>
 
-<form
-
-[formGroup]="form"
-
-(ngSubmit)="submit()">
-
-<input
-
-formControlName="name">
-
-<input
-
-type="date"
-
-formControlName="startDate">
-
-<input
-
-type="date"
-
-formControlName="endDate">
-
-<button
-
-type="submit">
-
-Update
-
-</button>
-
-</form>
+    <div class="flex justify-end gap-sm mt-lg">
+      <!-- We don't have projectId here easily from route without TS, so just emit or use history back if possible.
+           Wait, looking at original edit sprint route: /sprints/:id/edit
+           We will just link back to dashboard or projects if we don't have projectId.
+           Let's assume the user can navigate back via browser or we use a basic routerLink to /dashboard -->
+      <button class="btn btn-secondary" type="button" routerLink="/dashboard">Cancel</button>
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Update Sprint</button>
+    </div>
+  </form>
+</div>
