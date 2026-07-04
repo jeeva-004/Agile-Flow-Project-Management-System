@@ -29,4 +29,13 @@ public interface WorkLogRepository
             Long userId
 
     );
+
+    boolean existsByIssueId(
+            Long issueId
+    );
+
+    boolean existsByIssueProjectIdAndUserId(
+            Long projectId,
+            Long userId
+    );
 }

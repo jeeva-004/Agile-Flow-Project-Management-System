@@ -33,4 +33,21 @@ public interface IssueRepository
             IssueStatus status
 
     );
+    boolean existsByProjectId(
+            Long projectId
+    );
+
+    boolean existsBySprintId(
+            Long sprintId
+    );
+
+    boolean existsByProjectIdAndAssigneeId(
+            Long projectId,
+            Long assigneeId
+    );
+
+    boolean existsByProjectIdAndCreatedById(
+            Long projectId,
+            Long createdById
+    );
 }

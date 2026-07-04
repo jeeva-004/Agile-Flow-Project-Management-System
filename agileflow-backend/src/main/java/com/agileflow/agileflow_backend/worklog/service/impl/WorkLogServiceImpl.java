@@ -1,9 +1,11 @@
 package com.agileflow.agileflow_backend.worklog.service.impl;
 
 import com.agileflow.agileflow_backend.auth.entity.User;
+import com.agileflow.agileflow_backend.common.enums.NotificationType;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
+import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.security.CurrentUserService;
 import com.agileflow.agileflow_backend.worklog.dto.*;
 import com.agileflow.agileflow_backend.worklog.entity.WorkLog;
@@ -20,11 +22,12 @@ public class WorkLogServiceImpl
     private final WorkLogRepository workLogRepository;
     private final IssueRepository issueRepository;
     private final CurrentUserService currentUserService;
-
+    private final NotificationService notificationService;
     public WorkLogServiceImpl(
             WorkLogRepository workLogRepository,
             IssueRepository issueRepository,
-            CurrentUserService currentUserService) {
+            CurrentUserService currentUserService,
+            NotificationService notificationService) {
 
         this.workLogRepository =
                 workLogRepository;
@@ -35,6 +38,7 @@ public class WorkLogServiceImpl
         this.currentUserService =
                 currentUserService;
 
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -102,6 +106,38 @@ public class WorkLogServiceImpl
                         workLog
 
                 );
+
+        User assignee =
+
+                issue.getAssignee();
+
+        if (
+
+                assignee != null
+
+        ) {
+
+            notificationService.create(
+
+                    assignee,
+
+                    "Work Logged",
+
+                    currentUser.getFirstName()
+
+                            + " logged "
+
+                            + request.getHoursSpent()
+
+                            + "h",
+
+                    NotificationType.WORKLOG_CREATED,
+
+                    "/issues/" + issue.getId()
+
+            );
+
+        }
 
         return map(
 
@@ -222,6 +258,31 @@ public class WorkLogServiceImpl
 
                 );
 
+        if (workLog.getIssue().getAssignee() != null) {
+            notificationService.create(
+
+                    workLog.getIssue()
+
+                            .getAssignee(),
+
+                    "WorkLog Updated",
+
+                    workLog.getIssue()
+
+                            .getTitle(),
+
+                    NotificationType.WORKLOG_UPDATED,
+
+                    "/issues/" +
+
+                            workLog.getIssue()
+
+                                    .getId()
+
+            );
+        }
+
+
         return map(
 
                 workLog
@@ -247,6 +308,30 @@ public class WorkLogServiceImpl
                                         "WorkLog not found"
 
                                 ));
+
+        if (workLog.getIssue().getAssignee() != null) {
+            notificationService.create(
+
+                    workLog.getIssue()
+
+                            .getAssignee(),
+
+                    "WorkLog Deleted",
+
+                    workLog.getIssue()
+
+                            .getTitle(),
+
+                    NotificationType.WORKLOG_DELETED,
+
+                    "/issues/" +
+
+                            workLog.getIssue()
+
+                                    .getId()
+
+            );
+        }
 
         workLogRepository.delete(
 

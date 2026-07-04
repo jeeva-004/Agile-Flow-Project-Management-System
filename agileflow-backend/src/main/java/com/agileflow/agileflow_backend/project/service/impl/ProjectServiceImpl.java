@@ -2,14 +2,19 @@ package com.agileflow.agileflow_backend.project.service.impl;
 
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
+import com.agileflow.agileflow_backend.common.enums.NotificationType;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
+import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
+import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.project.dto.CreateProjectRequest;
 import com.agileflow.agileflow_backend.project.dto.ProjectResponse;
 import com.agileflow.agileflow_backend.project.dto.UpdateProjectRequest;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
 import com.agileflow.agileflow_backend.project.service.ProjectService;
+import com.agileflow.agileflow_backend.projectmember.repository.ProjectMemberRepository;
 import com.agileflow.agileflow_backend.security.CurrentUserService;
+import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,20 +26,31 @@ public class ProjectServiceImpl
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final CurrentUserService currentUserService;
+    private final NotificationService notificationService;
+    private final IssueRepository issueRepository;
+    private final ProjectMemberRepository projectMemberRepository;
+    private final SprintRepository sprintRepository;
     public ProjectServiceImpl(
             ProjectRepository projectRepository,
             UserRepository userRepository,
-            CurrentUserService currentUserService) {
+            CurrentUserService currentUserService,
+            NotificationService notificationService,
+            IssueRepository issueRepository,
+            ProjectMemberRepository projectMemberRepository,
+            SprintRepository sprintRepository) {
 
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.currentUserService = currentUserService;
+        this.notificationService = notificationService;
+        this.issueRepository = issueRepository;
+        this.projectMemberRepository = projectMemberRepository;
+        this.sprintRepository = sprintRepository;
     }
 
     @Override
     public ProjectResponse create(
             CreateProjectRequest request) {
-
         User owner = currentUserService.getCurrentUser();
 
         Project project =
@@ -53,7 +69,20 @@ public class ProjectServiceImpl
                 request.getEndDate());
 
         project.setOwner(owner);
+        project = projectRepository.save(project);
+        notificationService.create(
 
+                owner,
+
+                "Project Created",
+
+                "Project " + project.getName() + " was created",
+
+                NotificationType.PROJECT_CREATED,
+
+                "/projects/" + project.getId()
+
+        );
         return map(
                 projectRepository.save(
                         project));
@@ -134,6 +163,20 @@ public class ProjectServiceImpl
 
         project.setOwner(owner);
 
+        notificationService.create(
+
+                project.getOwner(),
+
+                "Project Updated",
+
+                "Project " + project.getName() + " was updated",
+
+                NotificationType.PROJECT_UPDATED,
+
+                "/projects/" + project.getId()
+
+        );
+
         return map(
 
                 projectRepository.save(
@@ -146,16 +189,69 @@ public class ProjectServiceImpl
     public void delete(
             Long id) {
 
-        if (!projectRepository.existsById(
-                id)) {
+        Project project =
 
-            throw new ResourceNotFoundException(
+                projectRepository.findById(
+                                id)
 
-                    "Project not found");
+                        .orElseThrow(() ->
+
+                                new ResourceNotFoundException(
+
+                                        "Project not found"));
+
+        if(issueRepository.existsByProjectId(id)) {
+
+            throw new IllegalArgumentException(
+
+                    "Project contains issues. Delete issues first."
+
+            );
 
         }
 
-        projectRepository.deleteById(id);
+        if(sprintRepository.existsByProjectId(id)) {
+
+            throw new IllegalArgumentException(
+
+                    "Project contains sprints."
+
+            );
+
+        }
+
+        if(projectMemberRepository.existsByProjectId(id)) {
+
+            throw new IllegalArgumentException(
+
+                    "Project contains members."
+
+            );
+
+        }
+
+        notificationService.create(
+
+                project.getOwner(),
+
+                "Project Deleted",
+
+                "Project "
+                        + project.getName()
+                        + " was deleted",
+
+                NotificationType.PROJECT_DELETED,
+
+                "/projects"
+
+        );
+
+        projectRepository.delete(
+
+                project
+
+        );
+
 
     }
 

@@ -3,17 +3,21 @@ package com.agileflow.agileflow_backend.issue.service.impl;
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
 import com.agileflow.agileflow_backend.common.enums.IssueStatus;
+import com.agileflow.agileflow_backend.common.enums.NotificationType;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.issue.dto.*;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
 import com.agileflow.agileflow_backend.issue.service.IssueService;
+import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
 import com.agileflow.agileflow_backend.security.CurrentUserService;
 import com.agileflow.agileflow_backend.sprint.entity.Sprint;
 import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import org.springframework.stereotype.Service;
+import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
+import com.agileflow.agileflow_backend.worklog.repository.WorkLogRepository;
 
 import java.util.List;
 
@@ -31,6 +35,10 @@ public class IssueServiceImpl
 
     private final CurrentUserService currentUserService;
 
+    private final NotificationService notificationService;
+    private final CommentRepository commentRepository;
+    private final WorkLogRepository workLogRepository;
+
     public IssueServiceImpl(
 
             IssueRepository issueRepository,
@@ -41,7 +49,11 @@ public class IssueServiceImpl
 
             UserRepository userRepository,
 
-            CurrentUserService currentUserService
+            CurrentUserService currentUserService,
+
+            NotificationService notificationService,
+            CommentRepository commentRepository,
+            WorkLogRepository workLogRepository
             ) {
 
         this.issueRepository =
@@ -58,7 +70,11 @@ public class IssueServiceImpl
 
         this.currentUserService = currentUserService;
 
+        this.notificationService = notificationService;
+        this.commentRepository = commentRepository;
+        this.workLogRepository = workLogRepository;
     }
+
 
     @Override
     public IssueResponse create(
@@ -170,6 +186,25 @@ public class IssueServiceImpl
         issue = issueRepository.save(
 
                 issue);
+
+        if (assignee != null) {
+
+            notificationService.create(
+
+                    assignee,
+
+                    "Issue Assigned",
+
+                    issue.getTitle(),
+
+                    NotificationType.ISSUE_ASSIGNED,
+
+                    "/issues/" + issue.getId()
+
+            );
+
+        }
+
 
         return map(
 
@@ -364,6 +399,30 @@ public class IssueServiceImpl
 
                         issue);
 
+        if (
+
+                request.getAssigneeId()!=null &&
+
+                        issue.getAssignee()!=null
+
+        ) {
+
+            notificationService.create(
+
+                    issue.getAssignee(),
+
+                    "Issue Updated",
+
+                    issue.getTitle(),
+
+                    NotificationType.ISSUE_UPDATED,
+
+                    "/issues/" + issue.getId()
+
+            );
+
+        }
+
         return map(
 
                 issue);
@@ -376,23 +435,39 @@ public class IssueServiceImpl
             Long id) {
 
         Issue issue =
-
                 issueRepository
-
                         .findById(
-
                                 id)
-
                         .orElseThrow(() ->
-
                                 new ResourceNotFoundException(
-
                                         "Issue not found"));
 
+        if (commentRepository.existsByIssueId(id)) {
+            throw new IllegalArgumentException("Issue contains comments. Delete comments first.");
+        }
+        if (workLogRepository.existsByIssueId(id)) {
+            throw new IllegalArgumentException("Issue contains worklogs. Delete worklogs first.");
+        }
+
+        if (issue.getAssignee() != null) {
+            notificationService.create(
+
+                    issue.getAssignee(),
+
+                    "Issue Deleted",
+
+                    issue.getTitle(),
+
+                    NotificationType.ISSUE_DELETED,
+
+                    "/issues"
+
+            );
+        }
+
+
         issueRepository.delete(
-
                 issue);
-
     }
 
     private IssueResponse map(

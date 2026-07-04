@@ -8,9 +8,11 @@ import com.agileflow.agileflow_backend.comment.dto.UpdateCommentRequest;
 import com.agileflow.agileflow_backend.comment.entity.Comment;
 import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
 import com.agileflow.agileflow_backend.comment.service.CommentService;
+import com.agileflow.agileflow_backend.common.enums.NotificationType;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
+import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.security.CurrentUserService;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ public class CommentServiceImpl
 
     private final CurrentUserService currentUserService;
 
+    private final NotificationService notificationService;
+
     public CommentServiceImpl(
 
             CommentRepository commentRepository,
@@ -36,7 +40,8 @@ public class CommentServiceImpl
 
             UserRepository userRepository,
 
-            CurrentUserService currentUserService) {
+            CurrentUserService currentUserService,
+            NotificationService notificationService) {
 
         this.commentRepository =
                 commentRepository;
@@ -48,6 +53,8 @@ public class CommentServiceImpl
                 userRepository;
 
         this.currentUserService = currentUserService;
+
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -95,7 +102,41 @@ public class CommentServiceImpl
                 commentRepository.save(
 
                         comment);
+        User recipient =
 
+                issue.getAssignee();
+
+        if (
+
+                recipient != null &&
+
+                        !recipient.getId().equals(
+
+                                author.getId()
+
+                        )
+
+        ) {
+
+            notificationService.create(
+
+                    recipient,
+
+                    "New Comment",
+
+                    author.getFirstName()
+
+                            + " commented on "
+
+                            + issue.getTitle(),
+
+                    NotificationType.COMMENT_ADDED,
+
+                    "/issues/" + issue.getId()
+
+            );
+
+        }
         return map(
 
                 comment);
@@ -175,6 +216,30 @@ public class CommentServiceImpl
 
                         comment);
 
+        if (comment.getIssue().getAssignee() != null) {
+            notificationService.create(
+
+                    comment.getIssue()
+
+                            .getAssignee(),
+
+                    "Comment Updated",
+
+                    comment.getIssue()
+
+                            .getTitle(),
+
+                    NotificationType.COMMENT_UPDATED,
+
+                    "/issues/" +
+
+                            comment.getIssue()
+
+                                    .getId()
+
+            );
+        }
+
         return map(
 
                 comment);
@@ -197,6 +262,30 @@ public class CommentServiceImpl
                                 new ResourceNotFoundException(
 
                                         "Comment not found"));
+
+        if (comment.getIssue().getAssignee() != null) {
+            notificationService.create(
+
+                    comment.getIssue()
+
+                            .getAssignee(),
+
+                    "Comment Deleted",
+
+                    comment.getIssue()
+
+                            .getTitle(),
+
+                    NotificationType.COMMENT_DELETED,
+
+                    "/issues/" +
+
+                            comment.getIssue()
+
+                                    .getId()
+
+            );
+        }
 
         commentRepository.delete(
 

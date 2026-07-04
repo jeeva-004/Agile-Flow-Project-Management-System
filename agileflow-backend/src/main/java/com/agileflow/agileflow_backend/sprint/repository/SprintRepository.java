@@ -18,4 +18,8 @@ public interface SprintRepository
 
     );
 
+    boolean existsByProjectId(
+            Long projectId
+    );
+
 }

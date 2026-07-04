@@ -21,4 +21,8 @@ public interface ProjectMemberRepository
             Long userId);
 
     long countByProjectOwnerId(Long ownerId);
+
+    boolean existsByProjectId(
+            Long projectId
+    );
 }

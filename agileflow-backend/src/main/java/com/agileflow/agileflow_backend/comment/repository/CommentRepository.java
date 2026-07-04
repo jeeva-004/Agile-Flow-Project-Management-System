@@ -22,4 +22,12 @@ public interface CommentRepository
 
     );
 
+    boolean existsByIssueId(
+            Long issueId
+    );
+
+    boolean existsByIssueProjectIdAndAuthorId(
+            Long projectId,
+            Long authorId
+    );
 }
