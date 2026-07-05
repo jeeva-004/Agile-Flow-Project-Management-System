@@ -207,6 +207,21 @@ public class SecurityConfig {
                         )
                         .requestMatchers(
 
+                                "/api/v1/attachments/**"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
+
+                                "DEVELOPER"
+
+                        )
+                        .requestMatchers(
+
                                 "/api/v1/dashboard/**"
 
                         )
@@ -251,6 +266,21 @@ public class SecurityConfig {
                         )
 
                         .hasRole(
+
+                                "DEVELOPER"
+
+                        )
+                        .requestMatchers(
+
+                                "/api/v1/attachments/**"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
 
                                 "DEVELOPER"
 

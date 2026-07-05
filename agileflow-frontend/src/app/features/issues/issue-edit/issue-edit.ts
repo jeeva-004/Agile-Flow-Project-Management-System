@@ -30,6 +30,8 @@ import {
 import {
   ProjectMemberService
 } from '../../../core/services/project-member.service';
+import { AttachmentUpload } from '../../attachments/attachment-upload/attachment-upload';
+import { AttachmentList } from '../../attachments/attachment-list/attachment-list';
 
 @Component({
 
@@ -42,7 +44,11 @@ import {
 
     CommonModule,
 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+
+    AttachmentUpload,
+
+    AttachmentList
 
   ],
 

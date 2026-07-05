@@ -1,0 +1,19 @@
+<input
+
+type="file"
+
+(change)="onSelect($event)"
+
+>
+
+<button
+
+(click)="upload()"
+
+[disabled]="uploading"
+
+>
+
+{{uploading ? 'Uploading...' : 'Upload'}}
+
+</button>
