@@ -1,0 +1,40 @@
+<div class="activity-feed">
+
+<div *ngIf="loading">
+
+Loading...
+
+</div>
+
+<div
+*ngFor="let activity of activities">
+
+<p>
+
+<strong>
+
+{{activity.userName}}
+
+</strong>
+
+</p>
+
+<p>
+
+{{activity.description}}
+
+</p>
+
+<small>
+
+{{activity.createdAt |
+
+date:'medium'}}
+
+</small>
+
+<hr>
+
+</div>
+
+</div>

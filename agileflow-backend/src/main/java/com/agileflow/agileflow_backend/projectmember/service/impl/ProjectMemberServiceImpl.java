@@ -19,6 +19,8 @@ import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
 import com.agileflow.agileflow_backend.worklog.repository.WorkLogRepository;
 
 import java.util.List;
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
+import com.agileflow.agileflow_backend.security.CurrentUserService;
 
 @Getter
 @Setter
@@ -37,7 +39,9 @@ public class ProjectMemberServiceImpl
     private final IssueRepository issueRepository;
     private final CommentRepository commentRepository;
     private final WorkLogRepository workLogRepository;
+    private final ActivityService activityService;
 
+    private final CurrentUserService currentUserService;
     public ProjectMemberServiceImpl(
 
             ProjectMemberRepository repository,
@@ -48,7 +52,10 @@ public class ProjectMemberServiceImpl
             NotificationService notificationService,
             IssueRepository issueRepository,
             CommentRepository commentRepository,
-            WorkLogRepository workLogRepository) {
+            WorkLogRepository workLogRepository,
+            ActivityService activityService,
+
+            CurrentUserService currentUserService) {
 
         this.repository = repository;
 
@@ -60,6 +67,9 @@ public class ProjectMemberServiceImpl
         this.issueRepository = issueRepository;
         this.commentRepository = commentRepository;
         this.workLogRepository = workLogRepository;
+        this.activityService = activityService;
+
+        this.currentUserService = currentUserService;
     }
 
     @Override
@@ -112,6 +122,33 @@ public class ProjectMemberServiceImpl
         member.setUser(user);
 
         member = repository.save(member);
+
+        User actor = currentUserService.getCurrentUser();
+
+        activityService.create(
+
+                actor,
+
+                project,
+
+                "ADD_MEMBER",
+
+                actor.getFirstName()
+
+                        + " added "
+
+                        + user.getFirstName()
+
+                        + " to project "
+
+                        + project.getName(),
+
+                "PROJECT_MEMBER",
+
+                member.getId()
+
+        );
+
         notificationService.create(
 
                 user,
@@ -195,6 +232,33 @@ public class ProjectMemberServiceImpl
                 "/projects"
 
         );
+
+        User actor = currentUserService.getCurrentUser();
+
+        activityService.create(
+
+                actor,
+
+                member.getProject(),
+
+                "REMOVE_MEMBER",
+
+                actor.getFirstName()
+
+                        + " removed "
+
+                        + member.getUser().getFirstName()
+
+                        + " from project "
+
+                        + member.getProject().getName(),
+
+                "PROJECT_MEMBER",
+
+                member.getId()
+
+        );
+
         repository.delete(member);
 
     }

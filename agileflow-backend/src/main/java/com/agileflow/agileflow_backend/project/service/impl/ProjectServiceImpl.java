@@ -1,5 +1,6 @@
 package com.agileflow.agileflow_backend.project.service.impl;
 
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
 import com.agileflow.agileflow_backend.common.enums.NotificationType;
@@ -30,6 +31,7 @@ public class ProjectServiceImpl
     private final IssueRepository issueRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final SprintRepository sprintRepository;
+    private final ActivityService activityService;
     public ProjectServiceImpl(
             ProjectRepository projectRepository,
             UserRepository userRepository,
@@ -37,7 +39,8 @@ public class ProjectServiceImpl
             NotificationService notificationService,
             IssueRepository issueRepository,
             ProjectMemberRepository projectMemberRepository,
-            SprintRepository sprintRepository) {
+            SprintRepository sprintRepository,
+            ActivityService activityService) {
 
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
@@ -46,6 +49,7 @@ public class ProjectServiceImpl
         this.issueRepository = issueRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.sprintRepository = sprintRepository;
+        this.activityService = activityService;
     }
 
     @Override
@@ -83,9 +87,26 @@ public class ProjectServiceImpl
                 "/projects/" + project.getId()
 
         );
-        return map(
-                projectRepository.save(
-                        project));
+        activityService.create(
+
+                owner,
+
+                project,
+
+                "CREATE_PROJECT",
+
+                owner.getFirstName()
+
+                        + " created project "
+
+                        + project.getName(),
+
+                "PROJECT",
+
+                project.getId()
+
+        );
+        return map(project);
     }
 
     @Override
@@ -177,6 +198,31 @@ public class ProjectServiceImpl
 
         );
 
+        User currentUser =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                currentUser,
+
+                project,
+
+                "DELETE_PROJECT",
+
+                currentUser.getFirstName()
+
+                        + " deleted project "
+
+                        + project.getName(),
+
+                "PROJECT",
+
+                project.getId()
+
+        );
+
         return map(
 
                 projectRepository.save(
@@ -243,6 +289,31 @@ public class ProjectServiceImpl
                 NotificationType.PROJECT_DELETED,
 
                 "/projects"
+
+        );
+
+        User currentUser =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                currentUser,
+
+                project,
+
+                "DELETE_PROJECT",
+
+                currentUser.getFirstName()
+
+                        + " deleted project "
+
+                        + project.getName(),
+
+                "PROJECT",
+
+                project.getId()
 
         );
 

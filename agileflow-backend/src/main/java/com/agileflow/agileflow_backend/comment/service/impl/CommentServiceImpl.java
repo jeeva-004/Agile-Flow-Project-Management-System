@@ -1,5 +1,6 @@
 package com.agileflow.agileflow_backend.comment.service.impl;
 
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
 import com.agileflow.agileflow_backend.comment.dto.CommentResponse;
@@ -32,6 +33,8 @@ public class CommentServiceImpl
 
     private final NotificationService notificationService;
 
+    private final ActivityService activityService;
+
     public CommentServiceImpl(
 
             CommentRepository commentRepository,
@@ -41,7 +44,8 @@ public class CommentServiceImpl
             UserRepository userRepository,
 
             CurrentUserService currentUserService,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            ActivityService activityService) {
 
         this.commentRepository =
                 commentRepository;
@@ -55,6 +59,8 @@ public class CommentServiceImpl
         this.currentUserService = currentUserService;
 
         this.notificationService = notificationService;
+
+        this.activityService = activityService;
     }
 
     @Override
@@ -96,12 +102,50 @@ public class CommentServiceImpl
         comment.setAuthor(
 
                 author);
+        activityService.create(
+
+                author,
+
+                issue.getProject(),
+
+                "COMMENT",
+
+                author.getFirstName()
+
+                        + " commented on "
+
+                        + issue.getTitle(),
+
+                "COMMENT",
+
+                comment.getId()
+
+        );
 
         comment =
 
                 commentRepository.save(
 
                         comment);
+        activityService.create(
+
+                author,
+
+                issue.getProject(),
+
+                "CREATE_COMMENT",
+
+                author.getFirstName()
+
+                        + " commented on "
+
+                        + issue.getTitle(),
+
+                "COMMENT",
+
+                comment.getId()
+
+        );
         User recipient =
 
                 issue.getAssignee();
@@ -239,7 +283,32 @@ public class CommentServiceImpl
 
             );
         }
+        User user =
 
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                comment.getIssue()
+                        .getProject(),
+
+                "UPDATE_COMMENT",
+
+                user.getFirstName()
+
+                        + " updated a comment on "
+
+                        + comment.getIssue()
+                        .getTitle(),
+
+                "COMMENT",
+
+                comment.getId()
+
+        );
         return map(
 
                 comment);
@@ -286,6 +355,33 @@ public class CommentServiceImpl
 
             );
         }
+
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                comment.getIssue()
+                        .getProject(),
+
+                "DELETE_COMMENT",
+
+                user.getFirstName()
+
+                        + " deleted a comment on "
+
+                        + comment.getIssue()
+                        .getTitle(),
+
+                "COMMENT",
+
+                comment.getId()
+
+        );
 
         commentRepository.delete(
 

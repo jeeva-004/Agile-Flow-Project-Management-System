@@ -1,5 +1,6 @@
 package com.agileflow.agileflow_backend.attachment.service.impl;
 
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
 import com.agileflow.agileflow_backend.attachment.dto.AttachmentResponse;
 import com.agileflow.agileflow_backend.attachment.entity.Attachment;
 import com.agileflow.agileflow_backend.attachment.repository.AttachmentRepository;
@@ -35,6 +36,7 @@ public class AttachmentServiceImpl
     private final NotificationService notificationService;
 
     private final AttachmentRepository attachmentRepository;
+    private final ActivityService activityService;
 
     @Value("${attachments.upload-dir}")
     private String uploadDir;
@@ -49,7 +51,9 @@ public class AttachmentServiceImpl
 
             NotificationService notificationService,
 
-            AttachmentRepository attachmentRepository) {
+            AttachmentRepository attachmentRepository,
+
+            ActivityService activityService) {
 
         this.repository =
                 repository;
@@ -64,6 +68,8 @@ public class AttachmentServiceImpl
                 notificationService;
 
         this.attachmentRepository = attachmentRepository;
+
+        this.activityService = activityService;
     }
 
     @Override
@@ -169,7 +175,29 @@ public class AttachmentServiceImpl
 
                     repository.save(
 
-                            attachment);
+                            attachment
+
+                    );
+
+            activityService.create(
+
+                    user,
+
+                    issue.getProject(),
+
+                    "UPLOAD_ATTACHMENT",
+
+                    user.getFirstName()
+
+                            + " uploaded "
+
+                            + file.getOriginalFilename(),
+
+                    "ATTACHMENT",
+
+                    attachment.getId()
+
+            );
 
             if(issue.getAssignee()!=null){
 
@@ -329,6 +357,32 @@ public class AttachmentServiceImpl
             Files.deleteIfExists(
 
                     filePath);
+
+            User user =
+
+                    currentUserService
+                            .getCurrentUser();
+
+            activityService.create(
+
+                    user,
+
+                    attachment.getIssue()
+                            .getProject(),
+
+                    "DELETE_ATTACHMENT",
+
+                    user.getFirstName()
+
+                            + " deleted "
+
+                            + attachment.getOriginalFileName(),
+
+                    "ATTACHMENT",
+
+                    attachment.getId()
+
+            );
 
             repository.delete(
 

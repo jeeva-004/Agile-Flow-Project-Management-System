@@ -14,6 +14,7 @@ import com.agileflow.agileflow_backend.worklog.service.WorkLogService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
 
 @Service
 public class WorkLogServiceImpl
@@ -23,11 +24,13 @@ public class WorkLogServiceImpl
     private final IssueRepository issueRepository;
     private final CurrentUserService currentUserService;
     private final NotificationService notificationService;
+    private final ActivityService activityService;
     public WorkLogServiceImpl(
             WorkLogRepository workLogRepository,
             IssueRepository issueRepository,
             CurrentUserService currentUserService,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            ActivityService activityService) {
 
         this.workLogRepository =
                 workLogRepository;
@@ -39,6 +42,8 @@ public class WorkLogServiceImpl
                 currentUserService;
 
         this.notificationService = notificationService;
+
+        this.activityService = activityService;
     }
 
     @Override
@@ -106,6 +111,30 @@ public class WorkLogServiceImpl
                         workLog
 
                 );
+
+        activityService.create(
+
+                currentUser,
+
+                issue.getProject(),
+
+                "CREATE_WORKLOG",
+
+                currentUser.getFirstName()
+
+                        + " logged "
+
+                        + request.getHoursSpent()
+
+                        + "h on "
+
+                        + issue.getTitle(),
+
+                "WORKLOG",
+
+                workLog.getId()
+
+        );
 
         User assignee =
 
@@ -282,6 +311,32 @@ public class WorkLogServiceImpl
             );
         }
 
+        User currentUser =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                currentUser,
+
+                workLog.getIssue()
+                        .getProject(),
+
+                "UPDATE_WORKLOG",
+
+                currentUser.getFirstName()
+
+                        + " updated worklog on "
+
+                        + workLog.getIssue()
+                        .getTitle(),
+
+                "WORKLOG",
+
+                workLog.getId()
+
+        );
 
         return map(
 
@@ -332,6 +387,33 @@ public class WorkLogServiceImpl
 
             );
         }
+
+        User currentUser =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                currentUser,
+
+                workLog.getIssue()
+                        .getProject(),
+
+                "DELETE_WORKLOG",
+
+                currentUser.getFirstName()
+
+                        + " deleted worklog on "
+
+                        + workLog.getIssue()
+                        .getTitle(),
+
+                "WORKLOG",
+
+                workLog.getId()
+
+        );
 
         workLogRepository.delete(
 

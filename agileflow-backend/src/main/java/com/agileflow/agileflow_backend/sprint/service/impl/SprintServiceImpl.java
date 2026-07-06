@@ -15,6 +15,11 @@ import java.util.List;
 import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
 import com.agileflow.agileflow_backend.common.enums.NotificationType;
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
+import com.agileflow.agileflow_backend.auth.entity.User;
+import com.agileflow.agileflow_backend.security.CurrentUserService;
+
+
 @Service
 public class SprintServiceImpl implements SprintService {
 
@@ -22,17 +27,28 @@ public class SprintServiceImpl implements SprintService {
     private final ProjectRepository projectRepository;
     private final NotificationService notificationService;
     private final IssueRepository issueRepository;
+    private final ActivityService activityService;
+    private final CurrentUserService currentUserService;
 
     public SprintServiceImpl(
             SprintRepository sprintRepository,
             ProjectRepository projectRepository,
             NotificationService notificationService,
-            IssueRepository issueRepository) {
+            IssueRepository issueRepository,
+            ActivityService activityService,
+
+            CurrentUserService currentUserService
+            ) {
 
         this.sprintRepository = sprintRepository;
         this.projectRepository = projectRepository;
         this.notificationService = notificationService;
         this.issueRepository = issueRepository;
+        this.activityService =
+                activityService;
+
+        this.currentUserService =
+                currentUserService;
     }
 
     @Override
@@ -74,6 +90,31 @@ public class SprintServiceImpl implements SprintService {
                 NotificationType.SPRINT_CREATED,
 
                 "/sprints/" + sprint.getId()
+
+        );
+
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                project,
+
+                "CREATE_SPRINT",
+
+                user.getFirstName()
+
+                        + " created sprint "
+
+                        + sprint.getName(),
+
+                "SPRINT",
+
+                sprint.getId()
 
         );
 
@@ -147,6 +188,31 @@ public class SprintServiceImpl implements SprintService {
                 "/sprints/" + sprint.getId()
 
         );
+
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                sprint.getProject(),
+
+                "UPDATE_SPRINT",
+
+                user.getFirstName()
+
+                        + " updated sprint "
+
+                        + sprint.getName(),
+
+                "SPRINT",
+
+                sprint.getId()
+
+        );
         return map(
                 sprint);
 
@@ -178,6 +244,31 @@ public class SprintServiceImpl implements SprintService {
                 NotificationType.SPRINT_DELETED,
 
                 "/sprints"
+
+        );
+
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                sprint.getProject(),
+
+                "DELETE_SPRINT",
+
+                user.getFirstName()
+
+                        + " deleted sprint "
+
+                        + sprint.getName(),
+
+                "SPRINT",
+
+                sprint.getId()
 
         );
 

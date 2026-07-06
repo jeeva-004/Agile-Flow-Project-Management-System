@@ -19,6 +19,7 @@
         <th>Start Date</th>
         <th>End Date</th>
         <th>Actions</th>
+        <th>Activity</th>
       </tr>
     </thead>
     <tbody>
@@ -52,9 +53,16 @@
             </button>
           </div>
         </td>
+<td>
+
+<app-activity-feed
+[projectId]="project.id">
+</app-activity-feed>
+
+</td>
       </tr>
       <tr *ngIf="projects.length === 0">
-        <td colspan="6">
+        <td colspan="7">
           <div class="empty-state">
             <div class="empty-state-icon">
               <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>

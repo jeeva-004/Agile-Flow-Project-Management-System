@@ -20,7 +20,7 @@ import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
 import com.agileflow.agileflow_backend.worklog.repository.WorkLogRepository;
 
 import java.util.List;
-
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
 @Service
 public class IssueServiceImpl
         implements IssueService {
@@ -38,6 +38,7 @@ public class IssueServiceImpl
     private final NotificationService notificationService;
     private final CommentRepository commentRepository;
     private final WorkLogRepository workLogRepository;
+    private final ActivityService activityService;
 
     public IssueServiceImpl(
 
@@ -53,7 +54,8 @@ public class IssueServiceImpl
 
             NotificationService notificationService,
             CommentRepository commentRepository,
-            WorkLogRepository workLogRepository
+            WorkLogRepository workLogRepository,
+            ActivityService activityService
             ) {
 
         this.issueRepository =
@@ -73,6 +75,7 @@ public class IssueServiceImpl
         this.notificationService = notificationService;
         this.commentRepository = commentRepository;
         this.workLogRepository = workLogRepository;
+        this.activityService =  activityService;
     }
 
 
@@ -186,6 +189,24 @@ public class IssueServiceImpl
         issue = issueRepository.save(
 
                 issue);
+
+        activityService.create(
+
+                createdBy,
+
+                project,
+
+                "CREATE_ISSUE",
+
+                createdBy.getFirstName()
+                        + " created issue "
+                        + issue.getTitle(),
+
+                "ISSUE",
+
+                issue.getId()
+
+        );
 
         if (assignee != null) {
 
@@ -399,6 +420,31 @@ public class IssueServiceImpl
 
                         issue);
 
+        User currentUser =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                currentUser,
+
+                issue.getProject(),
+
+                "UPDATE_ISSUE",
+
+                currentUser.getFirstName()
+
+                        + " updated issue "
+
+                        + issue.getTitle(),
+
+                "ISSUE",
+
+                issue.getId()
+
+        );
+
         if (
 
                 request.getAssigneeId()!=null &&
@@ -465,7 +511,30 @@ public class IssueServiceImpl
             );
         }
 
+        User currentUser =
 
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                currentUser,
+
+                issue.getProject(),
+
+                "DELETE_ISSUE",
+
+                currentUser.getFirstName()
+
+                        + " deleted issue "
+
+                        + issue.getTitle(),
+
+                "ISSUE",
+
+                issue.getId()
+
+        );
         issueRepository.delete(
                 issue);
     }

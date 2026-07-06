@@ -12,7 +12,8 @@ import {
 } from '@angular/router';
 
 import { ProjectService }
-from '../../../core/services/project.service';
+  from '../../../core/services/project.service';
+import { ActivityFeed } from '../../activities/activity-feed/activity-feed';
 
 @Component({
 
@@ -24,6 +25,7 @@ from '../../../core/services/project.service';
 
     CommonModule,
 
+    ActivityFeed,
     RouterModule
 
   ],
@@ -33,7 +35,7 @@ from '../../../core/services/project.service';
 
 })
 export class ProjectListComponent
-implements OnInit {
+  implements OnInit {
 
   private readonly service =
     inject(ProjectService);
