@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
 import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
 import com.agileflow.agileflow_backend.worklog.repository.WorkLogRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import com.agileflow.agileflow_backend.activity.service.ActivityService;
@@ -163,6 +165,25 @@ public class ProjectMemberServiceImpl
 
         );
         return map(member);
+
+    }
+
+    @Override
+    public Page<ProjectMemberResponse>
+
+    findByProject(
+
+            Long projectId,
+            Pageable pageable) {
+
+        return repository
+
+                .findByProjectId(
+
+                        projectId,
+                        pageable)
+
+                .map(this::map);
 
     }
 

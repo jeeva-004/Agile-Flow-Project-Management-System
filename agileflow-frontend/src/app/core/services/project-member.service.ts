@@ -47,12 +47,25 @@ export class ProjectMemberService {
   }
 
   findByProject(
-    projectId: number
+    projectId: number,
+    page?: number,
+    size?: number,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
   ): Observable<any> {
+
+    const params: any = {};
+    if (page !== undefined && size !== undefined) {
+      params.page = page.toString();
+      params.size = size.toString();
+      params.sortBy = sortBy;
+      params.sortDir = sortDir;
+    }
 
     return this.http.get(
 
-      `${environment.apiUrl}/projects/${projectId}/members`
+      `${environment.apiUrl}/projects/${projectId}/members`,
+      { params }
 
     );
 

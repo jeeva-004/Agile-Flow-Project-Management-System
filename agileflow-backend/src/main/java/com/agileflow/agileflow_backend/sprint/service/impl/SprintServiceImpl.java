@@ -10,6 +10,8 @@ import com.agileflow.agileflow_backend.sprint.entity.Sprint;
 import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import com.agileflow.agileflow_backend.sprint.service.SprintService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import com.agileflow.agileflow_backend.notification.service.NotificationService;
@@ -120,6 +122,19 @@ public class SprintServiceImpl implements SprintService {
 
         return map(
                 sprint);
+
+    }
+
+    @Override
+    public Page<SprintResponse> findByProject(
+            Long projectId,
+            Pageable pageable) {
+
+        return sprintRepository
+                .findByProjectId(
+                        projectId,
+                        pageable)
+                .map(this::map);
 
     }
 

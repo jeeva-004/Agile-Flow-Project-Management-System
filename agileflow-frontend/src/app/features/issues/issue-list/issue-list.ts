@@ -20,6 +20,14 @@ from '@angular/common';
 
 import {
 
+FormsModule
+
+}
+
+from '@angular/forms';
+
+import {
+
 Router,
 
 RouterModule,
@@ -50,7 +58,9 @@ imports:[
 
 CommonModule,
 
-RouterModule
+RouterModule,
+
+FormsModule
 
 ],
 
@@ -78,6 +88,18 @@ projectId!:number;
 
 issues:any[]=[];
 
+page=0;
+
+size=10;
+
+totalPages=0;
+
+totalElements=0;
+
+sortBy='id';
+
+sortDir='desc';
+
 ngOnInit():void{
 
 this.projectId=
@@ -102,7 +124,15 @@ this.service
 
 .findByProject(
 
-this.projectId
+this.projectId,
+
+this.page,
+
+this.size,
+
+this.sortBy,
+
+this.sortDir
 
 )
 
@@ -112,11 +142,73 @@ next:response=>{
 
 this.issues=
 
-response.data;
+response.data?.content ?? [];
+
+this.totalPages=
+
+response.data?.totalPages ?? 0;
+
+this.totalElements=
+
+response.data?.totalElements ?? 0;
+
+},
+
+error:err=>{
+
+console.error('Failed to load issues:',err);
+
+this.issues=[];
 
 }
 
 });
+
+}
+
+onSortChange(field:string):void{
+
+this.sortBy=field;
+
+this.page=0;
+
+this.load();
+
+}
+
+toggleSortDir():void{
+
+this.sortDir=
+
+this.sortDir==='asc'?'desc':'asc';
+
+this.page=0;
+
+this.load();
+
+}
+
+nextPage():void{
+
+if(this.page+1<this.totalPages){
+
+this.page++;
+
+this.load();
+
+}
+
+}
+
+prevPage():void{
+
+if(this.page>0){
+
+this.page--;
+
+this.load();
+
+}
 
 }
 

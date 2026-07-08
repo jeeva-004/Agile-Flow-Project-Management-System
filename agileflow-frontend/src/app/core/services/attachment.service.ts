@@ -38,12 +38,25 @@ export class AttachmentService {
   }
 
   findByIssue(
-    issueId:number
-  ){
+    issueId: number,
+    page?: number,
+    size?: number,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
+  ): Observable<any> {
+
+    const params: any = {};
+    if (page !== undefined && size !== undefined) {
+      params.page = page.toString();
+      params.size = size.toString();
+      params.sortBy = sortBy;
+      params.sortDir = sortDir;
+    }
 
     return this.http.get(
 
-      `${this.api}/issues/${issueId}`
+      `${this.api}/issues/${issueId}`,
+      { params }
 
     );
 

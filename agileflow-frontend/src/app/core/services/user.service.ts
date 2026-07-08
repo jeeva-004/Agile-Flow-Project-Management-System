@@ -20,10 +20,23 @@ export class UserService {
   private readonly API =
     `${environment.apiUrl}/users`;
 
-  findAll(): Observable<ApiResponse<User[]>> {
+  findAll(
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
+  ): Observable<ApiResponse<any>> {
 
-    return this.http.get<ApiResponse<User[]>>(
-      this.API
+    return this.http.get<ApiResponse<any>>(
+      this.API,
+      {
+        params: {
+          page: page.toString(),
+          size: size.toString(),
+          sortBy,
+          sortDir
+        }
+      }
     );
   }
 

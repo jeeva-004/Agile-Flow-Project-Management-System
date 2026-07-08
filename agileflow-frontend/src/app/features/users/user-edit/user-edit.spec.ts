@@ -1,18 +1,20 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserEdit } from './user-edit';
+import { UserEditComponent } from './user-edit';
 
-describe('UserEdit', () => {
-  let component: UserEdit;
-  let fixture: ComponentFixture<UserEdit>;
+describe('UserEditComponent', () => {
+  let component: UserEditComponent;
+  let fixture: ComponentFixture<UserEditComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserEdit]
-    })
+      imports: [UserEditComponent],
+      providers: [provideHttpClient(), provideRouter([])]})
     .compileComponents();
 
-    fixture = TestBed.createComponent(UserEdit);
+    fixture = TestBed.createComponent(UserEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

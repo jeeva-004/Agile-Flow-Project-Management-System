@@ -35,6 +35,9 @@ public class Project {
     )
     private User owner;
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<com.agileflow.agileflow_backend.activity.entity.Activity> activities;
+
     // getters setters
 
 }

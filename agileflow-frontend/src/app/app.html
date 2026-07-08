@@ -57,7 +57,24 @@
 
     <!-- Page Content -->
     <main class="app-content">
-      <router-outlet></router-outlet>
+
+      <div class="app-shell">
+
+  <button
+    type="button"
+    class="notification-bell"
+    (click)="togglePanel()">
+    🔔
+    <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+  </button>
+
+  <div class="notification-panel" *ngIf="panelOpen">
+    <app-notification-list></app-notification-list>
+  </div>
+
+  <router-outlet></router-outlet>
+
+</div>
     </main>
   </div>
 </div>

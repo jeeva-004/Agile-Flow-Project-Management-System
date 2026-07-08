@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { UserService }
 from '../../../core/services/user.service';
@@ -16,7 +17,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './user-list.html'
 })
 export class UserList
@@ -26,6 +27,12 @@ implements OnInit {
     inject(UserService);
 
   users: User[] = [];
+  page = 0;
+  size = 10;
+  totalPages = 0;
+  totalElements = 0;
+  sortBy = 'id';
+  sortDir = 'desc';
 
   ngOnInit(): void {
     this.loadUsers();
@@ -33,12 +40,40 @@ implements OnInit {
 
   loadUsers(): void {
 
-    this.userService.findAll()
+    this.userService.findAll(this.page, this.size, this.sortBy, this.sortDir)
       .subscribe({
         next: response => {
-          this.users = response.data;
+          this.users = response.data?.content ?? [];
+          this.totalPages = response.data?.totalPages ?? 0;
+          this.totalElements = response.data?.totalElements ?? 0;
         }
       });
+  }
+
+  onSortChange(field: string): void {
+    this.sortBy = field;
+    this.page = 0;
+    this.loadUsers();
+  }
+
+  toggleSortDir(): void {
+    this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+    this.page = 0;
+    this.loadUsers();
+  }
+
+  nextPage(): void {
+    if (this.page + 1 < this.totalPages) {
+      this.page++;
+      this.loadUsers();
+    }
+  }
+
+  prevPage(): void {
+    if (this.page > 0) {
+      this.page--;
+      this.loadUsers();
+    }
   }
 
   deleteUser(id: number): void {

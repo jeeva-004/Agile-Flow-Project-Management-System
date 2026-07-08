@@ -1,18 +1,20 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CommentList } from './comment-list';
+import { CommentListComponent } from './comment-list';
 
-describe('CommentList', () => {
-  let component: CommentList;
-  let fixture: ComponentFixture<CommentList>;
+describe('CommentListComponent', () => {
+  let component: CommentListComponent;
+  let fixture: ComponentFixture<CommentListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommentList]
-    })
+      imports: [CommentListComponent],
+      providers: [provideHttpClient(), provideRouter([])]})
     .compileComponents();
 
-    fixture = TestBed.createComponent(CommentList);
+    fixture = TestBed.createComponent(CommentListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

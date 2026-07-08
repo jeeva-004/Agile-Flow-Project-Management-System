@@ -16,6 +16,8 @@ import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
 import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.security.CurrentUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -102,25 +104,6 @@ public class CommentServiceImpl
         comment.setAuthor(
 
                 author);
-        activityService.create(
-
-                author,
-
-                issue.getProject(),
-
-                "COMMENT",
-
-                author.getFirstName()
-
-                        + " commented on "
-
-                        + issue.getTitle(),
-
-                "COMMENT",
-
-                comment.getId()
-
-        );
 
         comment =
 
@@ -184,6 +167,25 @@ public class CommentServiceImpl
         return map(
 
                 comment);
+
+    }
+
+    @Override
+    public Page<CommentResponse>
+
+    findByIssue(
+
+            Long issueId,
+            Pageable pageable) {
+
+        return commentRepository
+
+                .findByIssueId(
+
+                        issueId,
+                        pageable)
+
+                .map(this::map);
 
     }
 

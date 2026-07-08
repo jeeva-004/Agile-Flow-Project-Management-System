@@ -15,6 +15,8 @@ import com.agileflow.agileflow_backend.security.CurrentUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -233,6 +235,24 @@ public class AttachmentServiceImpl
                     ex.getMessage());
 
         }
+
+    }
+
+    @Override
+    public Page<AttachmentResponse>
+    findByIssue(
+
+            Long issueId,
+            Pageable pageable) {
+
+        return repository
+
+                .findByIssueId(
+
+                        issueId,
+                        pageable)
+
+                .map(this::map);
 
     }
 

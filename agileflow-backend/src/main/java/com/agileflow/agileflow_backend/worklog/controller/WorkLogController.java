@@ -5,6 +5,9 @@ import com.agileflow.agileflow_backend.worklog.dto.CreateWorkLogRequest;
 import com.agileflow.agileflow_backend.worklog.dto.UpdateWorkLogRequest;
 import com.agileflow.agileflow_backend.worklog.service.WorkLogService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -52,53 +55,57 @@ public class WorkLogController {
     }
 
     @GetMapping(
-
             "/issues/{issueId}/worklogs"
-
     )
     public ApiResponse<?> findByIssue(
-
             @PathVariable
-
-            Long issueId
-
+            Long issueId,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir
     ) {
-
+        if (page != null && size != null) {
+            Sort sort = sortDir.equalsIgnoreCase("asc")
+                    ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            Pageable pageable = PageRequest.of(page, size, sort);
+            return ApiResponse.success(
+                    workLogService.findByIssue(issueId, pageable)
+            );
+        }
         return ApiResponse.success(
-
                 workLogService.findByIssue(
-
                         issueId
-
                 )
-
         );
-
     }
 
     @GetMapping(
-
             "/users/{userId}/worklogs"
-
     )
     public ApiResponse<?> findByUser(
-
             @PathVariable
-
-            Long userId
-
+            Long userId,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir
     ) {
-
+        if (page != null && size != null) {
+            Sort sort = sortDir.equalsIgnoreCase("asc")
+                    ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            Pageable pageable = PageRequest.of(page, size, sort);
+            return ApiResponse.success(
+                    workLogService.findByUser(userId, pageable)
+            );
+        }
         return ApiResponse.success(
-
                 workLogService.findByUser(
-
                         userId
-
                 )
-
         );
-
     }
 
     @GetMapping(

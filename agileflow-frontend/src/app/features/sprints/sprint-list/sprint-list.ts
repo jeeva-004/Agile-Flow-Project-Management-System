@@ -17,6 +17,7 @@ import {
 import {
   SprintService
 } from '../../../core/services/sprint.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
 
@@ -27,9 +28,8 @@ import {
   imports: [
 
     CommonModule,
-
-    RouterModule
-
+    RouterModule,
+    FormsModule
   ],
 
   templateUrl:
@@ -55,6 +55,12 @@ implements OnInit {
   projectId!: number;
 
   sprints: any[] = [];
+  page = 0;
+  size = 10;
+  totalPages = 0;
+  totalElements = 0;
+  sortBy = 'id';
+  sortDir = 'desc';
 
   ngOnInit(): void {
 
@@ -78,7 +84,11 @@ implements OnInit {
 
       .findByProject(
 
-        this.projectId
+        this.projectId,
+        this.page,
+        this.size,
+        this.sortBy,
+        this.sortDir
 
       )
 
@@ -88,12 +98,40 @@ implements OnInit {
 
           this.sprints =
 
-            response.data;
+            response.data?.content ?? response.content ?? [];
+          this.totalPages = response.data?.totalPages ?? response.totalPages ?? 0;
+          this.totalElements = response.data?.totalElements ?? response.totalElements ?? 0;
 
         }
 
       });
 
+  }
+
+  onSortChange(field: string): void {
+    this.sortBy = field;
+    this.page = 0;
+    this.load();
+  }
+
+  toggleSortDir(): void {
+    this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+    this.page = 0;
+    this.load();
+  }
+
+  nextPage(): void {
+    if (this.page + 1 < this.totalPages) {
+      this.page++;
+      this.load();
+    }
+  }
+
+  prevPage(): void {
+    if (this.page > 0) {
+      this.page--;
+      this.load();
+    }
   }
 
   editSprint(

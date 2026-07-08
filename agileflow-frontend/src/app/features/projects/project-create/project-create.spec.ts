@@ -1,18 +1,20 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProjectCreate } from './project-create';
+import { ProjectCreateComponent } from './project-create';
 
-describe('ProjectCreate', () => {
-  let component: ProjectCreate;
-  let fixture: ComponentFixture<ProjectCreate>;
+describe('ProjectCreateComponent', () => {
+  let component: ProjectCreateComponent;
+  let fixture: ComponentFixture<ProjectCreateComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectCreate]
-    })
+      imports: [ProjectCreateComponent],
+      providers: [provideHttpClient(), provideRouter([])]})
     .compileComponents();
 
-    fixture = TestBed.createComponent(ProjectCreate);
+    fixture = TestBed.createComponent(ProjectCreateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

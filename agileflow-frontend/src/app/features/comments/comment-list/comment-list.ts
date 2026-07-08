@@ -18,6 +18,8 @@ CommonModule
 
 from '@angular/common';
 
+import { FormsModule } from '@angular/forms';
+
 import {
 
 Router,
@@ -49,8 +51,8 @@ standalone:true,
 imports:[
 
 CommonModule,
-
-RouterModule
+RouterModule,
+FormsModule
 
 ],
 
@@ -76,7 +78,13 @@ inject(Router);
 
 issueId!:number;
 
-comments:any[]=[];
+  comments: any[] = [];
+  page = 0;
+  size = 10;
+  totalPages = 0;
+  totalElements = 0;
+  sortBy = 'id';
+  sortDir = 'desc';
 
 ngOnInit():void{
 
@@ -102,7 +110,11 @@ this.service
 
 .findByIssue(
 
-this.issueId
+this.issueId,
+this.page,
+this.size,
+this.sortBy,
+this.sortDir
 
 )
 
@@ -112,13 +124,41 @@ next:response=>{
 
 this.comments=
 
-response.data;
+            response.data?.content ?? response.content ?? [];
+          this.totalPages = response.data?.totalPages ?? response.totalPages ?? 0;
+          this.totalElements = response.data?.totalElements ?? response.totalElements ?? 0;
 
 }
 
 });
 
 }
+
+  onSortChange(field: string): void {
+    this.sortBy = field;
+    this.page = 0;
+    this.load();
+  }
+
+  toggleSortDir(): void {
+    this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+    this.page = 0;
+    this.load();
+  }
+
+  nextPage(): void {
+    if (this.page + 1 < this.totalPages) {
+      this.page++;
+      this.load();
+    }
+  }
+
+  prevPage(): void {
+    if (this.page > 0) {
+      this.page--;
+      this.load();
+    }
+  }
 
 edit(
 

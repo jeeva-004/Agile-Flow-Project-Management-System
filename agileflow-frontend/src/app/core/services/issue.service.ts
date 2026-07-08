@@ -38,11 +38,23 @@ export class IssueService {
   }
 
   findByProject(
-    projectId: number
+    projectId: number,
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = 'createdAt',
+    sortDir: string = 'desc'
   ): Observable<any> {
 
     return this.http.get(
-      `${environment.apiUrl}/projects/${projectId}/issues`
+      `${environment.apiUrl}/projects/${projectId}/issues`,
+      {
+        params: {
+          page,
+          size,
+          sortBy,
+          sortDir
+        }
+      }
     );
   }
 

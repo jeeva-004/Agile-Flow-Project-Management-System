@@ -9,6 +9,7 @@ import com.agileflow.agileflow_backend.issue.dto.*;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
 import com.agileflow.agileflow_backend.issue.service.IssueService;
+import com.agileflow.agileflow_backend.issuehistory.service.IssueHistoryService;
 import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
@@ -18,8 +19,13 @@ import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import org.springframework.stereotype.Service;
 import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
 import com.agileflow.agileflow_backend.worklog.repository.WorkLogRepository;
+import com.agileflow.agileflow_backend.attachment.repository.AttachmentRepository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Objects;
 import com.agileflow.agileflow_backend.activity.service.ActivityService;
 @Service
 public class IssueServiceImpl
@@ -39,6 +45,8 @@ public class IssueServiceImpl
     private final CommentRepository commentRepository;
     private final WorkLogRepository workLogRepository;
     private final ActivityService activityService;
+    private final IssueHistoryService issueHistoryService;
+    private final AttachmentRepository attachmentRepository;
 
     public IssueServiceImpl(
 
@@ -55,8 +63,10 @@ public class IssueServiceImpl
             NotificationService notificationService,
             CommentRepository commentRepository,
             WorkLogRepository workLogRepository,
-            ActivityService activityService
-            ) {
+            ActivityService activityService,
+            IssueHistoryService issueHistoryService,
+            AttachmentRepository attachmentRepository
+    ) {
 
         this.issueRepository =
                 issueRepository;
@@ -76,6 +86,8 @@ public class IssueServiceImpl
         this.commentRepository = commentRepository;
         this.workLogRepository = workLogRepository;
         this.activityService =  activityService;
+        this.issueHistoryService = issueHistoryService;
+        this.attachmentRepository = attachmentRepository;
     }
 
 
@@ -208,6 +220,64 @@ public class IssueServiceImpl
 
         );
 
+        issueHistoryService.create(
+
+                createdBy,
+
+                issue,
+
+                "CREATE",
+
+                "status",
+
+                null,
+
+                issue.getStatus() != null
+                        ? issue.getStatus().toString()
+                        : null
+
+        );
+
+        issueHistoryService.create(
+
+                createdBy,
+
+                issue,
+
+                "CREATE",
+
+                "priority",
+
+                null,
+
+                issue.getPriority() != null
+                        ? issue.getPriority().toString()
+                        : null
+
+        );
+
+        if (assignee != null) {
+
+            issueHistoryService.create(
+
+                    createdBy,
+
+                    issue,
+
+                    "CREATE",
+
+                    "assignee",
+
+                    null,
+
+                    assignee.getFirstName()
+                            + " "
+                            + assignee.getLastName()
+
+            );
+
+        }
+
         if (assignee != null) {
 
             notificationService.create(
@@ -234,23 +304,23 @@ public class IssueServiceImpl
     }
 
     @Override
-    public List<IssueResponse>
+    public Page<IssueResponse>
 
     findByProject(
 
-            Long projectId) {
+            Long projectId,
+
+            Pageable pageable) {
 
         return issueRepository
 
                 .findByProjectId(
 
-                        projectId)
+                        projectId,
 
-                .stream()
+                        pageable)
 
-                .map(this::map)
-
-                .toList();
+                .map(this::map);
 
     }
 
@@ -341,6 +411,18 @@ public class IssueServiceImpl
                                 new ResourceNotFoundException(
 
                                         "Issue not found"));
+
+        IssueStatus oldStatus =
+
+                issue.getStatus();
+
+        Object oldPriority =
+
+                issue.getPriority();
+
+        User oldAssignee =
+
+                issue.getAssignee();
 
         issue.setTitle(
 
@@ -447,6 +529,118 @@ public class IssueServiceImpl
 
         if (
 
+                !Objects.equals(
+
+                        oldStatus,
+
+                        issue.getStatus())
+
+        ) {
+
+            issueHistoryService.create(
+
+                    currentUser,
+
+                    issue,
+
+                    "UPDATE",
+
+                    "status",
+
+                    oldStatus != null
+                            ? oldStatus.toString()
+                            : null,
+
+                    issue.getStatus() != null
+                            ? issue.getStatus().toString()
+                            : null
+
+            );
+
+        }
+
+        if (
+
+                !Objects.equals(
+
+                        oldPriority,
+
+                        issue.getPriority())
+
+        ) {
+
+            issueHistoryService.create(
+
+                    currentUser,
+
+                    issue,
+
+                    "UPDATE",
+
+                    "priority",
+
+                    oldPriority != null
+                            ? oldPriority.toString()
+                            : null,
+
+                    issue.getPriority() != null
+                            ? issue.getPriority().toString()
+                            : null
+
+            );
+
+        }
+
+        Long oldAssigneeId =
+
+                oldAssignee != null
+                        ? oldAssignee.getId()
+                        : null;
+
+        Long newAssigneeId =
+
+                issue.getAssignee() != null
+                        ? issue.getAssignee().getId()
+                        : null;
+
+        if (
+
+                !Objects.equals(
+
+                        oldAssigneeId,
+
+                        newAssigneeId)
+
+        ) {
+
+            issueHistoryService.create(
+
+                    currentUser,
+
+                    issue,
+
+                    "UPDATE",
+
+                    "assignee",
+
+                    oldAssignee != null
+                            ? oldAssignee.getFirstName()
+                              + " "
+                              + oldAssignee.getLastName()
+                            : null,
+
+                    issue.getAssignee() != null
+                            ? issue.getAssignee().getFirstName()
+                              + " "
+                              + issue.getAssignee().getLastName()
+                            : null
+
+            );
+
+        }
+
+        if (
+
                 request.getAssigneeId()!=null &&
 
                         issue.getAssignee()!=null
@@ -476,6 +670,7 @@ public class IssueServiceImpl
     }
 
     @Override
+    @Transactional
     public void delete(
 
             Long id) {
@@ -493,6 +688,9 @@ public class IssueServiceImpl
         }
         if (workLogRepository.existsByIssueId(id)) {
             throw new IllegalArgumentException("Issue contains worklogs. Delete worklogs first.");
+        }
+        if (attachmentRepository.existsByIssueId(id)) {
+            throw new IllegalArgumentException("Issue contains attachments. Delete attachments first.");
         }
 
         if (issue.getAssignee() != null) {
@@ -535,6 +733,9 @@ public class IssueServiceImpl
                 issue.getId()
 
         );
+
+        issueHistoryService.deleteByIssueId(id);
+
         issueRepository.delete(
                 issue);
     }

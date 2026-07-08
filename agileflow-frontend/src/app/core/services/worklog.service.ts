@@ -40,28 +40,50 @@ export class WorkLogService {
   }
 
   findByIssue(
+    issueId: number,
+    page?: number,
+    size?: number,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
+  ): Observable<any> {
 
-      issueId:number
-
-  ):Observable<any>{
+    const params: any = {};
+    if (page !== undefined && size !== undefined) {
+      params.page = page.toString();
+      params.size = size.toString();
+      params.sortBy = sortBy;
+      params.sortDir = sortDir;
+    }
 
     return this.http.get(
 
-      `${this.api}/issues/${issueId}/worklogs`
+      `${this.api}/issues/${issueId}/worklogs`,
+      { params }
 
     );
 
   }
 
   findByUser(
+    userId: number,
+    page?: number,
+    size?: number,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
+  ): Observable<any> {
 
-      userId:number
-
-  ):Observable<any>{
+    const params: any = {};
+    if (page !== undefined && size !== undefined) {
+      params.page = page.toString();
+      params.size = size.toString();
+      params.sortBy = sortBy;
+      params.sortDir = sortDir;
+    }
 
     return this.http.get(
 
-      `${this.api}/users/${userId}/worklogs`
+      `${this.api}/users/${userId}/worklogs`,
+      { params }
 
     );
 

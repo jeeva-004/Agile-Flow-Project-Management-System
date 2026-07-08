@@ -1,18 +1,20 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CommentEdit } from './comment-edit';
+import { CommentEditComponent } from './comment-edit';
 
-describe('CommentEdit', () => {
-  let component: CommentEdit;
-  let fixture: ComponentFixture<CommentEdit>;
+describe('CommentEditComponent', () => {
+  let component: CommentEditComponent;
+  let fixture: ComponentFixture<CommentEditComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommentEdit]
-    })
+      imports: [CommentEditComponent],
+      providers: [provideHttpClient(), provideRouter([])]})
     .compileComponents();
 
-    fixture = TestBed.createComponent(CommentEdit);
+    fixture = TestBed.createComponent(CommentEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

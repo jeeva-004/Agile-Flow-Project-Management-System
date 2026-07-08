@@ -22,6 +22,7 @@ import { CommentListComponent } from './features/comments/comment-list/comment-l
 import { DeveloperDashboardComponent } from './features/dashboard/developer-dashboard/developer-dashboard';
 import { PmDashboardComponent } from './features/dashboard/pm-dashboard/pm-dashboard';
 import { AdminDashboardComponent } from './features/dashboard/admin-dashboard/admin-dashboard';
+import { NotificationListComponent } from './features/notifications/notification-list/notification-list';
 
 export const routes: Routes = [
 
@@ -120,7 +121,11 @@ export const routes: Routes = [
     component:
       SprintListComponent
   },
-
+  {
+    path: 'notifications',
+      component: NotificationListComponent
+  }
+  ,
   {
     path:
       'projects/:id/sprints/create',

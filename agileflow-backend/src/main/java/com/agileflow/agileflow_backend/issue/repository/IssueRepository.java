@@ -2,6 +2,8 @@ package com.agileflow.agileflow_backend.issue.repository;
 
 import com.agileflow.agileflow_backend.common.enums.IssueStatus;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,6 +14,10 @@ public interface IssueRepository
     List<Issue> findByProjectId(
             Long projectId);
 
+    Page<Issue> findByProjectId(
+            Long projectId,
+            Pageable pageable);
+
     List<Issue> findBySprintId(
             Long sprintId);
 
@@ -21,18 +27,14 @@ public interface IssueRepository
     long countByStatus(IssueStatus status);
 
     long countByAssigneeId(
-
             Long assigneeId
-
     );
 
     long countByAssigneeIdAndStatus(
-
             Long assigneeId,
-
             IssueStatus status
-
     );
+
     boolean existsByProjectId(
             Long projectId
     );

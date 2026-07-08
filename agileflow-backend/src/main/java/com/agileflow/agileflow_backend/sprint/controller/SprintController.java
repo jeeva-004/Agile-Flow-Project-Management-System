@@ -5,6 +5,9 @@ import com.agileflow.agileflow_backend.sprint.dto.CreateSprintRequest;
 import com.agileflow.agileflow_backend.sprint.dto.UpdateSprintRequest;
 import com.agileflow.agileflow_backend.sprint.service.SprintService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,7 +47,23 @@ public class SprintController {
     public ApiResponse<?> findByProject(
 
             @PathVariable
-            Long projectId) {
+            Long projectId,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+
+        if (page != null && size != null) {
+            Sort sort = sortDir.equalsIgnoreCase("asc")
+                    ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            Pageable pageable = PageRequest.of(page, size, sort);
+            return new ApiResponse<>(
+                    true,
+                    "Sprints fetched successfully",
+                    sprintService.findByProject(projectId, pageable)
+            );
+        }
 
         return new ApiResponse<>(
 

@@ -17,6 +17,8 @@ import com.agileflow.agileflow_backend.projectmember.repository.ProjectMemberRep
 import com.agileflow.agileflow_backend.security.CurrentUserService;
 import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -110,12 +112,10 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public List<ProjectResponse> findAll() {
+    public Page<ProjectResponse> findAll(Pageable pageable) {
 
-        return projectRepository.findAll()
-                .stream()
-                .map(this::map)
-                .toList();
+        return projectRepository.findAll(pageable)
+                .map(this::map);
 
     }
 
@@ -209,11 +209,11 @@ public class ProjectServiceImpl
 
                 project,
 
-                "DELETE_PROJECT",
+                "UPDATE_PROJECT",
 
                 currentUser.getFirstName()
 
-                        + " deleted project "
+                        + " updated project "
 
                         + project.getName(),
 

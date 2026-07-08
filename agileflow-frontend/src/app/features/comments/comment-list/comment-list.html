@@ -3,7 +3,14 @@
     <h2>Comments</h2>
     <p class="page-subtitle">Discussion for Issue #{{issueId}}</p>
   </div>
-  <div class="flex gap-sm">
+  <div style="display:flex; gap:8px; align-items:center;">
+    <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+      <option value="id">Created Order</option>
+      <option value="createdAt">Date Created</option>
+    </select>
+    <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction">
+      {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
+    </button>
     <button class="btn btn-secondary" onclick="window.history.back()">Back</button>
     <button class="btn btn-primary" [routerLink]="['/issues', issueId, 'comments', 'create']">
       <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -41,4 +48,15 @@
     <h3 class="empty-state-title">No comments</h3>
     <p class="empty-state-description">Be the first to share your thoughts.</p>
   </div>
+
+  <div class="pagination-controls" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
+    <span style="font-size:13px; color:var(--text-secondary,#666);">
+      Page {{ page + 1 }} of {{ totalPages || 1 }} ({{ totalElements }} comments)
+    </span>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-outline" (click)="prevPage()" [disabled]="page === 0">Previous</button>
+      <button class="btn btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+    </div>
+  </div>
+
 </div>

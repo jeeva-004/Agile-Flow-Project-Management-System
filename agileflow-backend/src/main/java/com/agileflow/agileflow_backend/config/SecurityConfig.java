@@ -222,6 +222,21 @@ public class SecurityConfig {
                         )
                         .requestMatchers(
 
+                                "/api/v1/history/**"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
+
+                                "DEVELOPER"
+
+                        )
+                        .requestMatchers(
+
                                 "/api/v1/dashboard/**"
 
                         )

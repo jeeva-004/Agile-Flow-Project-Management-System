@@ -3,6 +3,10 @@ package com.agileflow.agileflow_backend.notification.controller;
 import com.agileflow.agileflow_backend.common.payload.ApiResponse;
 import com.agileflow.agileflow_backend.notification.dto.NotificationResponse;
 import com.agileflow.agileflow_backend.notification.service.NotificationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +34,18 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ApiResponse<List<NotificationResponse>>
-    findMyNotifications() {
+    public ApiResponse<Page<NotificationResponse>>
+    findMyNotifications(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         return new ApiResponse<>(
 
@@ -41,7 +55,7 @@ public class NotificationController {
 
                 notificationService
 
-                        .findMyNotifications()
+                        .findMyNotifications(pageable)
 
         );
 

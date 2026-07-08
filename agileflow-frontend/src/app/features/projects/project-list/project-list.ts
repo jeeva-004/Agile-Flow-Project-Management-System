@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import {
   Router,
@@ -24,6 +25,7 @@ import { ActivityFeed } from '../../activities/activity-feed/activity-feed';
   imports: [
 
     CommonModule,
+    FormsModule,
 
     ActivityFeed,
     RouterModule
@@ -45,6 +47,13 @@ export class ProjectListComponent
 
   projects: any[] = [];
 
+  page = 0;
+  size = 10;
+  totalPages = 0;
+  totalElements = 0;
+  sortBy = 'id';
+  sortDir = 'desc';
+
   ngOnInit(): void {
 
     this.loadProjects();
@@ -53,19 +62,49 @@ export class ProjectListComponent
 
   loadProjects(): void {
 
-    this.service.findAll()
+    this.service.findAll(this.page, this.size, this.sortBy, this.sortDir)
 
       .subscribe({
 
         next: response => {
 
           this.projects =
-            response.data;
+            response.data?.content ?? [];
+          this.totalPages =
+            response.data?.totalPages ?? 0;
+          this.totalElements =
+            response.data?.totalElements ?? 0;
 
         }
 
       });
 
+  }
+
+  onSortChange(field: string): void {
+    this.sortBy = field;
+    this.page = 0;
+    this.loadProjects();
+  }
+
+  toggleSortDir(): void {
+    this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+    this.page = 0;
+    this.loadProjects();
+  }
+
+  nextPage(): void {
+    if (this.page + 1 < this.totalPages) {
+      this.page++;
+      this.loadProjects();
+    }
+  }
+
+  prevPage(): void {
+    if (this.page > 0) {
+      this.page--;
+      this.loadProjects();
+    }
   }
 
   editProject(

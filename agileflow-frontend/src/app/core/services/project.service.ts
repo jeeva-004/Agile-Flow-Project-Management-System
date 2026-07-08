@@ -34,11 +34,25 @@ export class ProjectService {
 
   }
 
-  findAll(): Observable<any> {
+  findAll(
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
+  ): Observable<any> {
 
     return this.http.get(
 
-      this.api
+      this.api,
+
+      {
+        params: {
+          page: page.toString(),
+          size: size.toString(),
+          sortBy,
+          sortDir
+        }
+      }
 
     );
 

@@ -63,17 +63,30 @@ request
 
 }
 
-findByIssue(
+  findByIssue(
+    issueId: number,
+    page?: number,
+    size?: number,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
+  ): Observable<any> {
 
-issueId:number
+    const params: any = {};
+    if (page !== undefined && size !== undefined) {
+      params.page = page.toString();
+      params.size = size.toString();
+      params.sortBy = sortBy;
+      params.sortDir = sortDir;
+    }
 
-):Observable<any>{
+    return this.http.get(
 
-return this.http.get(
-`${environment.apiUrl}/issues/${issueId}/comments`
-);
+      `${environment.apiUrl}/issues/${issueId}/comments`,
+      { params }
 
-}
+    );
+
+  }
 
 findById(
 

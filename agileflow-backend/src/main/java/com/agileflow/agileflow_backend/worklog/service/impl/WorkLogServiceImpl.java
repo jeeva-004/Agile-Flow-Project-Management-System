@@ -12,6 +12,8 @@ import com.agileflow.agileflow_backend.worklog.entity.WorkLog;
 import com.agileflow.agileflow_backend.worklog.repository.WorkLogRepository;
 import com.agileflow.agileflow_backend.worklog.service.WorkLogService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import com.agileflow.agileflow_backend.activity.service.ActivityService;
@@ -173,6 +175,40 @@ public class WorkLogServiceImpl
                 workLog
 
         );
+
+    }
+
+    @Override
+    public Page<WorkLogResponse>
+    findByIssue(Long issueId, Pageable pageable) {
+
+        return workLogRepository
+
+                .findByIssueId(
+
+                        issueId,
+                        pageable
+
+                )
+
+                .map(this::map);
+
+    }
+
+    @Override
+    public Page<WorkLogResponse>
+    findByUser(Long userId, Pageable pageable) {
+
+        return workLogRepository
+
+                .findByUserId(
+
+                        userId,
+                        pageable
+
+                )
+
+                .map(this::map);
 
     }
 

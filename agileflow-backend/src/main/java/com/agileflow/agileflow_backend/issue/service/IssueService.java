@@ -1,6 +1,8 @@
 package com.agileflow.agileflow_backend.issue.service;
 
 import com.agileflow.agileflow_backend.issue.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -9,8 +11,9 @@ public interface IssueService {
     IssueResponse create(
             CreateIssueRequest request);
 
-    List<IssueResponse> findByProject(
-            Long projectId);
+    Page<IssueResponse> findByProject(
+            Long projectId,
+            Pageable pageable);
 
     List<IssueResponse> findBySprint(
             Long sprintId);

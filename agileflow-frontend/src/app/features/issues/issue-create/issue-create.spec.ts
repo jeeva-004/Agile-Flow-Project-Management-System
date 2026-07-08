@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IssueCreate } from './issue-create';
@@ -8,8 +10,8 @@ describe('IssueCreate', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IssueCreate]
-    })
+      imports: [IssueCreate],
+      providers: [provideHttpClient(), provideRouter([])]})
     .compileComponents();
 
     fixture = TestBed.createComponent(IssueCreate);

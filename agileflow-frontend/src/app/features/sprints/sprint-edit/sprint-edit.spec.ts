@@ -1,18 +1,20 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SprintEdit } from './sprint-edit';
+import { SprintEditComponent } from './sprint-edit';
 
-describe('SprintEdit', () => {
-  let component: SprintEdit;
-  let fixture: ComponentFixture<SprintEdit>;
+describe('SprintEditComponent', () => {
+  let component: SprintEditComponent;
+  let fixture: ComponentFixture<SprintEditComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SprintEdit]
-    })
+      imports: [SprintEditComponent],
+      providers: [provideHttpClient(), provideRouter([])]})
     .compileComponents();
 
-    fixture = TestBed.createComponent(SprintEdit);
+    fixture = TestBed.createComponent(SprintEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

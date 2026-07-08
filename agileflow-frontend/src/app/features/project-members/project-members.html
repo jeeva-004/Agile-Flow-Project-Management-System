@@ -3,9 +3,19 @@
     <h2>Project Members</h2>
     <p class="page-subtitle">Manage users assigned to this project</p>
   </div>
-  <button class="btn btn-secondary" routerLink="/projects">
-    Back to Projects
-  </button>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+      <option value="id">Created Order</option>
+      <option value="user.firstName">First Name</option>
+      <option value="user.email">Email</option>
+    </select>
+    <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction">
+      {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
+    </button>
+    <button class="btn btn-secondary" routerLink="/projects">
+      Back to Projects
+    </button>
+  </div>
 </div>
 
 <div class="card" style="margin-bottom: var(--spacing-xl);">
@@ -59,4 +69,14 @@
       </tr>
     </tbody>
   </table>
+</div>
+
+<div class="pagination-controls" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
+  <span style="font-size:13px; color:var(--text-secondary,#666);">
+    Page {{ page + 1 }} of {{ totalPages || 1 }} ({{ totalElements }} members)
+  </span>
+  <div style="display:flex; gap:8px;">
+    <button class="btn btn-outline" (click)="prevPage()" [disabled]="page === 0">Previous</button>
+    <button class="btn btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+  </div>
 </div>

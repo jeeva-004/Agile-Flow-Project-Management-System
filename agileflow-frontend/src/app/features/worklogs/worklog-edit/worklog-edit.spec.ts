@@ -1,18 +1,20 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WorklogEdit } from './worklog-edit';
+import { WorkLogEditComponent } from './worklog-edit';
 
-describe('WorklogEdit', () => {
-  let component: WorklogEdit;
-  let fixture: ComponentFixture<WorklogEdit>;
+describe('WorkLogEditComponent', () => {
+  let component: WorkLogEditComponent;
+  let fixture: ComponentFixture<WorkLogEditComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WorklogEdit]
-    })
+      imports: [WorkLogEditComponent],
+      providers: [provideHttpClient(), provideRouter([])]})
     .compileComponents();
 
-    fixture = TestBed.createComponent(WorklogEdit);
+    fixture = TestBed.createComponent(WorkLogEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
