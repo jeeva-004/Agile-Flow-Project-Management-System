@@ -1,5 +1,7 @@
 package com.agileflow.agileflow_backend.issue.controller;
 
+import com.agileflow.agileflow_backend.common.enums.IssuePriority;
+import com.agileflow.agileflow_backend.common.enums.IssueStatus;
 import com.agileflow.agileflow_backend.common.payload.ApiResponse;
 import com.agileflow.agileflow_backend.issue.dto.*;
 import com.agileflow.agileflow_backend.issue.service.IssueService;
@@ -122,6 +124,27 @@ public class IssueController {
 
                         pageable));
 
+    }
+
+    @GetMapping("/projects/{projectId}/issues/search")
+    public ApiResponse<?> search(
+            @PathVariable Long projectId,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) IssueStatus status,
+            @RequestParam(required = false) IssuePriority priority,
+            @RequestParam(required = false) Long assigneeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return new ApiResponse<>(
+                true,
+                "Issues searched successfully",
+                service.search(projectId, keyword, status, priority, assigneeId, pageable));
     }
 
     @GetMapping(

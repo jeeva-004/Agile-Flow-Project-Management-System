@@ -16,6 +16,11 @@ public interface ProjectService {
 
     Page<ProjectResponse> findAll(Pageable pageable);
 
+    Page<ProjectResponse> search(
+            String keyword,
+            Long ownerId,
+            Pageable pageable);
+
     ProjectResponse findById(Long id);
 
     ProjectResponse update(

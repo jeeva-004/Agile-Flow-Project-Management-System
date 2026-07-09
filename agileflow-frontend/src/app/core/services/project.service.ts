@@ -58,6 +58,33 @@ export class ProjectService {
 
   }
 
+  search(
+    keyword?: string,
+    ownerId?: number,
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
+  ): Observable<any> {
+    const params: any = {
+      page: page.toString(),
+      size: size.toString(),
+      sortBy,
+      sortDir
+    };
+    if (keyword) {
+      params.keyword = keyword;
+    }
+    if (ownerId !== undefined && ownerId !== null) {
+      params.ownerId = ownerId.toString();
+    }
+
+    return this.http.get(
+      `${this.api}/search`,
+      { params }
+    );
+  }
+
   findById(
 
     id: number

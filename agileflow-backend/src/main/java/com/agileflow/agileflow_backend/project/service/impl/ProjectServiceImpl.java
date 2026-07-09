@@ -19,6 +19,8 @@ import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.agileflow.agileflow_backend.project.specification.ProjectSpecification;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -117,6 +119,15 @@ public class ProjectServiceImpl
         return projectRepository.findAll(pageable)
                 .map(this::map);
 
+    }
+
+    @Override
+    public Page<ProjectResponse> search(
+            String keyword,
+            Long ownerId,
+            Pageable pageable) {
+        Specification<Project> spec = ProjectSpecification.filterProjects(keyword, ownerId);
+        return projectRepository.findAll(spec, pageable).map(this::map);
     }
 
     @Override

@@ -2,9 +2,12 @@ package com.agileflow.agileflow_backend.issue.service.impl;
 
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
+import com.agileflow.agileflow_backend.common.enums.IssuePriority;
 import com.agileflow.agileflow_backend.common.enums.IssueStatus;
 import com.agileflow.agileflow_backend.common.enums.NotificationType;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
+import com.agileflow.agileflow_backend.issue.specification.IssueSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import com.agileflow.agileflow_backend.issue.dto.*;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
@@ -322,6 +325,19 @@ public class IssueServiceImpl
 
                 .map(this::map);
 
+    }
+
+    @Override
+    public Page<IssueResponse> search(
+            Long projectId,
+            String keyword,
+            IssueStatus status,
+            IssuePriority priority,
+            Long assigneeId,
+            Pageable pageable) {
+        Specification<Issue> spec = IssueSpecification.filterIssues(
+                projectId, keyword, status, priority, assigneeId);
+        return issueRepository.findAll(spec, pageable).map(this::map);
     }
 
     @Override

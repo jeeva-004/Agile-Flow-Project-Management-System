@@ -58,6 +58,42 @@ export class IssueService {
     );
   }
 
+  search(
+    projectId: number,
+    keyword?: string,
+    status?: string,
+    priority?: string,
+    assigneeId?: number,
+    page: number = 0,
+    size: number = 10,
+    sortBy: string = 'id',
+    sortDir: string = 'desc'
+  ): Observable<any> {
+    const params: any = {
+      page,
+      size,
+      sortBy,
+      sortDir
+    };
+    if (keyword) {
+      params.keyword = keyword;
+    }
+    if (status) {
+      params.status = status;
+    }
+    if (priority) {
+      params.priority = priority;
+    }
+    if (assigneeId !== undefined && assigneeId !== null) {
+      params.assigneeId = assigneeId;
+    }
+
+    return this.http.get(
+      `${environment.apiUrl}/projects/${projectId}/issues/search`,
+      { params }
+    );
+  }
+
   findById(
     id: number
   ): Observable<any> {
