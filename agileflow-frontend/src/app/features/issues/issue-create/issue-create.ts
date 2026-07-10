@@ -10,7 +10,8 @@ import {
 
 import {
   ActivatedRoute,
-  Router
+  Router,
+  RouterModule
 } from '@angular/router';
 
 import {
@@ -42,7 +43,9 @@ import {
 
     CommonModule,
 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+
+    RouterModule
 
   ],
 

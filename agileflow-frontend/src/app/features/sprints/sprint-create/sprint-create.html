@@ -3,7 +3,7 @@
     <h2>Create Sprint</h2>
     <p class="page-subtitle">Plan a new timebox for project work</p>
   </div>
-  <button class="btn btn-secondary" onclick="window.history.back()">
+  <button class="btn btn-secondary" [routerLink]="['/projects', projectId, 'sprints']">
     Cancel
   </button>
 </div>
@@ -27,7 +27,7 @@
     </div>
 
     <div class="flex justify-end gap-sm mt-lg">
-      <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+      <button class="btn btn-secondary" type="button" [routerLink]="['/projects', projectId, 'sprints']">Cancel</button>
       <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Create Sprint</button>
     </div>
   </form>

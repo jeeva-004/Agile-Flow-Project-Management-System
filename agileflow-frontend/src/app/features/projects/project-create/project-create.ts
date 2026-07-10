@@ -1,82 +1,52 @@
 import {
-
   Component,
-
-  inject
-
-}
-
-  from '@angular/core';
+  inject,
+  OnInit
+} from '@angular/core';
 
 import {
-
   FormBuilder,
-
   ReactiveFormsModule,
-
   Validators
-
-}
-
-  from '@angular/forms';
+} from '@angular/forms';
 
 import {
-
   Router
-
-}
-
-  from '@angular/router';
+} from '@angular/router';
 
 import {
-
   CommonModule
-
-}
-
-  from '@angular/common';
+} from '@angular/common';
 
 import {
-
   ProjectService
-
-}
-
-  from '../../../core/services/project.service';
+} from '../../../core/services/project.service';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
-
   selector: 'app-project-create',
-
   standalone: true,
-
   imports: [
-
     CommonModule,
-
     ReactiveFormsModule
-
   ],
-
-  templateUrl:
-
-    './project-create.html'
-
+  templateUrl: './project-create.html'
 })
+export class ProjectCreateComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly service = inject(ProjectService);
+  private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
 
-export class ProjectCreateComponent {
+  users: any[] = [];
 
-  private readonly fb =
-
-    inject(FormBuilder);
-
-  private readonly service =
-
-    inject(ProjectService);
-
-  private readonly router =
-
-    inject(Router);
+  ngOnInit(): void {
+    this.userService.findAll(0, 100).subscribe({
+      next: (res) => {
+        this.users = res.data?.content ?? [];
+      }
+    });
+  }
 
   form = this.fb.group({
 

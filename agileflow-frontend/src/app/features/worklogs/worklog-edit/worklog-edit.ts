@@ -1,73 +1,18 @@
-import {
-
-Component,
-
-inject,
-
-OnInit
-
-}
-
-from '@angular/core';
-
-import {
-
-CommonModule
-
-}
-
-from '@angular/common';
-
-import {
-
-ReactiveFormsModule,
-
-Validators,
-
-FormBuilder
-
-}
-
-from '@angular/forms';
-
-import {
-
-ActivatedRoute,
-
-Router
-
-}
-
-from '@angular/router';
-
-import {
-
-WorkLogService
-
-}
-
-from '../../../core/services/worklog.service';
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { WorkLogService } from '../../../core/services/worklog.service';
 
 @Component({
-
-selector:
-
-'app-worklog-edit',
-
-standalone:true,
-
-imports:[
-
-CommonModule,
-
-ReactiveFormsModule
-
-],
-
-templateUrl:
-
-'./worklog-edit.html'
-
+  selector: 'app-worklog-edit',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+  templateUrl: './worklog-edit.html'
 })
 export class WorkLogEditComponent
 implements OnInit {

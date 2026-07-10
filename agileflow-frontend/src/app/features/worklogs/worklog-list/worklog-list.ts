@@ -62,6 +62,7 @@ implements OnInit {
     );
 
   issueId!:number;
+  projectId!:number;
 
   worklogs: any[] = [];
   page = 0;
@@ -71,20 +72,15 @@ implements OnInit {
   sortBy = 'id';
   sortDir = 'desc';
 
-  ngOnInit():void{
-
+  ngOnInit(): void {
+    this.projectId = Number(localStorage.getItem('current_project_id'));
     this.issueId =
-
       Number(
-
         this.route.snapshot.paramMap
-
         .get('issueId')
-
       );
 
     this.load();
-
   }
 
   load():void{

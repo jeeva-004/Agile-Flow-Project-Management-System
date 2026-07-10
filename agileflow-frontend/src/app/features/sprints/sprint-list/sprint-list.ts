@@ -55,6 +55,7 @@ implements OnInit {
   projectId!: number;
 
   sprints: any[] = [];
+  role: string | null = null;
   page = 0;
   size = 10;
   totalPages = 0;
@@ -63,19 +64,14 @@ implements OnInit {
   sortDir = 'desc';
 
   ngOnInit(): void {
-
+    this.role = localStorage.getItem('role');
     this.projectId = Number(
-
       this.route.snapshot
-
         .paramMap
-
         .get('id')
-
     );
 
     this.load();
-
   }
 
   load(): void {

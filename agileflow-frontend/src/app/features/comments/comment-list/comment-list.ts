@@ -76,7 +76,8 @@ private readonly router=
 
 inject(Router);
 
-issueId!:number;
+  issueId!:number;
+  projectId!:number;
 
   comments: any[] = [];
   page = 0;
@@ -86,23 +87,16 @@ issueId!:number;
   sortBy = 'id';
   sortDir = 'desc';
 
-ngOnInit():void{
+  ngOnInit(): void {
+    this.projectId = Number(localStorage.getItem('current_project_id'));
+    this.issueId = Number(
+      this.route.snapshot
+        .paramMap
+        .get('id')
+    );
 
-this.issueId=
-
-Number(
-
-this.route.snapshot
-
-.paramMap
-
-.get('id')
-
-);
-
-this.load();
-
-}
+    this.load();
+  }
 
 load():void{
 

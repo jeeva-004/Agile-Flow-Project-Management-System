@@ -46,6 +46,7 @@ export class ProjectListComponent
     inject(Router);
 
   projects: any[] = [];
+  role: string | null = null;
 
   page = 0;
   size = 10;
@@ -55,9 +56,8 @@ export class ProjectListComponent
   sortDir = 'desc';
 
   ngOnInit(): void {
-
+    this.role = localStorage.getItem('role');
     this.loadProjects();
-
   }
 
   loadProjects(): void {

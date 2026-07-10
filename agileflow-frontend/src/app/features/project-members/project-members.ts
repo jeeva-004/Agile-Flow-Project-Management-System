@@ -1,74 +1,20 @@
-import {
-
-Component,
-
-inject,
-
-OnInit
-
-}
-
-from '@angular/core';
-
-import {
-
-CommonModule
-
-}
-
-from '@angular/common';
-
-import {
-
-ActivatedRoute
-
-}
-
-from '@angular/router';
-
-import {
-
-ReactiveFormsModule,
-
-FormBuilder,
-
-Validators
-
-}
-
-from '@angular/forms';
-
-import {
-
-ProjectMemberService
-
-}
-
-from '../../core/services/project-member.service';
-
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, Validators, FormsModule } from '@angular/forms';
+import { ProjectMemberService } from '../../core/services/project-member.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
-
-selector:
-
-'app-project-members',
-
-standalone:true,
-
-imports:[
-
-CommonModule,
-
-ReactiveFormsModule,
-FormsModule
-
-],
-
-templateUrl:
-
-'./project-members.html'
-
+  selector: 'app-project-members',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule
+  ],
+  templateUrl: './project-members.html'
 })
 
 export class ProjectMembersComponent
@@ -80,6 +26,12 @@ private readonly service =
 inject(
 
 ProjectMemberService);
+
+private readonly userService =
+
+inject(
+
+UserService);
 
 private readonly route =
 
@@ -97,11 +49,13 @@ projectId!: number;
 
 members:any[]=[];
 
+usersList:any[]=[];
+
 form = this.fb.group({
 
 userId:[
 
-'',
+null as any,
 
 Validators.required
 
@@ -116,23 +70,17 @@ Validators.required
   sortBy = 'id';
   sortDir = 'desc';
 
-ngOnInit(): void {
-
-this.projectId = Number(
-
-this.route.snapshot
-
-.paramMap
-
-.get(
-
-'id'
-
-));
-
-this.load();
-
-}
+  ngOnInit(): void {
+    this.projectId = Number(
+      this.route.snapshot.paramMap.get('id')
+    );
+    this.userService.findAll(0, 100).subscribe({
+      next: (res) => {
+        this.usersList = res.data?.content ?? [];
+      }
+    });
+    this.load();
+  }
 
 load(): void {
 

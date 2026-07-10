@@ -1,53 +1,56 @@
 <div class="page-container">
-  <div class="page-content">
-<h2>
-
-PM Dashboard
-
-</h2>
-
-<div *ngIf="dashboard">
-
-<p>
-
-Managed Projects
-
-{{dashboard.managedProjects}}
-
-</p>
-
-<p>
-
-Team Members
-
-{{dashboard.teamMembers}}
-
-</p>
-
-<p>
-
-Active Sprints
-
-{{dashboard.activeSprints}}
-
-</p>
-
-<p>
-
-Open Issues
-
-{{dashboard.openIssues}}
-
-</p>
-
-<p>
-
-Completed Issues
-
-{{dashboard.completedIssues}}
-
-</p>
-
-</div>
+  <div class="page-header">
+    <h1 class="page-title">Project Manager Dashboard</h1>
+    <p class="page-subtitle">Track project progress, active sprints, and team load</p>
   </div>
+
+  <ng-container *ngIf="dashboard; else loadingSkeleton">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Managed Projects</span>
+          <span class="stat-value">{{dashboard.managedProjects}}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Team Members</span>
+          <span class="stat-value">{{dashboard.teamMembers}}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Active Sprints</span>
+          <span class="stat-value">{{dashboard.activeSprints}}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Open Issues</span>
+          <span class="stat-value" style="color: var(--warning-color);">{{dashboard.openIssues}}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Completed Issues</span>
+          <span class="stat-value" style="color: var(--success-color);">{{dashboard.completedIssues}}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingSkeleton>
+    <div class="stats-grid">
+      <div class="stat-card skeleton" *ngFor="let item of [1,2,3,4,5]">
+        <div class="stat-content">
+          <div class="skeleton-label"></div>
+          <div class="skeleton-value"></div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </div>

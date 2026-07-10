@@ -1,73 +1,18 @@
-import {
-
-Component,
-
-inject,
-
-OnInit
-
-}
-
-from '@angular/core';
-
-import {
-
-CommonModule
-
-}
-
-from '@angular/common';
-
-import {
-
-ReactiveFormsModule,
-
-FormBuilder,
-
-Validators
-
-}
-
-from '@angular/forms';
-
-import {
-
-ActivatedRoute,
-
-Router
-
-}
-
-from '@angular/router';
-
-import {
-
-CommentService
-
-}
-
-from '../../../core/services/comment.service';
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommentService } from '../../../core/services/comment.service';
 
 @Component({
-
-selector:
-
-'app-comment-edit',
-
-standalone:true,
-
-imports:[
-
-CommonModule,
-
-ReactiveFormsModule
-
-],
-
-templateUrl:
-
-'./comment-edit.html'
-
+  selector: 'app-comment-edit',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+  templateUrl: './comment-edit.html'
 })
 export class CommentEditComponent
 implements OnInit{

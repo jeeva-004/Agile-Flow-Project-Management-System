@@ -26,6 +26,7 @@ import {
   ProjectService
 }
 from '../../../core/services/project.service';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
 
@@ -55,6 +56,8 @@ implements OnInit {
   private readonly service =
     inject(ProjectService);
 
+  private readonly userService = inject(UserService);
+
   private readonly route =
     inject(ActivatedRoute);
 
@@ -62,6 +65,7 @@ implements OnInit {
     inject(Router);
 
   projectId!: number;
+  users: any[] = [];
 
   form = this.fb.group({
 
@@ -102,19 +106,17 @@ implements OnInit {
   });
 
   ngOnInit(): void {
-
     this.projectId = Number(
-
       this.route.snapshot.paramMap.get(
-
         'id'
-
       )
-
     );
-
+    this.userService.findAll(0, 100).subscribe({
+      next: (res) => {
+        this.users = res.data?.content ?? [];
+      }
+    });
     this.loadProject();
-
   }
 
   loadProject(): void {

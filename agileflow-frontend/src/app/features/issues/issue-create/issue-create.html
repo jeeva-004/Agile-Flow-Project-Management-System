@@ -3,7 +3,7 @@
     <h2>Create Issue</h2>
     <p class="page-subtitle">Add a new task, bug, or story to the project</p>
   </div>
-  <button class="btn btn-secondary" onclick="window.history.back()">
+  <button class="btn btn-secondary" [routerLink]="['/projects', projectId, 'issues']">
     Cancel
   </button>
 </div>
@@ -71,7 +71,7 @@
     </div>
 
     <div class="flex justify-end gap-sm mt-lg">
-      <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+      <button class="btn btn-secondary" type="button" [routerLink]="['/projects', projectId, 'issues']">Cancel</button>
       <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Create Issue</button>
     </div>
   </form>

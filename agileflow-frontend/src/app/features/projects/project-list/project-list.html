@@ -13,7 +13,7 @@
     <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction">
       {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
     </button>
-    <button class="btn btn-primary" routerLink="/projects/create">
+    <button *ngIf="role !== 'DEVELOPER'" class="btn btn-primary" routerLink="/projects/create">
       <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       New Project
     </button>
@@ -47,10 +47,10 @@
         <td style="color:var(--text-secondary)">{{project.endDate}}</td>
         <td>
           <div class="action-buttons" style="margin-bottom:0">
-            <button class="btn btn-outline btn-icon" (click)="editProject(project.id)" title="Edit">
+            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-outline btn-icon" (click)="editProject(project.id)" title="Edit">
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </button>
-            <button class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'members']" title="Members">
+            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'members']" title="Members">
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </button>
             <button class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'sprints']" title="Sprints">
@@ -59,7 +59,10 @@
             <button class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'issues']" title="Issues">
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             </button>
-            <button class="btn btn-danger btn-icon" (click)="deleteProject(project.id)" title="Delete">
+            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'analytics']" title="Analytics">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            </button>
+            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-danger btn-icon" (click)="deleteProject(project.id)" title="Delete">
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
           </div>

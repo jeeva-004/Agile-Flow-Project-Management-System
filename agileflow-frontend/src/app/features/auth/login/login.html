@@ -22,20 +22,9 @@
         <input type="password" class="form-control" formControlName="password" placeholder="••••••••">
       </div>
       
-      <div class="login-options">
-        <label class="remember-me">
-          <input type="checkbox"> Remember me
-        </label>
-        <a href="#" class="forgot-password">Forgot password?</a>
-      </div>
-
-      <button class="btn btn-primary login-btn" type="submit" [disabled]="form.invalid">
+      <button class="btn btn-primary login-btn" type="submit" [disabled]="form.invalid" style="margin-top: var(--spacing-md); width: 100%;">
         Sign in
       </button>
-
-      <div class="login-footer">
-        Don't have an account? <a href="#">Sign up</a>
-      </div>
     </form>
   </div>
 </div>

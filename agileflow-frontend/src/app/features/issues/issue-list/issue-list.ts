@@ -39,10 +39,18 @@ export class IssueListComponent implements OnInit, OnDestroy {
   statusFilter = '';
   priorityFilter = '';
 
+  currentUserId: number | null = null;
+  role: string | null = null;
+
   private readonly searchSubject = new Subject<string>();
   private searchSubscription!: Subscription;
 
   ngOnInit(): void {
+    this.role = localStorage.getItem('role');
+    const cachedId = localStorage.getItem('current_user_id');
+    if (cachedId) {
+      this.currentUserId = Number(cachedId);
+    }
     this.projectId = Number(this.route.snapshot.paramMap.get('id'));
 
     this.searchSubscription = this.searchSubject.pipe(

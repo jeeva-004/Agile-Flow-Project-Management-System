@@ -1,71 +1,18 @@
-import {
-
-Component,
-
-inject
-
-}
-
-from '@angular/core';
-
-import {
-
-CommonModule
-
-}
-
-from '@angular/common';
-
-import {
-
-ReactiveFormsModule,
-
-FormBuilder,
-
-Validators
-
-}
-
-from '@angular/forms';
-
-import {
-
-ActivatedRoute,
-
-Router
-
-}
-
-from '@angular/router';
-
-import {
-
-CommentService
-
-}
-
-from '../../../core/services/comment.service';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommentService } from '../../../core/services/comment.service';
 
 @Component({
-
-selector:
-
-'app-comment-create',
-
-standalone:true,
-
-imports:[
-
-CommonModule,
-
-ReactiveFormsModule
-
-],
-
-templateUrl:
-
-'./comment-create.html'
-
+  selector: 'app-comment-create',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+  templateUrl: './comment-create.html'
 })
 export class CommentCreateComponent {
 

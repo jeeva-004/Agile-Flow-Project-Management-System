@@ -5,7 +5,8 @@ import {
 
 import {
   ActivatedRoute,
-  Router
+  Router,
+  RouterModule
 } from '@angular/router';
 
 import {
@@ -23,25 +24,14 @@ import {
 } from '../../../core/services/sprint.service';
 
 @Component({
-
-  selector:
-
-  'app-sprint-create',
-
+  selector: 'app-sprint-create',
   standalone: true,
-
   imports: [
-
     CommonModule,
-
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    RouterModule
   ],
-
-  templateUrl:
-
-  './sprint-create.html'
-
+  templateUrl: './sprint-create.html'
 })
 export class SprintCreateComponent {
 

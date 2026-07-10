@@ -95,6 +95,13 @@ export const routes: Routes = [
         .then(m => m.Dashboard)
   },
   {
+    path: 'projects/:id/analytics',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/analytics/analytics-dashboard/analytics-dashboard')
+        .then(m => m.AnalyticsDashboardComponent)
+  },
+  {
 
     path:
 

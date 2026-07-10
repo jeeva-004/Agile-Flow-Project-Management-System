@@ -1,45 +1,49 @@
 <div class="page-container">
-  <div class="page-content">
-<h2>
-
-    Developer Dashboard
-
-</h2>
-
-<div *ngIf="dashboard">
-
-    <p>
-
-        Assigned Issues
-
-        {{dashboard.assignedIssues}}
-
-    </p>
-
-    <p>
-
-        Completed Issues
-
-        {{dashboard.completedIssues}}
-
-    </p>
-
-    <p>
-
-        My Comments
-
-        {{dashboard.myComments}}
-
-    </p>
-
-    <p>
-
-        My Worklogs
-
-        {{dashboard.myWorkLogs}}
-
-    </p>
-
-</div>
+  <div class="page-header">
+    <h1 class="page-title">Developer Dashboard</h1>
+    <p class="page-subtitle">Track your personal tasks, log time, and review comments</p>
   </div>
+
+  <ng-container *ngIf="dashboard; else loadingSkeleton">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Assigned Issues</span>
+          <span class="stat-value" style="color: var(--primary-color);">{{dashboard.assignedIssues}}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">Completed Issues</span>
+          <span class="stat-value" style="color: var(--success-color);">{{dashboard.completedIssues}}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">My Comments</span>
+          <span class="stat-value">{{dashboard.myComments}}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-content">
+          <span class="stat-label">My Worklogs</span>
+          <span class="stat-value">{{dashboard.myWorkLogs}}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingSkeleton>
+    <div class="stats-grid">
+      <div class="stat-card skeleton" *ngFor="let item of [1,2,3,4]">
+        <div class="stat-content">
+          <div class="skeleton-label"></div>
+          <div class="skeleton-value"></div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </div>

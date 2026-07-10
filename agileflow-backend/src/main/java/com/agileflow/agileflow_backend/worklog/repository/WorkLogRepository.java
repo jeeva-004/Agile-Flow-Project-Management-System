@@ -44,4 +44,7 @@ public interface WorkLogRepository
             Long projectId,
             Long userId
     );
+
+    @org.springframework.data.jpa.repository.Query("SELECT w FROM WorkLog w WHERE w.issue.project.id = :projectId")
+    List<WorkLog> findByIssueProjectId(@org.springframework.data.repository.query.Param("projectId") Long projectId);
 }

@@ -3,7 +3,7 @@
     <h2>Add Work Log</h2>
     <p class="page-subtitle">Record time spent on this issue</p>
   </div>
-  <button class="btn btn-secondary" onclick="window.history.back()">
+  <button class="btn btn-secondary" [routerLink]="['/issues', issueId, 'worklogs']">
     Cancel
   </button>
 </div>
@@ -28,7 +28,7 @@
     </div>
 
     <div class="flex justify-end gap-sm mt-lg">
-      <button class="btn btn-secondary" type="button" onclick="window.history.back()">Cancel</button>
+      <button class="btn btn-secondary" type="button" [routerLink]="['/issues', issueId, 'worklogs']">Cancel</button>
       <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Log Time</button>
     </div>
   </form>

@@ -1,61 +1,20 @@
-import {
-  Component,
-  inject
-}
-from '@angular/core';
-
-import {
-  ReactiveFormsModule,
-
-  Validators,
-
-  FormBuilder
-
-}
-from '@angular/forms';
-
-import {
-  ActivatedRoute,
-
-  Router
-
-}
-from '@angular/router';
-
-import {
-  CommonModule
-
-}
-from '@angular/common';
-
-import {
-  WorkLogService
-
-}
-from '../../../core/services/worklog.service';
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { WorkLogService } from '../../../core/services/worklog.service';
 
 @Component({
-
-selector:
-
-'app-worklog-create',
-
-standalone:true,
-
-imports:[
-
-CommonModule,
-
-ReactiveFormsModule
-
-],
-
-templateUrl:
-
-'./worklog-create.html'
-
+  selector: 'app-worklog-create',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+  templateUrl: './worklog-create.html'
 })
-export class WorkLogCreateComponent {
+export class WorkLogCreateComponent implements OnInit {
 
 private readonly fb =
 

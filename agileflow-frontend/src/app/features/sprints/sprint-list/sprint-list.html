@@ -13,7 +13,7 @@
     <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction">
       {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
     </button>
-    <button class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
+    <button *ngIf="role !== 'DEVELOPER'" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
       <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
       New Sprint
     </button>
@@ -28,7 +28,7 @@
         <th>Name</th>
         <th>Start Date</th>
         <th>End Date</th>
-        <th style="width: 100px;">Actions</th>
+        <th style="width: 100px;" *ngIf="role !== 'DEVELOPER'">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -37,7 +37,7 @@
         <td class="font-weight-600">{{sprint.name}}</td>
         <td style="color:var(--text-secondary)">{{sprint.startDate}}</td>
         <td style="color:var(--text-secondary)">{{sprint.endDate}}</td>
-        <td>
+        <td *ngIf="role !== 'DEVELOPER'">
           <div class="action-buttons" style="margin-bottom:0">
             <button class="btn btn-outline btn-icon" (click)="editSprint(sprint.id)" title="Edit">
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -56,7 +56,7 @@
             </div>
             <h3 class="empty-state-title">No sprints found</h3>
             <p class="empty-state-description">Plan your first sprint to start tracking work.</p>
-            <button class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">Create Sprint</button>
+            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">Create Sprint</button>
           </div>
         </td>
       </tr>
