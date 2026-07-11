@@ -36,24 +36,25 @@ public class AdminDataInitializer implements CommandLineRunner {
 
         // Create default roles if missing
         Role adminRole = roleRepository.findByName(RoleName.ADMIN)
-                .orElseGet(() ->
-                        roleRepository.save(
-
-                                        roleRepository.findByName(RoleName.ADMIN)
-                                                .orElseThrow(() ->
-                                                        new IllegalStateException(
-                                                                "ADMIN role not found"
-                                                        ))));
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName(RoleName.ADMIN);
+                    return roleRepository.save(role);
+                });
 
         roleRepository.findByName(RoleName.PROJECT_MANAGER)
-                .orElseGet(() ->
-                        roleRepository.save(
-                                new Role(2L, RoleName.PROJECT_MANAGER)));
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName(RoleName.PROJECT_MANAGER);
+                    return roleRepository.save(role);
+                });
 
         roleRepository.findByName(RoleName.DEVELOPER)
-                .orElseGet(() ->
-                        roleRepository.save(
-                                new Role(3L, RoleName.DEVELOPER)));
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName(RoleName.DEVELOPER);
+                    return roleRepository.save(role);
+                });
 
         // Create default admin user if missing
         if (userRepository.existsByEmail("admin@agileflow.com")) {
