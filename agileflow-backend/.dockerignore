@@ -1,0 +1,15 @@
+# Ignore build target directories
+target/
+
+# Ignore local version control and editor metadata
+.git/
+.idea/
+
+# Ignore local uploads folder
+uploads/
+
+# Ignore other environment/developer files
+.gitignore
+.dockerignore
+Dockerfile
+*.log

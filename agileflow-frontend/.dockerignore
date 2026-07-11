@@ -1,0 +1,17 @@
+# Ignore local dependencies and build cache
+node_modules/
+.angular/
+dist/
+
+# Ignore development settings and documentation
+.vscode/
+.git/
+.gitignore
+.editorconfig
+
+# Ignore docker files inside the container
+Dockerfile
+nginx.conf
+
+# Ignore local log files
+*.log
