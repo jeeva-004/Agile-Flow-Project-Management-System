@@ -29,6 +29,26 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     this.role = localStorage.getItem('role');
+    if (this.role) {
+      this.loadUserData();
+    }
+
+    // Track active project from URL changes
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      const prevRole = this.role;
+      this.role = localStorage.getItem('role');
+      this.extractProjectContext();
+      if (!prevRole && this.role) {
+        this.loadUserData();
+      }
+    });
+
+    this.extractProjectContext();
+  }
+
+  private loadUserData(): void {
     this.notificationService.unreadCount().subscribe({
       next: (res) => (this.unreadCount = res?.data ?? res ?? 0)
     });
@@ -46,16 +66,6 @@ export class App implements OnInit {
         }
       });
     }
-
-    // Track active project from URL changes
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.role = localStorage.getItem('role');
-      this.extractProjectContext();
-    });
-
-    this.extractProjectContext();
   }
 
   private extractProjectContext(): void {
