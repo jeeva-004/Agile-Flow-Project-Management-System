@@ -31,7 +31,7 @@ jobs:
 
       - name: Run backend tests
         env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3308/agileflow_db?sslMode=DISABLED
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3308/agileflow_db?useSSL=false&allowPublicKeyRetrieval=true
           DB_HOST: localhost
           DB_PORT: 3308
           DB_NAME: agileflow_db
