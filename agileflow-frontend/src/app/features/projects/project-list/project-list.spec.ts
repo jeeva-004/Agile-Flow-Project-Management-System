@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProjectListComponent } from './project-list';
 import { ProjectService } from '../../../core/services/project.service';
 import { ActivityService } from '../../../core/services/activity.service';
+import { DialogService } from '../../../core/services/dialog.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
@@ -10,12 +12,16 @@ describe('ProjectListComponent', () => {
   let fixture: ComponentFixture<ProjectListComponent>;
   let mockProjectService: jasmine.SpyObj<ProjectService>;
   let mockActivityService: jasmine.SpyObj<ActivityService>;
+  let mockDialogService: jasmine.SpyObj<DialogService>;
+  let mockToastService: jasmine.SpyObj<ToastService>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: any;
 
   beforeEach(async () => {
     mockProjectService = jasmine.createSpyObj('ProjectService', ['findAll', 'delete']);
     mockActivityService = jasmine.createSpyObj('ActivityService', ['findByProject']);
+    mockDialogService = jasmine.createSpyObj('DialogService', ['confirm']);
+    mockToastService = jasmine.createSpyObj('ToastService', ['success', 'error']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockActivatedRoute = {
       snapshot: {
@@ -35,6 +41,7 @@ describe('ProjectListComponent', () => {
     }));
     mockProjectService.delete.and.returnValue(of({}));
     mockActivityService.findByProject.and.returnValue(of({ data: [] }));
+    mockDialogService.confirm.and.returnValue(of(true));
 
     spyOn(localStorage, 'getItem').and.callFake((key: string) => {
       if (key === 'role') return 'PROJECT_MANAGER';
@@ -46,6 +53,8 @@ describe('ProjectListComponent', () => {
       providers: [
         { provide: ProjectService, useValue: mockProjectService },
         { provide: ActivityService, useValue: mockActivityService },
+        { provide: DialogService, useValue: mockDialogService },
+        { provide: ToastService, useValue: mockToastService },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute }
       ]
@@ -74,28 +83,29 @@ describe('ProjectListComponent', () => {
   it('should delete project when confirmed', () => {
     fixture.detectChanges();
     mockProjectService.findAll.calls.reset();
-    spyOn(window, 'confirm').and.returnValue(true);
+    mockDialogService.confirm.and.returnValue(of(true));
 
     component.deleteProject(5);
 
-    expect(window.confirm).toHaveBeenCalledWith('Delete this project?');
+    expect(mockDialogService.confirm).toHaveBeenCalled();
     expect(mockProjectService.delete).toHaveBeenCalledWith(5);
     expect(mockProjectService.findAll).toHaveBeenCalled();
+    expect(mockToastService.success).toHaveBeenCalled();
   });
 
   it('should not delete project when confirm is rejected', () => {
     fixture.detectChanges();
-    spyOn(window, 'confirm').and.returnValue(false);
+    mockDialogService.confirm.and.returnValue(of(false));
 
     component.deleteProject(5);
 
-    expect(window.confirm).toHaveBeenCalledWith('Delete this project?');
+    expect(mockDialogService.confirm).toHaveBeenCalled();
     expect(mockProjectService.delete).not.toHaveBeenCalled();
   });
 
   it('should handle delete error gracefully', () => {
     fixture.detectChanges();
-    spyOn(window, 'confirm').and.returnValue(true);
+    mockDialogService.confirm.and.returnValue(of(true));
     mockProjectService.delete.and.returnValue(throwError(() => new Error('Delete failed')));
     spyOn(console, 'error');
 
@@ -104,5 +114,6 @@ describe('ProjectListComponent', () => {
     }).not.toThrow();
 
     expect(console.error).toHaveBeenCalled();
+    expect(mockToastService.error).toHaveBeenCalled();
   });
 });

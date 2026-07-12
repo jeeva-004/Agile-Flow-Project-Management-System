@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IssueListComponent } from './issue-list';
 import { IssueService } from '../../../core/services/issue.service';
+import { DialogService } from '../../../core/services/dialog.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
@@ -8,11 +10,15 @@ describe('IssueListComponent', () => {
   let component: IssueListComponent;
   let fixture: ComponentFixture<IssueListComponent>;
   let mockIssueService: jasmine.SpyObj<IssueService>;
+  let mockDialogService: jasmine.SpyObj<DialogService>;
+  let mockToastService: jasmine.SpyObj<ToastService>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: any;
 
   beforeEach(async () => {
     mockIssueService = jasmine.createSpyObj('IssueService', ['search', 'delete']);
+    mockDialogService = jasmine.createSpyObj('DialogService', ['confirm']);
+    mockToastService = jasmine.createSpyObj('ToastService', ['success', 'error']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockActivatedRoute = {
       snapshot: {
@@ -31,6 +37,7 @@ describe('IssueListComponent', () => {
       }
     }));
     mockIssueService.delete.and.returnValue(of({}));
+    mockDialogService.confirm.and.returnValue(of(true));
 
     spyOn(localStorage, 'getItem').and.callFake((key: string) => {
       if (key === 'role') return 'ADMIN';
@@ -42,6 +49,8 @@ describe('IssueListComponent', () => {
       imports: [IssueListComponent],
       providers: [
         { provide: IssueService, useValue: mockIssueService },
+        { provide: DialogService, useValue: mockDialogService },
+        { provide: ToastService, useValue: mockToastService },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute }
       ]
@@ -67,23 +76,23 @@ describe('IssueListComponent', () => {
   it('should call delete on service when deleting an issue and reload list', () => {
     fixture.detectChanges();
     mockIssueService.search.calls.reset();
-
-    spyOn(window, 'confirm').and.returnValue(true);
+    mockDialogService.confirm.and.returnValue(of(true));
 
     component.deleteIssue(10);
 
-    expect(window.confirm).toHaveBeenCalledWith('Delete issue?');
+    expect(mockDialogService.confirm).toHaveBeenCalled();
     expect(mockIssueService.delete).toHaveBeenCalledWith(10);
     expect(mockIssueService.search).toHaveBeenCalled();
+    expect(mockToastService.success).toHaveBeenCalled();
   });
 
   it('should not call delete on service if delete confirm is rejected', () => {
     fixture.detectChanges();
-    spyOn(window, 'confirm').and.returnValue(false);
+    mockDialogService.confirm.and.returnValue(of(false));
 
     component.deleteIssue(10);
 
-    expect(window.confirm).toHaveBeenCalledWith('Delete issue?');
+    expect(mockDialogService.confirm).toHaveBeenCalled();
     expect(mockIssueService.delete).not.toHaveBeenCalled();
   });
 
