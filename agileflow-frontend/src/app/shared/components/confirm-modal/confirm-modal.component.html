@@ -1,0 +1,25 @@
+<div class="modal-backdrop" *ngIf="config" (click)="onCancel()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ config.title }}</h3>
+      <button class="modal-close" (click)="onCancel()">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <p>{{ config.message }}</p>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-outline" (click)="onCancel()">
+        {{ config.cancelText }}
+      </button>
+      <button class="btn" 
+              [ngClass]="config.intent === 'danger' ? 'btn-danger' : 'btn-primary'" 
+              (click)="onConfirm()">
+        {{ config.confirmText }}
+      </button>
+    </div>
+  </div>
+</div>

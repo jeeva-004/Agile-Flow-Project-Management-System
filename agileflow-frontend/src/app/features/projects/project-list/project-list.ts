@@ -14,6 +14,8 @@ import {
 
 import { ProjectService }
   from '../../../core/services/project.service';
+import { DialogService } from '../../../core/services/dialog.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { ActivityFeed } from '../../activities/activity-feed/activity-feed';
 
 @Component({
@@ -44,6 +46,9 @@ export class ProjectListComponent
 
   private readonly router =
     inject(Router);
+
+  private readonly dialogService = inject(DialogService);
+  private readonly toastService = inject(ToastService);
 
   projects: any[] = [];
   role: string | null = null;
@@ -126,37 +131,25 @@ export class ProjectListComponent
   deleteProject(
     id: number
   ): void {
-
-    const confirmed = confirm(
-
-      'Delete this project?'
-
-    );
-
-    if (!confirmed) {
-
-      return;
-
-    }
-
-    this.service.delete(id)
-
-      .subscribe({
-
+    this.dialogService.confirm({
+      title: 'Delete Project',
+      message: 'Are you sure you want to delete this project? This action cannot be undone.',
+      confirmText: 'Delete',
+      intent: 'danger'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      
+      this.service.delete(id).subscribe({
         next: () => {
-
+          this.toastService.success('Project Deleted', 'The project has been successfully deleted.');
           this.loadProjects();
-
         },
-
         error: error => {
-
+          this.toastService.error('Error', 'Failed to delete project.');
           console.error(error);
-
         }
-
       });
-
+    });
   }
 
 }

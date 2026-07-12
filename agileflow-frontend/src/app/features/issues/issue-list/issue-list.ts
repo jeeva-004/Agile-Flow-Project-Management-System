@@ -10,6 +10,8 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { IssueService } from '../../../core/services/issue.service';
+import { DialogService } from '../../../core/services/dialog.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-issue-list',
@@ -25,6 +27,8 @@ export class IssueListComponent implements OnInit, OnDestroy {
   private readonly service = inject(IssueService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
+  private readonly toastService = inject(ToastService);
 
   projectId!: number;
   issues: any[] = [];
@@ -137,13 +141,24 @@ export class IssueListComponent implements OnInit, OnDestroy {
   }
 
   deleteIssue(id: number): void {
-    if (!confirm('Delete issue?')) {
-      return;
-    }
-    this.service.delete(id).subscribe({
-      next: () => {
-        this.load();
-      }
+    this.dialogService.confirm({
+      title: 'Delete Issue',
+      message: 'Are you sure you want to delete this issue? This action cannot be undone.',
+      confirmText: 'Delete',
+      intent: 'danger'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+
+      this.service.delete(id).subscribe({
+        next: () => {
+          this.toastService.success('Issue Deleted', 'The issue has been successfully deleted.');
+          this.load();
+        },
+        error: error => {
+          this.toastService.error('Error', 'Failed to delete issue.');
+          console.error(error);
+        }
+      });
     });
   }
 }

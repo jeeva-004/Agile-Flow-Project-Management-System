@@ -4,12 +4,14 @@ import { NotificationService } from './core/services/notification.service';
 import { ProjectService } from './core/services/project.service';
 import { UserService } from './core/services/user.service';
 import { NotificationListComponent } from './features/notifications/notification-list/notification-list';
+import { ToastComponent } from './shared/components/toast/toast.component';
+import { ConfirmModalComponent } from './shared/components/confirm-modal/confirm-modal.component';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, NotificationListComponent, RouterModule],
+  imports: [CommonModule, RouterOutlet, NotificationListComponent, ToastComponent, ConfirmModalComponent, RouterModule],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
