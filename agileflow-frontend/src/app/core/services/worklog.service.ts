@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 import { HttpClient }
 from '@angular/common/http';
@@ -17,9 +18,7 @@ export class WorkLogService {
 
     inject(HttpClient);
 
-  private readonly api =
-
-    'http://localhost:8080/api/v1';
+  private readonly api = environment.apiUrl;
 
   create(
 

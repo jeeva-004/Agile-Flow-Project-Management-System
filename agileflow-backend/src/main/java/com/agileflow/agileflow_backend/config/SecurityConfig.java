@@ -53,7 +53,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:4200",
-                        "https://REPLACE-WITH-NETLIFY-URL.netlify.app"
+                        "https://agileflow-org.netlify.app"
                 )
         );
 

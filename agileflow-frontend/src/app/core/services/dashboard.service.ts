@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 import { HttpClient } from '@angular/common/http';
 
@@ -13,9 +14,7 @@ export class DashboardService {
 
     inject(HttpClient);
 
-  private readonly api =
-
-    'http://localhost:8080/api/v1/dashboard';
+  private readonly api = `${environment.apiUrl}/dashboard`;
 
   admin() {
 
