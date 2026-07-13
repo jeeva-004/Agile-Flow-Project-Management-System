@@ -10,7 +10,8 @@ import {
 
 import {
   ActivatedRoute,
-  Router
+  Router,
+  RouterModule
 } from '@angular/router';
 
 import {
@@ -49,8 +50,8 @@ import { ToastService } from '../../../core/services/toast.service';
 
     AttachmentUpload,
 
-    AttachmentList
-
+    AttachmentList,
+    RouterModule
   ],
 
   templateUrl:

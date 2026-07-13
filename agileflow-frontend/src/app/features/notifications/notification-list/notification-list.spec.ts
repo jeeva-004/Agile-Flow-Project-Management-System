@@ -1,12 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NotificationListComponent } from './notification-list';
 import { NotificationService } from '../../../core/services/notification.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { of, throwError } from 'rxjs';
 
 describe('NotificationListComponent', () => {
   let component: NotificationListComponent;
   let fixture: ComponentFixture<NotificationListComponent>;
   let mockNotificationService: jasmine.SpyObj<NotificationService>;
+  let mockDialogService: jasmine.SpyObj<DialogService>;
 
   beforeEach(async () => {
     mockNotificationService = jasmine.createSpyObj('NotificationService', [
@@ -16,6 +18,7 @@ describe('NotificationListComponent', () => {
       'markAllAsRead',
       'delete'
     ]);
+    mockDialogService = jasmine.createSpyObj('DialogService', ['confirm']);
 
     // Default mock behavior
     mockNotificationService.findMyNotifications.and.returnValue(of({
@@ -32,11 +35,13 @@ describe('NotificationListComponent', () => {
     mockNotificationService.markAsRead.and.returnValue(of({}));
     mockNotificationService.markAllAsRead.and.returnValue(of({}));
     mockNotificationService.delete.and.returnValue(of({}));
+    mockDialogService.confirm.and.returnValue(of(true));
 
     await TestBed.configureTestingModule({
       imports: [NotificationListComponent],
       providers: [
-        { provide: NotificationService, useValue: mockNotificationService }
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: DialogService, useValue: mockDialogService }
       ]
     }).compileComponents();
 
