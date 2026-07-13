@@ -22,6 +22,7 @@ import {
 import {
   SprintService
 } from '../../../core/services/sprint.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-sprint-create',
@@ -51,6 +52,9 @@ export class SprintCreateComponent {
   private readonly router =
 
     inject(Router);
+
+  private readonly toastService =
+    inject(ToastService);
 
   projectId = Number(
 
@@ -129,7 +133,7 @@ export class SprintCreateComponent {
       .subscribe({
 
         next: () => {
-
+          this.toastService.success('Sprint Created', 'The sprint was successfully created.');
           this.router.navigate([
 
             '/projects',
@@ -140,6 +144,9 @@ export class SprintCreateComponent {
 
           ]);
 
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to create sprint.');
         }
 
       });

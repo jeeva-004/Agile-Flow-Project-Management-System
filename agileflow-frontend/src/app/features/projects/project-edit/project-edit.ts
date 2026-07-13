@@ -27,6 +27,7 @@ import {
 }
 from '../../../core/services/project.service';
 import { UserService } from '../../../core/services/user.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
 
@@ -64,6 +65,9 @@ implements OnInit {
 
   private readonly router =
     inject(Router);
+
+  private readonly toastService =
+    inject(ToastService);
 
   projectId!: number;
   users: any[] = [];
@@ -171,13 +175,16 @@ implements OnInit {
       .subscribe({
 
         next: () => {
-
+          this.toastService.success('Project Updated', 'The project was successfully updated.');
           this.router.navigate([
 
             '/projects'
 
           ]);
 
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to update project.');
         }
 
       });

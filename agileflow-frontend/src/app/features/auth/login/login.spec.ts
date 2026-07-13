@@ -4,23 +4,27 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Login } from './login';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 describe('LoginComponent', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockToastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(async () => {
     mockAuthService = jasmine.createSpyObj('AuthService', ['login', 'isLoggedIn']);
     mockAuthService.isLoggedIn.and.returnValue(false);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    mockToastService = jasmine.createSpyObj('ToastService', ['success', 'error']);
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, Login],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: ToastService, useValue: mockToastService }
       ]
     }).compileComponents();
 

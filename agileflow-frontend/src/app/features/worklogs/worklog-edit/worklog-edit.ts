@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkLogService } from '../../../core/services/worklog.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-worklog-edit',
@@ -49,6 +50,8 @@ inject(
 Router
 
 );
+
+private readonly toastService = inject(ToastService);
 
 id!:number;
 
@@ -173,7 +176,7 @@ this.form
 .subscribe({
 
 next:()=>{
-
+this.toastService.success('Work Log Updated', 'Your work log was successfully updated.');
 this.router.navigate([
 
 '/issues',
@@ -184,6 +187,9 @@ this.issueId,
 
 ]);
 
+},
+error: () => {
+  this.toastService.error('Error', 'Failed to update work log.');
 }
 
 });

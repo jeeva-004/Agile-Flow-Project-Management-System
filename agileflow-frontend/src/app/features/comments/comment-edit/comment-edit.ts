@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommentService } from '../../../core/services/comment.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-comment-edit',
@@ -33,6 +34,8 @@ inject(ActivatedRoute);
 private readonly router=
 
 inject(Router);
+
+private readonly toastService = inject(ToastService);
 
 commentId!:number;
 
@@ -129,7 +132,7 @@ this.form.getRawValue()
 .subscribe({
 
 next:()=>{
-
+this.toastService.success('Comment Updated', 'Your comment was successfully updated.');
 this.router.navigate([
 
 '/issues',
@@ -140,6 +143,9 @@ this.issueId,
 
 ]);
 
+},
+error: () => {
+  this.toastService.error('Error', 'Failed to update comment.');
 }
 
 });

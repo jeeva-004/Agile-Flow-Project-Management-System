@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 import { HttpClient }
@@ -6,6 +6,7 @@ from '@angular/common/http';
 
 import { Observable }
 from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
 
@@ -19,6 +20,8 @@ export class NotificationService {
     inject(HttpClient);
 
   private readonly api = environment.apiUrl;
+
+  unreadCountSignal = signal(0);
 
   findMyNotifications(
     page: number = 0,
@@ -52,6 +55,11 @@ export class NotificationService {
 
       `${this.api}/notifications/unread-count`
 
+    ).pipe(
+      tap((res: any) => {
+        const count = res?.data ?? res ?? 0;
+        this.unreadCountSignal.set(count);
+      })
     );
 
   }

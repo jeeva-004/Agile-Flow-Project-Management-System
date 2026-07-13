@@ -4,6 +4,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormsModule } from '@angular/forms';
 import { ProjectMemberService } from '../../core/services/project-member.service';
 import { UserService } from '../../core/services/user.service';
+import { ToastService } from '../../core/services/toast.service';
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-project-members',
@@ -45,6 +47,9 @@ private readonly fb =
 inject(
 
 FormBuilder);
+
+private readonly toastService = inject(ToastService);
+private readonly dialogService = inject(DialogService);
 
 projectId!: number;
 
@@ -174,11 +179,12 @@ payload)
 .subscribe({
 
 next: () => {
-
-this.load();
-
-this.form.reset();
-
+  this.toastService.success('Member Added', 'The member has been successfully added to the project.');
+  this.load();
+  this.form.reset();
+},
+error: () => {
+  this.toastService.error('Error', 'Failed to add member to project.');
 }
 
 });
@@ -190,23 +196,26 @@ remove(
 id:number
 
 ): void {
-
-this.service
-
-.remove(
-
-id)
-
-.subscribe({
-
-next:()=>{
-
-this.load();
-
-}
-
-});
-
+  this.dialogService.confirm({
+    title: 'Remove Member',
+    message: 'Are you sure you want to remove this member from the project?',
+    confirmText: 'Remove',
+    cancelText: 'Cancel',
+    intent: 'danger'
+  }).subscribe(confirmed => {
+    if (!confirmed) return;
+    this.service
+      .remove(id)
+      .subscribe({
+        next: () => {
+          this.toastService.success('Member Removed', 'The member has been successfully removed.');
+          this.load();
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to remove member.');
+        }
+      });
+  });
 }
 
 }

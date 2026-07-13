@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import {
   FormBuilder,
@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 
 import { AuthService }
   from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
 
@@ -29,6 +30,38 @@ import { AuthService }
 export class Login implements OnInit {
   form: FormGroup;
   showPassword = false;
+
+  private readonly toastService = inject(ToastService);
+  showDemoHelper = false;
+  demoUnlocked = false;
+  isSwiping = false;
+
+  toggleDemoAccess(): void {
+    this.showDemoHelper = !this.showDemoHelper;
+  }
+
+  unlockDemo(): void {
+    if (this.demoUnlocked) return;
+    this.isSwiping = true;
+    setTimeout(() => {
+      this.isSwiping = false;
+      this.demoUnlocked = true;
+      this.toastService.success('Access Granted', 'Demo credentials unlocked!');
+    }, 1200);
+  }
+
+  copyToClipboard(text: string, label: string): void {
+    navigator.clipboard.writeText(text).then(() => {
+      this.toastService.success('Copied!', `${label} copied to clipboard.`);
+    });
+  }
+
+  copyAll(email: string, pass: string, label: string): void {
+    const text = `Email: ${email}\nPassword: ${pass}`;
+    navigator.clipboard.writeText(text).then(() => {
+      this.toastService.success('Copied All!', `${label} credentials copied.`);
+    });
+  }
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {

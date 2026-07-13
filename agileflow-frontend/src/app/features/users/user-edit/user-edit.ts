@@ -20,6 +20,7 @@ from '@angular/common';
 
 import { UserService }
 from '../../../core/services/user.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -43,6 +44,9 @@ implements OnInit {
 
   private readonly fb =
     inject(FormBuilder);
+
+  private readonly toastService =
+    inject(ToastService);
 
   private readonly userService =
     inject(UserService);
@@ -133,11 +137,14 @@ implements OnInit {
       .subscribe({
 
         next: () => {
-
+          this.toastService.success('User Updated', 'The user was successfully updated.');
           this.router.navigate([
             '/users'
           ]);
 
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to update user.');
         }
 
       });

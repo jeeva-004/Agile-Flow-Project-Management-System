@@ -22,6 +22,7 @@ import {
   ProjectService
 } from '../../../core/services/project.service';
 import { UserService } from '../../../core/services/user.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-project-create',
@@ -38,6 +39,7 @@ export class ProjectCreateComponent implements OnInit {
   private readonly service = inject(ProjectService);
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   users: any[] = [];
 
@@ -110,13 +112,16 @@ export class ProjectCreateComponent implements OnInit {
       .subscribe({
 
         next: () => {
-
+          this.toastService.success('Project Created', 'The project was successfully created.');
           this.router.navigate([
 
             '/projects'
 
           ]);
 
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to create project.');
         }
 
       });

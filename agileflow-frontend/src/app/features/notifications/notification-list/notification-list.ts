@@ -29,7 +29,9 @@ export class NotificationListComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
 
   notifications: NotificationItem[] = [];
-  unreadCount = 0;
+  get unreadCount(): number {
+    return this.notificationService.unreadCountSignal();
+  }
   loading = false;
 
   page = 0;
@@ -86,11 +88,7 @@ export class NotificationListComponent implements OnInit {
   }
 
   loadUnreadCount(): void {
-    this.notificationService.unreadCount().subscribe({
-      next: (response) => {
-        this.unreadCount = response?.data ?? response ?? 0;
-      }
-    });
+    this.notificationService.unreadCount().subscribe();
   }
 
   markAsRead(notification: NotificationItem): void {
@@ -101,7 +99,7 @@ export class NotificationListComponent implements OnInit {
     this.notificationService.markAsRead(notification.id).subscribe({
       next: () => {
         notification.read = true;
-        this.unreadCount = Math.max(0, this.unreadCount - 1);
+        this.notificationService.unreadCountSignal.update(val => Math.max(0, val - 1));
         this.toastService.success('Notification Read', 'The notification has been marked as read.');
       }
     });
@@ -111,7 +109,7 @@ export class NotificationListComponent implements OnInit {
     this.notificationService.markAllAsRead().subscribe({
       next: () => {
         this.notifications.forEach(n => n.read = true);
-        this.unreadCount = 0;
+        this.notificationService.unreadCountSignal.set(0);
         this.toastService.success('All Read', 'All notifications have been marked as read.');
       }
     });
@@ -131,7 +129,7 @@ export class NotificationListComponent implements OnInit {
           const wasUnread = !notification.read;
           this.notifications = this.notifications.filter(n => n.id !== notification.id);
           if (wasUnread) {
-            this.unreadCount = Math.max(0, this.unreadCount - 1);
+            this.notificationService.unreadCountSignal.update(val => Math.max(0, val - 1));
           }
           this.toastService.success('Notification Deleted', 'The notification has been deleted.');
         }

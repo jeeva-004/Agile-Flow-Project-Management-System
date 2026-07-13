@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 import { NotificationListComponent } from './notification-list';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DialogService } from '../../../core/services/dialog.service';
@@ -18,6 +19,7 @@ describe('NotificationListComponent', () => {
       'markAllAsRead',
       'delete'
     ]);
+    (mockNotificationService as any).unreadCountSignal = signal(0);
     mockDialogService = jasmine.createSpyObj('DialogService', ['confirm']);
 
     // Default mock behavior
@@ -31,7 +33,10 @@ describe('NotificationListComponent', () => {
         totalElements: 2
       }
     }));
-    mockNotificationService.unreadCount.and.returnValue(of({ data: 1 }));
+    mockNotificationService.unreadCount.and.callFake(() => {
+      mockNotificationService.unreadCountSignal.set(1);
+      return of({ data: 1 });
+    });
     mockNotificationService.markAsRead.and.returnValue(of({}));
     mockNotificationService.markAllAsRead.and.returnValue(of({}));
     mockNotificationService.delete.and.returnValue(of({}));

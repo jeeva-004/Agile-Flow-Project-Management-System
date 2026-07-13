@@ -7,6 +7,8 @@ import {
 
 import { authInterceptor }
   from './core/interceptors/auth.interceptor';
+import { loadingInterceptor }
+  from './core/interceptors/loading.interceptor';
 
 import { routes } from './app.routes';
 
@@ -17,7 +19,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withInterceptors([
-        authInterceptor
+        authInterceptor,
+        loadingInterceptor
       ])
     )
   ]

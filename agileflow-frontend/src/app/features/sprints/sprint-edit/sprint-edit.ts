@@ -22,6 +22,7 @@ import {
 import {
   SprintService
 } from '../../../core/services/sprint.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
 
@@ -62,6 +63,9 @@ implements OnInit {
   private readonly router =
 
     inject(Router);
+
+  private readonly toastService =
+    inject(ToastService);
 
   sprintId!: number;
 
@@ -170,7 +174,7 @@ implements OnInit {
       .subscribe({
 
         next: () => {
-
+          this.toastService.success('Sprint Updated', 'The sprint was successfully updated.');
           this.router.navigate([
 
             '/projects',
@@ -181,6 +185,9 @@ implements OnInit {
 
           ]);
 
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to update sprint.');
         }
 
       });

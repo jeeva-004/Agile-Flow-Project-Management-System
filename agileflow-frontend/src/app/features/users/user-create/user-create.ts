@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { UserService } from '../../../core/services/user.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-user-create',
@@ -30,6 +31,9 @@ export class UserCreateComponent {
 
   private readonly router =
     inject(Router);
+
+  private readonly toastService =
+    inject(ToastService);
 
   form = this.fb.group({
 
@@ -95,17 +99,14 @@ submit(): void {
     .subscribe({
 
       next: response => {
-
         console.log(response);
-
+        this.toastService.success('User Created', 'The user was successfully created.');
         this.router.navigate(['/users']);
-
       },
 
       error: err => {
-
         console.log(err);
-
+        this.toastService.error('Error', 'Failed to create user.');
       }
 
     });

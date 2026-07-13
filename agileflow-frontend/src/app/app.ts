@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal, HostListener } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet, RouterModule } from '@angular/router';
+import { LoadingService } from './core/services/loading.service';
 import { NotificationService } from './core/services/notification.service';
 import { ProjectService } from './core/services/project.service';
 import { UserService } from './core/services/user.service';
@@ -7,11 +8,13 @@ import { NotificationListComponent } from './features/notifications/notification
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { ConfirmModalComponent } from './shared/components/confirm-modal/confirm-modal.component';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { filter } from 'rxjs/operators';
+import { IssueService } from './core/services/issue.service';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, NotificationListComponent, ToastComponent, ConfirmModalComponent, RouterModule],
+  imports: [CommonModule, FormsModule, RouterOutlet, NotificationListComponent, ToastComponent, ConfirmModalComponent, RouterModule],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -21,8 +24,55 @@ export class App implements OnInit {
   private readonly projectService = inject(ProjectService);
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
+  private readonly loadingService = inject(LoadingService);
+  private readonly issueService = inject(IssueService);
 
-  unreadCount = 0;
+  isLoading = this.loadingService.isLoading;
+
+  get unreadCount(): number {
+    return this.notificationService.unreadCountSignal();
+  }
+
+  searchQuery = '';
+  searchResultsProjects: any[] = [];
+  searchResultsIssues: any[] = [];
+
+  onSearchInput(): void {
+    const query = this.searchQuery.trim().toLowerCase();
+    if (!query) {
+      this.searchResultsProjects = [];
+      this.searchResultsIssues = [];
+      return;
+    }
+
+    this.projectService.findAll(0, 100).subscribe({
+      next: (res) => {
+        const list = res?.data?.content ?? res?.content ?? [];
+        this.searchResultsProjects = list.filter((p: any) =>
+          p.name.toLowerCase().includes(query) || (p.key && p.key.toLowerCase().includes(query))
+        );
+      }
+    });
+
+    if (this.currentProjectId) {
+      this.issueService.findByProject(this.currentProjectId, 0, 100).subscribe({
+        next: (res) => {
+          const list = res?.data?.content ?? res?.content ?? [];
+          this.searchResultsIssues = list.filter((i: any) =>
+            i.title.toLowerCase().includes(query) || (i.description && i.description.toLowerCase().includes(query))
+          );
+        }
+      });
+    } else {
+      this.searchResultsIssues = [];
+    }
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.searchResultsProjects = [];
+    this.searchResultsIssues = [];
+  }
   panelOpen = false;
   sidebarOpen = false;
 
@@ -53,9 +103,7 @@ export class App implements OnInit {
   }
 
   private loadUserData(): void {
-    this.notificationService.unreadCount().subscribe({
-      next: (res) => (this.unreadCount = res?.data ?? res ?? 0)
-    });
+    this.notificationService.unreadCount().subscribe();
 
     const email = this.getEmailFromToken();
     if (email) {
@@ -118,6 +166,9 @@ export class App implements OnInit {
 
   togglePanel(): void {
     this.panelOpen = !this.panelOpen;
+    if (this.panelOpen) {
+      this.notificationService.unreadCount().subscribe();
+    }
   }
 
   toggleSidebar(): void {
