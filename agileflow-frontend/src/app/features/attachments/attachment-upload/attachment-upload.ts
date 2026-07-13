@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AttachmentService } from '../../../core/services/attachment.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
 
@@ -16,7 +17,9 @@ import { AttachmentService } from '../../../core/services/attachment.service';
 
   templateUrl:
 
-    './attachment-upload.html'
+    './attachment-upload.html',
+
+  styleUrls: ['./attachment-upload.scss']
 
 })
 
@@ -31,11 +34,8 @@ export class AttachmentUpload {
   uploading = false;
 
   constructor(
-
-    private service:
-
-      AttachmentService
-
+    private service: AttachmentService,
+    private toastService: ToastService
   ) { }
 
   onSelect(
@@ -89,27 +89,16 @@ export class AttachmentUpload {
       )
 
       .subscribe({
-
         next: () => {
-
-          this.uploading =
-
-            false;
-
-          this.selectedFile =
-
-            undefined;
-
+          this.uploading = false;
+          this.selectedFile = undefined;
+          this.toastService.success('Upload Successful', 'The attachment has been uploaded.');
+          // Optional: we can reload the list if we use an event emitter, but currently it seems it's handled differently or requires a page reload/subject.
         },
-
         error: () => {
-
-          this.uploading =
-
-            false;
-
+          this.uploading = false;
+          this.toastService.error('Upload Failed', 'There was an error uploading the attachment.');
         }
-
       });
 
   }

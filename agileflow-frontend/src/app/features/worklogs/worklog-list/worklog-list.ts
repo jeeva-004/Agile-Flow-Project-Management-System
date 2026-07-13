@@ -20,6 +20,8 @@ import {
   WorkLogService
 }
 from '../../../core/services/worklog.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { DialogService } from '../../../core/services/dialog.service';
 
 @Component({
 
@@ -36,8 +38,8 @@ from '../../../core/services/worklog.service';
   ],
 
   templateUrl:
-
-    './worklog-list.html'
+    './worklog-list.html',
+  styleUrls: ['./worklog-list.scss']
 
 })
 export class WorkLogListComponent
@@ -60,6 +62,9 @@ implements OnInit {
     inject(
       Router
     );
+
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
 
   issueId!:number;
   projectId!:number;
@@ -173,44 +178,24 @@ implements OnInit {
 
   }
 
-  delete(
-
-      id:number
-
-  ):void{
-
-    const confirmed =
-
-      confirm(
-
-        'Delete worklog?'
-
-      );
-
-    if(
-
-      !confirmed
-
-    ){
-
-      return;
-
-    }
-
-    this.service
-
-      .delete(id)
-
-      .subscribe({
-
-        next:()=>{
-
+  delete(id:number):void{
+    this.dialogService.confirm({
+      title: 'Delete Work Log',
+      message: 'Are you sure you want to delete this work log? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      intent: 'danger'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.service.delete(id).subscribe({
+        next: () => {
+          this.toastService.success('Work Log Deleted', 'The work log was successfully deleted.');
           this.load();
-
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to delete work log.');
         }
-
       });
-
+    });
   }
-
 }

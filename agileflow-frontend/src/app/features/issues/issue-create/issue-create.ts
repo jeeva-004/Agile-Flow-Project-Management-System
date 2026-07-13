@@ -31,6 +31,7 @@ import {
 import {
   ProjectMemberService
 } from '../../../core/services/project-member.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
 
@@ -73,6 +74,8 @@ implements OnInit {
 
   private readonly router =
     inject(Router);
+
+  private readonly toastService = inject(ToastService);
 
   projectId!: number;
 
@@ -226,42 +229,16 @@ implements OnInit {
 
     };
 
-    this.issueService
-
-      .create(
-
-        request
-
-      )
-
-      .subscribe({
-
-        next: () => {
-
-          this.router.navigate([
-
-            '/projects',
-
-            this.projectId,
-
-            'issues'
-
-          ]);
-
-        },
-
-        error: error => {
-
-          console.error(
-
-            error
-
-          );
-
-        }
-
-      });
-
+    this.issueService.create(request).subscribe({
+      next: () => {
+        this.toastService.success('Issue Created', 'The issue was successfully created.');
+        this.router.navigate(['/projects', this.projectId, 'issues']);
+      },
+      error: error => {
+        this.toastService.error('Error', 'Failed to create issue.');
+        console.error(error);
+      }
+    });
   }
 
 }

@@ -12,7 +12,8 @@ import { WorkLogService } from '../../../core/services/worklog.service';
     ReactiveFormsModule,
     RouterModule
   ],
-  templateUrl: './worklog-edit.html'
+  templateUrl: './worklog-edit.html',
+  styleUrls: ['./worklog-edit.scss']
 })
 export class WorkLogEditComponent
 implements OnInit {

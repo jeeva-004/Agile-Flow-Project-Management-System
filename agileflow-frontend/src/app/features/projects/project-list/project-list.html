@@ -1,102 +1,176 @@
-<div class="page-header">
-  <div>
-    <h2>Projects</h2>
-    <p class="page-subtitle">Manage and track all your projects</p>
+<div class="projects-container">
+  
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Projects</h1>
+      <p class="page-subtitle">Manage all development projects</p>
+    </div>
+    <div class="header-actions">
+      <button *ngIf="role !== 'DEVELOPER'" class="btn-action primary" routerLink="/projects/create">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        New Project
+      </button>
+    </div>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search projects...">
+      </div>
+      
+      <select class="filter-select">
+        <option value="">All Statuses</option>
+        <option value="Planning">Planning</option>
+        <option value="Active">Active</option>
+        <option value="Completed">Completed</option>
+        <option value="Archived">Archived</option>
+      </select>
+    </div>
+    
+    <div class="toolbar-right">
+      <select class="filter-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+        <option value="id">Sort by ID</option>
+        <option value="name">Sort by Name</option>
+        <option value="startDate">Sort by Start Date</option>
+        <option value="endDate">Sort by End Date</option>
+      </select>
+      <button class="btn-action secondary" (click)="toggleSortDir()" title="Toggle sort direction" style="padding: 8px;">
+        <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+      </button>
+      <button class="btn-action secondary" (click)="loadProjects()" title="Refresh" style="padding: 8px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+      </button>
+    </div>
   </div>
-  <div style="display:flex; gap:8px; align-items:center;">
-    <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
-      <option value="id">Created Order</option>
-      <option value="name">Name</option>
-      <option value="startDate">Start Date</option>
-      <option value="endDate">End Date</option>
-    </select>
-    <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction">
-      {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
-    </button>
-    <button *ngIf="role !== 'DEVELOPER'" class="btn btn-primary" routerLink="/projects/create">
-      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      New Project
-    </button>
-  </div>
-</div>
 
-<div class="table-container">
-  <table class="data-table table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Owner</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th>Actions</th>
-        <th>Activity</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let project of projects">
-        <td><span class="badge badge-todo">{{project.id}}</span></td>
-        <td class="font-weight-600">{{project.name}}</td>
-        <td>
-          <div class="header-user" style="padding:0">
-            <div class="avatar" style="width:24px;height:24px;font-size:10px">{{project.ownerName?.charAt(0) || 'U'}}</div>
-            <span style="font-size:13px">{{project.ownerName}}</span>
-          </div>
-        </td>
-        <td style="color:var(--text-secondary)">{{project.startDate}}</td>
-        <td style="color:var(--text-secondary)">{{project.endDate}}</td>
-        <td>
-          <div class="action-buttons" style="margin-bottom:0">
-            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-outline btn-icon" (click)="editProject(project.id)" title="Edit">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            </button>
-            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'members']" title="Members">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            </button>
-            <button class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'sprints']" title="Sprints">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-            </button>
-            <button class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'issues']" title="Issues">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            </button>
-            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-outline btn-icon" [routerLink]="['/projects', project.id, 'analytics']" title="Analytics">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            </button>
-            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-danger btn-icon" (click)="deleteProject(project.id)" title="Delete">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
-          </div>
-        </td>
-<td>
+  <!-- Data Table -->
+  <div class="table-card">
+    
+    <div class="table-responsive" *ngIf="projects.length > 0">
+      <table class="enterprise-table">
+        <thead>
+          <tr>
+            <th>Project Name</th>
+            <th>Owner</th>
+            <th>Status</th>
+            <th>Timeline</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let project of projects">
+            
+            <!-- Project Name -->
+            <td>
+              <div class="col-project">
+                <span class="project-name">{{project.name}}</span>
+                <span class="project-desc">{{project.description || 'No description provided.'}}</span>
+              </div>
+            </td>
+            
+            <!-- Owner -->
+            <td>
+              <div class="col-owner">
+                <div class="owner-avatar">{{project.ownerName?.charAt(0) || 'U'}}</div>
+                <div class="owner-info">
+                  <span class="owner-name">{{project.ownerName || 'Unassigned'}}</span>
+                  <span class="owner-email">Project Owner</span>
+                </div>
+              </div>
+            </td>
+            
+            <!-- Status -->
+            <td>
+              <span class="status-badge" 
+                    [ngClass]="{
+                      'status-planning': project.status === 'Planning' || !project.status,
+                      'status-active': project.status === 'Active',
+                      'status-completed': project.status === 'Completed',
+                      'status-archived': project.status === 'Archived',
+                      'status-default': project.status && project.status !== 'Planning' && project.status !== 'Active' && project.status !== 'Completed' && project.status !== 'Archived'
+                    }">
+                {{ project.status || 'Active' }}
+              </span>
+            </td>
+            
+            <!-- Dates -->
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div class="col-date">
+                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <span>{{project.startDate || 'No start date'}}</span>
+                </div>
+                <div class="col-date">
+                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <span>{{project.endDate || 'No end date'}}</span>
+                </div>
+              </div>
+            </td>
+            
+            <!-- Actions -->
+            <td style="text-align: right;">
+              <div class="col-actions" style="justify-content: flex-end;">
+                
+                <button *ngIf="role !== 'DEVELOPER'" class="btn-icon" [routerLink]="['/projects', project.id, 'members']" title="Members">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </button>
+                
+                <button class="btn-icon" [routerLink]="['/projects', project.id, 'sprints']" title="Sprints">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </button>
+                
+                <button class="btn-icon" [routerLink]="['/projects', project.id, 'issues']" title="Issues">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </button>
 
-<app-activity-feed
-[projectId]="project.id">
-</app-activity-feed>
+                <button *ngIf="role !== 'DEVELOPER'" class="btn-icon" [routerLink]="['/projects', project.id, 'analytics']" title="Analytics">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                </button>
+                
+                <div *ngIf="role !== 'DEVELOPER'" style="width: 1px; height: 16px; background-color: #E5E7EB; margin: 0 4px;"></div>
+                
+                <button *ngIf="role !== 'DEVELOPER'" class="btn-icon" (click)="editProject(project.id)" title="Edit Project">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                
+                <button *ngIf="role !== 'DEVELOPER'" class="btn-icon danger" (click)="deleteProject(project.id)" title="Delete Project">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+                
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-</td>
-      </tr>
-      <tr *ngIf="projects.length === 0">
-        <td colspan="7">
-          <div class="empty-state">
-            <div class="empty-state-icon">
-              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-            </div>
-            <h3 class="empty-state-title">No projects found</h3>
-            <p class="empty-state-description">Get started by creating your first project.</p>
-            <button class="btn btn-primary" routerLink="/projects/create">Create Project</button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="projects.length === 0">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <h3>No Projects Yet</h3>
+      <p>Get started by creating your first development project and assigning a team.</p>
+      <button *ngIf="role !== 'DEVELOPER'" class="btn-action primary" routerLink="/projects/create">
+        Create Project
+      </button>
+    </div>
 
-<div class="pagination-controls" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
-  <span style="font-size:13px; color:var(--text-secondary,#666);">
-    Page {{ page + 1 }} of {{ totalPages || 1 }} ({{ totalElements }} projects)
-  </span>
-  <div style="display:flex; gap:8px;">
-    <button class="btn btn-outline" (click)="prevPage()" [disabled]="page === 0">Previous</button>
-    <button class="btn btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="projects.length > 0">
+      <div class="pagination-info">
+        Showing page <strong>{{ page + 1 }}</strong> of <strong>{{ totalPages || 1 }}</strong> ({{ totalElements }} total projects)
+      </div>
+      <div class="pagination-actions">
+        <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+        <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+      </div>
+    </div>
+    
   </div>
 </div>

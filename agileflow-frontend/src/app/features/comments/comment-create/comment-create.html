@@ -1,24 +1,36 @@
-<div class="page-header">
-  <div>
-    <h2>Add Comment</h2>
-    <p class="page-subtitle">Add a new comment to the issue</p>
+<div class="comment-form-container">
+  
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Add Comment</h1>
+      <p class="page-subtitle">Share your thoughts on Issue IS-{{ issueId }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action secondary" [routerLink]="['/issues', issueId, 'comments']">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Cancel
+      </button>
+    </div>
   </div>
-  <button class="btn btn-secondary" [routerLink]="['/issues', issueId, 'comments']">
-    Cancel
-  </button>
-</div>
 
-<div class="card" style="max-width: 600px;">
-  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
-    
-    <div class="form-group">
-      <label>Message</label>
-      <textarea class="form-control" placeholder="Write your comment here..." formControlName="message" style="min-height: 120px;"></textarea>
-    </div>
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      
+      <div class="form-section">
+        <div class="composer-wrapper">
+          <textarea placeholder="Write your comment here... Markdown and plain text supported." formControlName="message" style="min-height: 180px;"></textarea>
+        </div>
+      </div>
 
-    <div class="flex justify-end gap-sm mt-lg">
-      <button class="btn btn-secondary" type="button" [routerLink]="['/issues', issueId, 'comments']">Cancel</button>
-      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Post Comment</button>
-    </div>
-  </form>
+      <!-- Footer Actions -->
+      <div class="form-actions">
+        <button class="btn-action secondary" type="button" [routerLink]="['/issues', issueId, 'comments']">Cancel</button>
+        <button class="btn-action primary" type="submit" [disabled]="form.invalid">
+          <span *ngIf="!form.invalid">Post Comment</span>
+          <span *ngIf="form.invalid">Write something...</span>
+        </button>
+      </div>
+      
+    </form>
+  </div>
 </div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { WorkLogService } from '../../../core/services/worklog.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-worklog-create',
@@ -12,7 +13,8 @@ import { WorkLogService } from '../../../core/services/worklog.service';
     ReactiveFormsModule,
     RouterModule
   ],
-  templateUrl: './worklog-create.html'
+  templateUrl: './worklog-create.html',
+  styleUrls: ['./worklog-create.scss']
 })
 export class WorkLogCreateComponent implements OnInit {
 
@@ -47,6 +49,8 @@ inject(
 Router
 
 );
+
+private readonly toastService = inject(ToastService);
 
 issueId!:number;
 
@@ -108,34 +112,14 @@ return;
 
 }
 
-this.service
-
-.create(
-
-this.issueId,
-
-this.form
-
-.getRawValue()
-
-)
-
-.subscribe({
-
-next:()=>{
-
-this.router.navigate([
-
-'/issues',
-
-this.issueId,
-
-'worklogs'
-
-]);
-
-}
-
+this.service.create(this.issueId, this.form.getRawValue()).subscribe({
+  next: () => {
+    this.toastService.success('Work Logged', 'Your work log was successfully added.');
+    this.router.navigate(['/issues', this.issueId, 'worklogs']);
+  },
+  error: () => {
+    this.toastService.error('Error', 'Failed to add work log.');
+  }
 });
 
 }

@@ -1,85 +1,162 @@
-<div class="page-header">
-  <div>
-    <h2>Project Members</h2>
-    <p class="page-subtitle">Manage users assigned to this project</p>
-  </div>
-  <div style="display:flex; gap:8px; align-items:center;">
-    <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
-      <option value="id">Created Order</option>
-      <option value="user.firstName">First Name</option>
-      <option value="user.email">Email</option>
-    </select>
-    <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction">
-      {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
-    </button>
-    <button class="btn btn-secondary" routerLink="/projects">
-      Back to Projects
-    </button>
-  </div>
-</div>
-
-<div class="card" style="margin-bottom: var(--spacing-xl);">
-  <form class="flex align-center gap-sm" [formGroup]="form" (ngSubmit)="submit()" style="margin:0; width:100%;">
-    <div style="flex-grow: 1; max-width: 300px;">
-      <select class="form-select form-control" formControlName="userId" style="width: 100%;">
-        <option [value]="null" disabled selected>Select user to add...</option>
-        <option *ngFor="let u of usersList" [value]="u.id">{{ u.firstName }} {{ u.lastName }} ({{ u.email }})</option>
-      </select>
+<div class="members-container">
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Project Members</h1>
+      <p class="page-subtitle">Manage team members assigned to this project</p>
     </div>
-    <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
-      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      Add Member
-    </button>
-  </form>
-</div>
-
-<div class="table-container">
-  <table class="table data-table">
-    <thead>
-      <tr>
-        <th>Member ID</th>
-        <th>User Name</th>
-        <th>Email</th>
-        <th style="width: 100px;">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let member of members">
-        <td><span class="badge badge-todo">{{member.id}}</span></td>
-        <td class="font-weight-600">
-          <div class="header-user" style="padding:0">
-            <div class="avatar" style="width:24px;height:24px;font-size:10px">{{member.userName?.charAt(0) || 'U'}}</div>
-            <span style="font-size:13px">{{member.userName}}</span>
-          </div>
-        </td>
-        <td style="color:var(--text-secondary)">{{member.email}}</td>
-        <td>
-          <button class="btn btn-danger btn-icon" (click)="remove(member.id)" title="Remove Member">
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          </button>
-        </td>
-      </tr>
-      <tr *ngIf="members.length === 0">
-        <td colspan="4">
-          <div class="empty-state">
-            <div class="empty-state-icon">
-              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            </div>
-            <h3 class="empty-state-title">No members yet</h3>
-            <p class="empty-state-description">Add a member using their User ID above.</p>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="pagination-controls" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
-  <span style="font-size:13px; color:var(--text-secondary,#666);">
-    Page {{ page + 1 }} of {{ totalPages || 1 }} ({{ totalElements }} members)
-  </span>
-  <div style="display:flex; gap:8px;">
-    <button class="btn btn-outline" (click)="prevPage()" [disabled]="page === 0">Previous</button>
-    <button class="btn btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+    <div class="header-actions">
+      <button class="btn-action secondary" routerLink="/projects" style="margin-right: 12px;">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Projects
+      </button>
+      <button class="btn-action primary" onclick="document.getElementById('add-member-section').scrollIntoView({behavior: 'smooth'})">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Add Member
+      </button>
+    </div>
   </div>
+
+  <!-- Project Summary Card -->
+  <div class="project-summary-card">
+    <div class="summary-item">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      </div>
+      <div class="meta">
+        <span class="label">Project ID</span>
+        <span class="value">#{{ projectId }}</span>
+      </div>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <div class="summary-item">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      </div>
+      <div class="meta">
+        <span class="label">Total Members</span>
+        <span class="value">{{ totalElements }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Member Card -->
+  <div id="add-member-section" class="add-member-card">
+    <div class="card-header">
+      <h3>Add Project Member</h3>
+      <p>Assign an existing user to this project to grant them access.</p>
+    </div>
+    
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="card-body">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Select User</label>
+          <div class="input-with-icon">
+            <select formControlName="userId">
+              <option [value]="null" disabled selected>Search and select a user...</option>
+              <option *ngFor="let u of usersList" [value]="u.id">
+                {{ u.firstName }} {{ u.lastName }} ({{ u.email }})
+              </option>
+            </select>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-footer">
+        <button class="btn-action primary" type="submit" [disabled]="form.invalid">
+          Assign to Project
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Members List Table -->
+  <div class="table-container">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-input">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search members by name or email...">
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <select class="sort-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+          <option value="id">Sort by Joined Date</option>
+          <option value="user.firstName">Sort by First Name</option>
+          <option value="user.email">Sort by Email</option>
+        </select>
+        <button class="btn-action secondary" (click)="toggleSortDir()" title="Toggle sort direction">
+          <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+          <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table class="enterprise-table">
+          <thead>
+            <tr>
+              <th>Member Name</th>
+              <th>Member ID</th>
+              <th style="width: 120px; text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of members">
+              <td>
+                <div class="user-info">
+                  <div class="avatar">{{ member.userName?.charAt(0) || 'U' }}</div>
+                  <div class="details">
+                    <span class="name">{{ member.userName || 'Unknown User' }}</span>
+                    <span class="email">{{ member.email || 'No email provided' }}</span>
+                  </div>
+                </div>
+              </td>
+              <td style="color: var(--text-secondary); font-size: 13px;">
+                #{{ member.id }}
+              </td>
+              <td style="text-align: right;">
+                <button class="btn-icon danger" (click)="remove(member.id)" title="Remove Member">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
+              </td>
+            </tr>
+            
+            <!-- Empty State -->
+            <tr *ngIf="members.length === 0">
+              <td colspan="3">
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <h3>No Members Added</h3>
+                  <p>Invite your first team member to start collaborating.</p>
+                  <button class="btn-action primary" onclick="document.getElementById('add-member-section').scrollIntoView({behavior: 'smooth'})">
+                    Add Member
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="members.length > 0">
+        <div class="page-info">
+          Showing <span>{{ (page * 10) + 1 }}</span> to <span>{{ ((page * 10) + members.length) }}</span> of <span>{{ totalElements }}</span> results
+        </div>
+        <div class="page-actions">
+          <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+          <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

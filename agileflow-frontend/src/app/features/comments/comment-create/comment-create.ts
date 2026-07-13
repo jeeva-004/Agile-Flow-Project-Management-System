@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommentService } from '../../../core/services/comment.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-comment-create',
@@ -31,6 +32,8 @@ inject(ActivatedRoute);
 private readonly router=
 
 inject(Router);
+
+private readonly toastService = inject(ToastService);
 
 issueId!:number;
 
@@ -76,32 +79,14 @@ return;
 
 }
 
-this.service
-
-.create(
-
-this.issueId,
-
-this.form.getRawValue()
-
-)
-
-.subscribe({
-
-next:()=>{
-
-this.router.navigate([
-
-'/issues',
-
-this.issueId,
-
-'comments'
-
-]);
-
-}
-
+this.service.create(this.issueId, this.form.getRawValue()).subscribe({
+  next: () => {
+    this.toastService.success('Comment Added', 'Your comment was successfully added.');
+    this.router.navigate(['/issues', this.issueId, 'comments']);
+  },
+  error: () => {
+    this.toastService.error('Error', 'Failed to add comment.');
+  }
 });
 
 }

@@ -26,8 +26,8 @@ CommonModule
 ],
 
 templateUrl:
-'./activity-feed.html'
-
+'./activity-feed.html',
+styleUrls: ['./activity-feed.scss']
 })
 
 export class ActivityFeed

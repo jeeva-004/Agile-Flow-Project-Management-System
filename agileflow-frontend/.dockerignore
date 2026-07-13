@@ -11,7 +11,6 @@ dist/
 
 # Ignore docker files inside the container
 Dockerfile
-nginx.conf
 
 # Ignore local log files
 *.log

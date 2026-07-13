@@ -1,63 +1,95 @@
-<div class="card mt-lg" style="max-width: 800px; padding: 20px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-    <h4 style="margin: 0; font-weight: 600;">Attachments</h4>
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)" style="padding: 4px 8px; font-size: 13px;">
+<div class="attachments-section">
+  
+  <div class="section-header">
+    <h3>Files & Documents</h3>
+    <div class="sort-controls" *ngIf="attachments.length > 0">
+      <select [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
         <option value="id">Uploaded Order</option>
         <option value="originalFileName">File Name</option>
         <option value="fileSize">File Size</option>
       </select>
-      <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction" style="padding: 4px 8px; font-size: 13px;">
-        {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
+      <button class="btn-sort" (click)="toggleSortDir()" title="Toggle sort direction">
+        <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </button>
     </div>
   </div>
 
-  <div *ngIf="attachments.length === 0" style="padding: 30px; text-align: center; color: var(--text-secondary, #666); border: 1px dashed var(--border-color); border-radius: var(--border-radius-md);">
-    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none" style="margin-bottom: 8px; opacity: 0.5;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-    <div style="font-size: 14px; font-weight: 500;">No attachments uploaded yet</div>
+  <div *ngIf="attachments.length === 0" class="empty-state">
+    <div class="icon">
+      <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+    </div>
+    <h4>No Attachments Yet</h4>
+    <p>Upload files above to improve collaboration on this issue.</p>
   </div>
 
-  <div *ngIf="attachments.length > 0" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;">
-    <div *ngFor="let item of attachments" 
-         style="display: flex; flex-direction: column; justify-content: space-between; padding: 12px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); transition: all 0.2s ease-in-out;"
-         onmouseover="this.style.background='var(--bg-surface-hover)'"
-         onmouseout="this.style.background='var(--bg-surface)'">
+  <div *ngIf="attachments.length > 0" class="attachment-grid">
+    <div class="attachment-card" *ngFor="let item of attachments">
       
-      <div>
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--primary-color, #3b82f6)" stroke-width="2" fill="none" style="flex-shrink: 0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-          <span style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main, #333);" [title]="item.originalFileName">
-            {{item.originalFileName}}
-          </span>
+      <div class="card-top">
+        <div class="file-icon" [ngClass]="{
+            'pdf': item.originalFileName?.toLowerCase().endsWith('.pdf'),
+            'image': item.originalFileName?.toLowerCase().match('\.(jpg|jpeg|png|gif|svg|webp)$'),
+            'word': item.originalFileName?.toLowerCase().match('\.(doc|docx)$'),
+            'excel': item.originalFileName?.toLowerCase().match('\.(xls|xlsx|csv)$'),
+            'ppt': item.originalFileName?.toLowerCase().match('\.(ppt|pptx)$'),
+            'zip': item.originalFileName?.toLowerCase().match('\.(zip|tar|gz|rar)$'),
+            'video': item.originalFileName?.toLowerCase().match('\.(mp4|mov|avi|wmv)$'),
+            'audio': item.originalFileName?.toLowerCase().match('\.(mp3|wav|ogg)$'),
+            'text': item.originalFileName?.toLowerCase().match('\.(txt|md|log)$'),
+            'unknown': !item.originalFileName?.toLowerCase().match('\.(pdf|jpg|jpeg|png|gif|svg|webp|doc|docx|xls|xlsx|csv|ppt|pptx|zip|tar|gz|rar|mp4|mov|avi|wmv|mp3|wav|ogg|txt|md|log)$')
+          }">
+          <!-- PDF -->
+          <svg *ngIf="item.originalFileName?.toLowerCase().endsWith('.pdf')" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M10.5 15.5l-2-2"></path><path d="M10.5 15.5l2-2"></path><path d="M12.5 13.5v5"></path></svg>
+          <!-- Image -->
+          <svg *ngIf="item.originalFileName?.toLowerCase().match('\.(jpg|jpeg|png|gif|svg|webp)$')" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <!-- Document -->
+          <svg *ngIf="item.originalFileName?.toLowerCase().match('\.(doc|docx|xls|xlsx|csv|txt|md)$')" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <!-- Archive -->
+          <svg *ngIf="item.originalFileName?.toLowerCase().match('\.(zip|tar|gz|rar)$')" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          <!-- Other/Unknown -->
+          <svg *ngIf="!item.originalFileName?.toLowerCase().match('\.(pdf|jpg|jpeg|png|gif|svg|webp|doc|docx|xls|xlsx|csv|zip|tar|gz|rar|txt|md)$')" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
         </div>
-        <div style="font-size: 11px; color: var(--text-secondary, #666);">
-          Size: {{formatBytes(item.fileSize)}}
+        
+        <div class="file-info">
+          <span class="filename" [title]="item.originalFileName">{{ item.originalFileName }}</span>
+          <div class="meta">
+            <span class="extension-badge">{{ item.originalFileName?.split('.').pop() }}</span>
+            <span>{{ formatBytes(item.fileSize) }}</span>
+          </div>
         </div>
       </div>
-
-      <div style="display: flex; gap: 8px; margin-top: 12px;">
-        <button class="btn btn-outline" (click)="download(item.id, item.originalFileName)" style="flex: 1; padding: 6px 0; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 4px;">
-          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          Download
-        </button>
-        <button class="btn btn-outline" (click)="remove(item.id)" style="padding: 6px 8px; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;" 
-                onmouseover="this.style.background='rgba(239, 68, 68, 0.1)'" 
-                onmouseout="this.style.background='transparent'">
-          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-        </button>
+      
+      <div class="card-bottom">
+        <div class="uploader-info">
+          <div class="avatar">{{ (item.uploadedByName || 'U').charAt(0) }}</div>
+          <div class="details">
+            <span class="name">{{ item.uploadedByName || 'Unknown User' }}</span>
+            <span class="time">{{ (item.uploadedAt | date:'short') || 'Recently' }}</span>
+          </div>
+        </div>
+        
+        <div class="actions">
+          <button class="btn-icon" (click)="download(item.id, item.originalFileName)" title="Download">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </button>
+          <button class="btn-icon danger" (click)="remove(item.id)" title="Delete">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
+        </div>
       </div>
 
     </div>
   </div>
 
-  <div *ngIf="attachments.length > 0" class="pagination-controls" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
-    <span style="font-size:12px; color:var(--text-secondary,#666);">
-      Page {{ page + 1 }} of {{ totalPages || 1 }} ({{ totalElements }} files)
-    </span>
-    <div style="display:flex; gap:6px;">
-      <button class="btn btn-outline" (click)="prevPage()" [disabled]="page === 0" style="padding: 4px 10px; font-size: 12px;">Prev</button>
-      <button class="btn btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages" style="padding: 4px 10px; font-size: 12px;">Next</button>
+  <div *ngIf="attachments.length > 0" class="pagination">
+    <div class="page-info">
+      Showing <span>{{ (page * size) + 1 }}</span> - <span>{{ ((page * size) + attachments.length) > totalElements ? totalElements : ((page * size) + attachments.length) }}</span> of <span>{{ totalElements }}</span>
+    </div>
+    <div class="page-actions">
+      <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+      <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
     </div>
   </div>
+
 </div>

@@ -1,35 +1,53 @@
-<div class="page-header">
-  <div>
-    <h2>Edit Work Log</h2>
-    <p class="page-subtitle">Update time tracking details</p>
+<div class="worklog-form-container">
+  
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Edit Work Log</h1>
+      <p class="page-subtitle">Update time tracking details</p>
+    </div>
   </div>
-  <button class="btn btn-secondary" [routerLink]="['/issues', issueId, 'worklogs']">
-    Cancel
-  </button>
-</div>
 
-<div class="card" style="max-width: 600px;">
-  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
-    
-    <div class="flex gap-md">
-      <div class="form-group" style="flex:1">
-        <label>Hours Spent</label>
-        <input class="form-control" type="number" placeholder="e.g. 2" formControlName="hoursSpent">
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      
+      <div class="form-section">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hours Spent</label>
+            <div class="input-wrapper">
+              <svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <input type="number" step="0.5" placeholder="e.g. 4" formControlName="hoursSpent">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Work Date</label>
+            <div class="input-wrapper">
+              <svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <input type="date" formControlName="workDate">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Work Description</label>
+          <div class="input-wrapper">
+            <textarea placeholder="Describe what you worked on..." formControlName="description"></textarea>
+          </div>
+        </div>
+
       </div>
-      <div class="form-group" style="flex:1">
-        <label>Date</label>
-        <input class="form-control" type="date" formControlName="workDate">
+
+      <!-- Footer Actions -->
+      <div class="form-actions">
+        <button class="btn-action secondary" type="button" [routerLink]="['/issues', issueId, 'worklogs']">Cancel</button>
+        <button class="btn-action primary" type="submit" [disabled]="form.invalid || !form.dirty">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Update Work Log
+        </button>
       </div>
-    </div>
-
-    <div class="form-group">
-      <label>Description</label>
-      <textarea class="form-control" placeholder="What did you work on?" formControlName="description" style="min-height: 100px;"></textarea>
-    </div>
-
-    <div class="flex justify-end gap-sm mt-lg">
-      <button class="btn btn-secondary" type="button" [routerLink]="['/issues', issueId, 'worklogs']">Cancel</button>
-      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Update Work Log</button>
-    </div>
-  </form>
+      
+    </form>
+  </div>
 </div>

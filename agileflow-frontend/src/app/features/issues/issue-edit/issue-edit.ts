@@ -32,6 +32,7 @@ import {
 } from '../../../core/services/project-member.service';
 import { AttachmentUpload } from '../../attachments/attachment-upload/attachment-upload';
 import { AttachmentList } from '../../attachments/attachment-list/attachment-list';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
 
@@ -77,6 +78,8 @@ export class IssueEdit
 
   private readonly router =
     inject(Router);
+
+  private readonly toastService = inject(ToastService);
 
   issueId!: number;
 
@@ -257,34 +260,16 @@ export class IssueEdit
 
     }
 
-    this.issueService
-
-      .update(
-
-        this.issueId,
-
-        this.form.getRawValue()
-
-      )
-
-      .subscribe({
-
-        next: () => {
-
-          this.router.navigate([
-
-            '/projects',
-
-            this.projectId,
-
-            'issues'
-
-          ]);
-
-        }
-
-      });
-
+    this.issueService.update(this.issueId, this.form.getRawValue()).subscribe({
+      next: () => {
+        this.toastService.success('Issue Updated', 'The issue was successfully updated.');
+        this.router.navigate(['/projects', this.projectId, 'issues']);
+      },
+      error: error => {
+        this.toastService.error('Error', 'Failed to update issue.');
+        console.error(error);
+      }
+    });
   }
 
 }

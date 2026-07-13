@@ -13,6 +13,8 @@ from '../../../core/services/user.service';
 import { User }
 from '../../../shared/models/user.model';
 import { RouterLink } from '@angular/router';
+import { ToastService } from '../../../core/services/toast.service';
+import { DialogService } from '../../../core/services/dialog.service';
 
 @Component({
   selector: 'app-user-list',
@@ -25,6 +27,8 @@ implements OnInit {
 
   private readonly userService =
     inject(UserService);
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
 
   users: User[] = [];
   page = 0;
@@ -77,18 +81,23 @@ implements OnInit {
   }
 
   deleteUser(id: number): void {
-
-    if (!confirm(
-      'Delete selected user?'
-    )) {
-      return;
-    }
-
-    this.userService.delete(id)
-      .subscribe({
+    this.dialogService.confirm({
+      title: 'Delete User',
+      message: 'Are you sure you want to delete this user? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      intent: 'danger'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.userService.delete(id).subscribe({
         next: () => {
+          this.toastService.success('User Deleted', 'The user was successfully deleted.');
           this.loadUsers();
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to delete user.');
         }
       });
+    });
   }
 }

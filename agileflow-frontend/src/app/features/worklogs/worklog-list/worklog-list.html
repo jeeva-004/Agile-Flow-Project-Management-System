@@ -1,79 +1,121 @@
-<div class="page-header">
-  <div>
-    <h2>Worklogs</h2>
-    <p class="page-subtitle">Time tracking for Issue #{{issueId}}</p>
+<div class="worklog-section">
+  
+  <!-- Header -->
+  <div class="section-header">
+    <div class="header-info">
+      <h3>Time Tracking</h3>
+      <p>Log and review time spent on this issue.</p>
+    </div>
+    
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-secondary" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; border: 1px solid #E5E7EB; background: white;" [routerLink]="['/issues', issueId, 'edit']">
+        Back to Issue
+      </button>
+      <button class="btn btn-primary" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; background: #2563EB; color: white; border: none; display: flex; align-items: center; gap: 8px;" (click)="create()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Log Work
+      </button>
+    </div>
   </div>
-  <div style="display:flex; gap:8px; align-items:center;">
-    <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
-      <option value="id">Created Order</option>
-      <option value="workDate">Work Date</option>
-      <option value="hoursSpent">Hours Spent</option>
-    </select>
-    <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction">
-      {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
-    </button>
-    <button class="btn btn-secondary" [routerLink]="['/projects', projectId, 'issues']">Back</button>
-    <button class="btn btn-primary" (click)="create()">
-      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      Log Time
-    </button>
-  </div>
-</div>
 
-<div class="table-container" style="max-width: 900px;">
-  <table class="table data-table">
-    <thead>
-      <tr>
-        <th>User</th>
-        <th>Date</th>
-        <th>Hours</th>
-        <th>Description</th>
-        <th style="width: 100px;">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let worklog of worklogs">
-        <td>
-          <div class="header-user" style="padding:0">
-            <div class="avatar" style="width:24px;height:24px;font-size:10px">{{worklog.userName?.charAt(0) || 'U'}}</div>
-            <span style="font-size:13px; font-weight: 500;">{{worklog.userName}}</span>
-          </div>
-        </td>
-        <td style="color:var(--text-secondary)">{{worklog.workDate}}</td>
-        <td><strong>{{worklog.hoursSpent}}h</strong></td>
-        <td style="color:var(--text-secondary)">{{worklog.description}}</td>
-        <td>
-          <div class="action-buttons" style="margin-bottom:0">
-            <button class="btn btn-outline btn-icon" (click)="edit(worklog.id)" title="Edit">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            </button>
-            <button class="btn btn-danger btn-icon" (click)="delete(worklog.id)" title="Delete">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
-          </div>
-        </td>
-      </tr>
-      <tr *ngIf="worklogs.length === 0">
-        <td colspan="5">
-          <div class="empty-state">
-            <div class="empty-state-icon">
-              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+  <!-- Summary Cards -->
+  <div class="summary-cards" *ngIf="worklogs.length > 0">
+    <div class="summary-card">
+      <span class="summary-title">Total Entries</span>
+      <span class="summary-value">{{ totalElements }}</span>
+    </div>
+    <div class="summary-card">
+      <span class="summary-title">Recent Activity</span>
+      <span class="summary-value" style="font-size: 18px;">{{ worklogs[0]?.workDate | date:'mediumDate' }}</span>
+    </div>
+    <div class="summary-card">
+      <span class="summary-title">Page Hours</span>
+      <span class="summary-value" style="color: #16A34A;">Detailed Below</span>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar" *ngIf="worklogs.length > 0">
+    <div style="font-size: 14px; font-weight: 500; color: #374151;">
+      Worklog History
+    </div>
+    <div class="sort-controls">
+      <select [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+        <option value="id">Created Order</option>
+        <option value="workDate">Work Date</option>
+        <option value="hoursSpent">Hours Spent</option>
+      </select>
+      <button class="btn-action" style="padding: 8px; background: transparent; border: 1px solid #D1D5DB; border-radius: 6px; cursor: pointer;" (click)="toggleSortDir()" title="Toggle sort direction">
+        <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Timeline Cards -->
+  <div class="worklog-timeline" *ngIf="worklogs.length > 0">
+    <div class="worklog-card" *ngFor="let worklog of worklogs">
+      
+      <div class="timeline-indicator">
+        <div class="dot"></div>
+      </div>
+      
+      <div class="card-content">
+        <div class="card-header">
+          <div class="user-info">
+            <div class="avatar">{{ worklog.userName?.charAt(0) || 'U' }}</div>
+            <div class="meta">
+              <span class="name">{{ worklog.userName }}</span>
+              <span class="date">
+                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                {{ worklog.workDate }}
+              </span>
             </div>
-            <h3 class="empty-state-title">No time logged</h3>
-            <p class="empty-state-description">Add a worklog to track time spent on this issue.</p>
           </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="pagination-controls" style="max-width: 900px; display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
-  <span style="font-size:13px; color:var(--text-secondary,#666);">
-    Page {{ page + 1 }} of {{ totalPages || 1 }} ({{ totalElements }} logs)
-  </span>
-  <div style="display:flex; gap:8px;">
-    <button class="btn btn-outline" (click)="prevPage()" [disabled]="page === 0">Previous</button>
-    <button class="btn btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+          <div class="hours-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            {{ worklog.hoursSpent }}h
+          </div>
+        </div>
+        
+        <div class="card-body">
+          {{ worklog.description }}
+        </div>
+        
+        <div class="card-footer">
+          <button class="btn-action" (click)="edit(worklog.id)" title="Edit">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </button>
+          <button class="btn-action danger" (click)="delete(worklog.id)" title="Delete">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
+        </div>
+      </div>
+      
+    </div>
   </div>
+
+  <!-- Empty State -->
+  <div *ngIf="worklogs.length === 0" class="empty-state">
+    <div class="icon">
+      <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+    </div>
+    <h3>No Work Logs Yet</h3>
+    <p>Log work to track development progress and keep the team updated.</p>
+    <button class="btn btn-primary" style="padding: 10px 24px; border-radius: 8px; font-weight: 600; background: #2563EB; color: white; border: none; cursor: pointer;" (click)="create()">
+      Log First Work
+    </button>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="worklogs.length > 0" class="pagination">
+    <div class="page-info">
+      Showing <span>{{ (page * size) + 1 }}</span> to <span>{{ ((page * size) + worklogs.length) > totalElements ? totalElements : ((page * size) + worklogs.length) }}</span> of <span>{{ totalElements }}</span> logs
+    </div>
+    <div class="page-actions">
+      <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+      <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+    </div>
+  </div>
+
 </div>

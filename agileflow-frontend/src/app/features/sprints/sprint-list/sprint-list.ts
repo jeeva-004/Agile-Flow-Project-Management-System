@@ -18,6 +18,8 @@ import {
   SprintService
 } from '../../../core/services/sprint.service';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../core/services/toast.service';
+import { DialogService } from '../../../core/services/dialog.service';
 
 @Component({
 
@@ -51,6 +53,9 @@ implements OnInit {
   private readonly router =
 
     inject(Router);
+
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
 
   projectId!: number;
 
@@ -146,38 +151,24 @@ implements OnInit {
 
   }
 
-  deleteSprint(
-    id: number
-  ): void {
-
-    if (
-
-      !confirm(
-
-        'Delete sprint?'
-
-      )
-
-    ) {
-
-      return;
-
-    }
-
-    this.service
-
-      .delete(id)
-
-      .subscribe({
-
+  deleteSprint(id: number): void {
+    this.dialogService.confirm({
+      title: 'Delete Sprint',
+      message: 'Are you sure you want to delete this sprint? All associated issues may be affected.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      intent: 'danger'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.service.delete(id).subscribe({
         next: () => {
-
+          this.toastService.success('Sprint Deleted', 'The sprint was successfully deleted.');
           this.load();
-
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to delete sprint.');
         }
-
       });
-
+    });
   }
-
 }

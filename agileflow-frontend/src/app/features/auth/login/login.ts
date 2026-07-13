@@ -6,6 +6,7 @@ import {
   FormGroup,
   ReactiveFormsModule
 } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 import { Router } from '@angular/router';
 
@@ -19,17 +20,19 @@ import { AuthService }
   standalone: true,
 
   imports: [
-
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    CommonModule
   ],
-
-  templateUrl: './login.html'
-
+  templateUrl: './login.html',
+  styleUrl: './login.scss'
 })
 export class Login {
-
   form: FormGroup;
+  showPassword = false;
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   constructor(
 

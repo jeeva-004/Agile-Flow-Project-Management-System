@@ -39,6 +39,8 @@ CommentService
 }
 
 from '../../../core/services/comment.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { DialogService } from '../../../core/services/dialog.service';
 
 @Component({
 
@@ -75,6 +77,9 @@ inject(ActivatedRoute);
 private readonly router=
 
 inject(Router);
+
+private readonly toastService = inject(ToastService);
+private readonly dialogService = inject(DialogService);
 
   issueId!:number;
   projectId!:number;
@@ -172,44 +177,25 @@ id,
 
 }
 
-delete(
-
-id:number
-
-):void{
-
-if(
-
-!confirm(
-
-'Delete comment?'
-
-)
-
-){
-
-return;
-
-}
-
-this.service
-
-.delete(
-
-id
-
-)
-
-.subscribe({
-
-next:()=>{
-
-this.load();
-
-}
-
-});
-
+delete(id:number):void{
+  this.dialogService.confirm({
+    title: 'Delete Comment',
+    message: 'Are you sure you want to delete this comment? This action cannot be undone.',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    intent: 'danger'
+  }).subscribe(confirmed => {
+    if (!confirmed) return;
+    this.service.delete(id).subscribe({
+      next: () => {
+        this.toastService.success('Comment Deleted', 'The comment was successfully deleted.');
+        this.load();
+      },
+      error: () => {
+        this.toastService.error('Error', 'Failed to delete comment.');
+      }
+    });
+  });
 }
 
 }

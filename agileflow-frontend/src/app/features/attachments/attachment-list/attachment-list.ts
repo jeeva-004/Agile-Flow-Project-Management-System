@@ -6,12 +6,15 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AttachmentService } from '../../../core/services/attachment.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { DialogService } from '../../../core/services/dialog.service';
 
 @Component({
   selector: 'app-attachment-list',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './attachment-list.html'
+  templateUrl: './attachment-list.html',
+  styleUrls: ['./attachment-list.scss']
 })
 
 export class AttachmentList
@@ -32,7 +35,9 @@ export class AttachmentList
   sortDir = 'desc';
 
   constructor(
-    private service: AttachmentService
+    private service: AttachmentService,
+    private toastService: ToastService,
+    private dialogService: DialogService
   ) { }
 
   ngOnInit(): void {
@@ -108,30 +113,24 @@ download(
         });
 
 }
-  remove(
-
-    id: number
-
-  ): void {
-
-    this.service
-
-      .delete(
-
-        id
-
-      )
-
-      .subscribe({
-
+  remove(id: number): void {
+    this.dialogService.confirm({
+      title: 'Delete Attachment',
+      message: 'Are you sure you want to delete this attachment? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      intent: 'danger'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.service.delete(id).subscribe({
         next: () => {
-
+          this.toastService.success('Attachment Deleted', 'The attachment was successfully deleted.');
           this.loadAttachments();
-
+        },
+        error: () => {
+          this.toastService.error('Error', 'Failed to delete attachment.');
         }
-
       });
-
+    });
   }
-
 }

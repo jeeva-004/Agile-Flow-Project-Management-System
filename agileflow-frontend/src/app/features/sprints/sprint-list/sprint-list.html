@@ -1,75 +1,152 @@
-<div class="page-header">
-  <div>
-    <h2>Sprints</h2>
-    <p class="page-subtitle">Track your project sprints</p>
+<div class="sprints-container">
+  
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Sprints</h1>
+      <p class="page-subtitle">Plan, organize and manage project sprints</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action secondary" routerLink="/projects" style="margin-right: 12px;">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Projects
+      </button>
+      <button *ngIf="role !== 'DEVELOPER'" class="btn-action primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Create Sprint
+      </button>
+    </div>
   </div>
-  <div style="display:flex; gap:8px; align-items:center;">
-    <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
-      <option value="id">Created Order</option>
-      <option value="name">Sprint Name</option>
-      <option value="startDate">Start Date</option>
-      <option value="endDate">End Date</option>
-    </select>
-    <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction">
-      {{ sortDir === 'asc' ? '↑ Asc' : '↓ Desc' }}
-    </button>
-    <button *ngIf="role !== 'DEVELOPER'" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
-      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      New Sprint
-    </button>
-  </div>
-</div>
 
-<div class="table-container">
-  <table class="table data-table">
-    <thead>
-      <tr>
-        <th>Sprint ID</th>
-        <th>Name</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th style="width: 100px;" *ngIf="role !== 'DEVELOPER'">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let sprint of sprints">
-        <td><span class="badge badge-todo">{{sprint.id}}</span></td>
-        <td class="font-weight-600">{{sprint.name}}</td>
-        <td style="color:var(--text-secondary)">{{sprint.startDate}}</td>
-        <td style="color:var(--text-secondary)">{{sprint.endDate}}</td>
-        <td *ngIf="role !== 'DEVELOPER'">
-          <div class="action-buttons" style="margin-bottom:0">
-            <button class="btn btn-outline btn-icon" (click)="editSprint(sprint.id)" title="Edit">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            </button>
-            <button class="btn btn-danger btn-icon" (click)="deleteSprint(sprint.id)" title="Delete">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
-          </div>
-        </td>
-      </tr>
-      <tr *ngIf="sprints.length === 0">
-        <td colspan="5">
-          <div class="empty-state">
-            <div class="empty-state-icon">
-              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-            </div>
-            <h3 class="empty-state-title">No sprints found</h3>
-            <p class="empty-state-description">Plan your first sprint to start tracking work.</p>
-            <button *ngIf="role !== 'DEVELOPER'" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">Create Sprint</button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="pagination-controls" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
-  <span style="font-size:13px; color:var(--text-secondary,#666);">
-    Page {{ page + 1 }} of {{ totalPages || 1 }} ({{ totalElements }} sprints)
-  </span>
-  <div style="display:flex; gap:8px;">
-    <button class="btn btn-outline" (click)="prevPage()" [disabled]="page === 0">Previous</button>
-    <button class="btn btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+  <!-- Project Summary Card -->
+  <div class="project-summary-card">
+    <div class="summary-item">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      </div>
+      <div class="meta">
+        <span class="label">Project Context</span>
+        <span class="value">Project #{{ projectId }}</span>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="summary-item">
+      <div class="icon" style="background:#F3E8FF; color:#6B21A8;">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      </div>
+      <div class="meta">
+        <span class="label">Total Sprints</span>
+        <span class="value">{{ totalElements }}</span>
+      </div>
+    </div>
   </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-input">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search sprints...">
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <select class="sort-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+        <option value="id">Sort by Created Order</option>
+        <option value="name">Sort by Sprint Name</option>
+        <option value="startDate">Sort by Start Date</option>
+        <option value="endDate">Sort by End Date</option>
+      </select>
+      <button class="btn-action secondary" (click)="toggleSortDir()" title="Toggle sort direction">
+        <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <div class="table-wrapper">
+      <table class="enterprise-table">
+        <thead>
+          <tr>
+            <th>Sprint</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th *ngIf="role !== 'DEVELOPER'" style="width: 100px; text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sprint of sprints">
+            <td>
+              <div class="sprint-info">
+                <div class="icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </div>
+                <div class="details">
+                  <span class="name">{{ sprint.name }}</span>
+                  <span class="id">SPR-{{ sprint.id }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="duration-block">
+                <span>{{ sprint.startDate }}</span>
+                <svg class="arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                <span>{{ sprint.endDate }}</span>
+              </div>
+            </td>
+            <td>
+              <!-- Defaulting to Active if status is unknown for UI presentation -->
+              <span class="status-badge" [ngClass]="{
+                  'active': sprint.status === 'ACTIVE' || !sprint.status,
+                  'planning': sprint.status === 'PLANNING',
+                  'completed': sprint.status === 'COMPLETED',
+                  'overdue': sprint.status === 'OVERDUE'
+                }">
+                {{ sprint.status || 'ACTIVE' }}
+              </span>
+            </td>
+            <td *ngIf="role !== 'DEVELOPER'">
+              <div class="action-buttons" style="justify-content: flex-end;">
+                <button class="btn-icon" (click)="editSprint(sprint.id)" title="Edit Sprint">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <button class="btn-icon danger" (click)="deleteSprint(sprint.id)" title="Delete Sprint">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Empty State -->
+          <tr *ngIf="sprints.length === 0">
+            <td [attr.colspan]="role !== 'DEVELOPER' ? 4 : 3">
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </div>
+                <h3>No Sprints Created</h3>
+                <p>Create your first sprint to begin planning your project.</p>
+                <button *ngIf="role !== 'DEVELOPER'" class="btn-action primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
+                  Create Sprint
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="sprints.length > 0">
+      <div class="page-info">
+        Showing <span>{{ (page * 10) + 1 }}</span> to <span>{{ ((page * 10) + sprints.length) }}</span> of <span>{{ totalElements }}</span> results
+      </div>
+      <div class="page-actions">
+        <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+        <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+      </div>
+    </div>
+  </div>
+
 </div>

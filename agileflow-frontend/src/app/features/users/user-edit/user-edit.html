@@ -1,44 +1,95 @@
-<div class="page-header">
-  <div>
-    <h2>Edit User</h2>
-    <p class="page-subtitle">Update user profile and status</p>
+<div class="users-container">
+  
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Edit User</h1>
+      <p class="page-subtitle">Update user profile and account status</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action secondary" routerLink="/users">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Users
+      </button>
+    </div>
   </div>
-  <button class="btn btn-secondary" routerLink="/users">
-    Cancel
-  </button>
-</div>
 
-<div class="card" style="max-width: 600px;">
-  <form class="form-container" [formGroup]="form" (ngSubmit)="submit()" style="padding:0; border:none; max-width:100%;">
-    
-    <div class="flex gap-md">
-      <div class="form-group" style="flex:1">
-        <label>First Name</label>
-        <input class="form-control" placeholder="Enter first name" formControlName="firstName">
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Personal Information
+        </h3>
+        
+        <div class="grid-2">
+          <div class="form-group">
+            <label>First Name</label>
+            <div class="input-with-icon">
+              <input type="text" placeholder="e.g. John" formControlName="firstName">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched" class="validation-error">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              First Name is required
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Last Name</label>
+            <div class="input-with-icon">
+              <input type="text" placeholder="e.g. Doe" formControlName="lastName">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="form-group" style="flex:1">
-        <label>Last Name</label>
-        <input class="form-control" placeholder="Enter last name" formControlName="lastName">
-      </div>
-    </div>
 
-    <div class="flex gap-md">
-      <div class="form-group" style="flex:1">
-        <label>Email</label>
-        <input class="form-control" type="email" placeholder="Enter email address" formControlName="email">
+      <!-- Account Information Section -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          Account Information
+        </h3>
+        
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-with-icon">
+            <input type="email" placeholder="john.doe@example.com" formControlName="email">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+        </div>
       </div>
-      <div class="form-group" style="flex:1">
-        <label>Status</label>
-        <select class="form-control" formControlName="status">
-          <option value="ACTIVE">ACTIVE</option>
-          <option value="INACTIVE">INACTIVE</option>
-        </select>
-      </div>
-    </div>
 
-    <div class="flex justify-end gap-sm mt-lg">
-      <button class="btn btn-secondary" type="button" routerLink="/users">Cancel</button>
-      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Update User</button>
-    </div>
-  </form>
+      <!-- Permissions Section -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Account Status
+        </h3>
+        
+        <div class="form-group">
+          <label>Status</label>
+          <div class="input-with-icon">
+            <select formControlName="status">
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+            </select>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="form-actions">
+        <button class="btn-action secondary" type="button" routerLink="/users">Cancel</button>
+        <button class="btn-action primary" type="submit" [disabled]="form.invalid || !form.dirty">
+          <span *ngIf="!form.invalid">Update User</span>
+          <span *ngIf="form.invalid">Please fill required fields</span>
+        </button>
+      </div>
+      
+    </form>
+  </div>
 </div>

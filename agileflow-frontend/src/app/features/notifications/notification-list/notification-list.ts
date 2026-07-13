@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../../core/services/notification.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { DialogService } from '../../../core/services/dialog.service';
 
 interface NotificationItem {
   id: number;
@@ -17,11 +19,14 @@ interface NotificationItem {
   selector: 'app-notification-list',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './notification-list.html'
+  templateUrl: './notification-list.html',
+  styleUrls: ['./notification-list.scss']
 })
 export class NotificationListComponent implements OnInit {
 
   private readonly notificationService = inject(NotificationService);
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
 
   notifications: NotificationItem[] = [];
   unreadCount = 0;
@@ -97,6 +102,7 @@ export class NotificationListComponent implements OnInit {
       next: () => {
         notification.read = true;
         this.unreadCount = Math.max(0, this.unreadCount - 1);
+        this.toastService.success('Notification Read', 'The notification has been marked as read.');
       }
     });
   }
@@ -106,19 +112,30 @@ export class NotificationListComponent implements OnInit {
       next: () => {
         this.notifications.forEach(n => n.read = true);
         this.unreadCount = 0;
+        this.toastService.success('All Read', 'All notifications have been marked as read.');
       }
     });
   }
 
   deleteNotification(notification: NotificationItem): void {
-    this.notificationService.delete(notification.id).subscribe({
-      next: () => {
-        const wasUnread = !notification.read;
-        this.notifications = this.notifications.filter(n => n.id !== notification.id);
-        if (wasUnread) {
-          this.unreadCount = Math.max(0, this.unreadCount - 1);
+    this.dialogService.confirm({
+      title: 'Delete Notification',
+      message: 'Are you sure you want to delete this notification?',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      intent: 'danger'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.notificationService.delete(notification.id).subscribe({
+        next: () => {
+          const wasUnread = !notification.read;
+          this.notifications = this.notifications.filter(n => n.id !== notification.id);
+          if (wasUnread) {
+            this.unreadCount = Math.max(0, this.unreadCount - 1);
+          }
+          this.toastService.success('Notification Deleted', 'The notification has been deleted.');
         }
-      }
+      });
     });
   }
 }

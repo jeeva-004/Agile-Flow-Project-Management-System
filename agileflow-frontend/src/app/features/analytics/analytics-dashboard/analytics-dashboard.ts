@@ -10,7 +10,8 @@ import { ProjectService } from '../../../core/services/project.service';
   selector: 'app-analytics-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './analytics-dashboard.html'
+  templateUrl: './analytics-dashboard.html',
+  styleUrls: ['./analytics-dashboard.scss']
 })
 export class AnalyticsDashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
