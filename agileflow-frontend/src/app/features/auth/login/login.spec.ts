@@ -12,7 +12,8 @@ describe('LoginComponent', () => {
   let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
-    mockAuthService = jasmine.createSpyObj('AuthService', ['login']);
+    mockAuthService = jasmine.createSpyObj('AuthService', ['login', 'isLoggedIn']);
+    mockAuthService.isLoggedIn.and.returnValue(false);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
