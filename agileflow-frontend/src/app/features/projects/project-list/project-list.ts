@@ -16,7 +16,7 @@ import { ProjectService }
   from '../../../core/services/project.service';
 import { DialogService } from '../../../core/services/dialog.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { ActivityFeed } from '../../activities/activity-feed/activity-feed';
+
 
 @Component({
 
@@ -29,7 +29,6 @@ import { ActivityFeed } from '../../activities/activity-feed/activity-feed';
     CommonModule,
     FormsModule,
 
-    ActivityFeed,
     RouterModule
 
   ],
