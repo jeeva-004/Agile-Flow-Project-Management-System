@@ -40,8 +40,8 @@ import {
   ],
 
   templateUrl:
-
-  './sprint-edit.html'
+  './sprint-edit.html',
+  styleUrl: './sprint-edit.scss'
 
 })
 export class SprintEditComponent

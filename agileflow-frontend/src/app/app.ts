@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, HostListener } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet, RouterModule } from '@angular/router';
 import { NotificationService } from './core/services/notification.service';
 import { ProjectService } from './core/services/project.service';
@@ -24,6 +24,7 @@ export class App implements OnInit {
 
   unreadCount = 0;
   panelOpen = false;
+  sidebarOpen = false;
 
   role: string | null = null;
   currentProjectId: number | null = null;
@@ -39,6 +40,7 @@ export class App implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
+      this.closeSidebar();
       const prevRole = this.role;
       this.role = localStorage.getItem('role');
       this.extractProjectContext();
@@ -116,5 +118,18 @@ export class App implements OnInit {
 
   togglePanel(): void {
     this.panelOpen = !this.panelOpen;
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen = false;
+  }
+
+  @HostListener('window:keydown.escape')
+  handleEscape(): void {
+    this.sidebarOpen = false;
   }
 }

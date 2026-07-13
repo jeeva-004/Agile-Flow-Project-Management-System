@@ -51,7 +51,8 @@ import { ToastService } from '../../../core/services/toast.service';
   ],
 
   templateUrl:
-    './issue-create.html'
+    './issue-create.html',
+  styleUrl: './issue-create.scss'
 
 })
 export class IssueCreate

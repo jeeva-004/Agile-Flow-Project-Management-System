@@ -31,7 +31,8 @@ import {
     ReactiveFormsModule,
     RouterModule
   ],
-  templateUrl: './sprint-create.html'
+  templateUrl: './sprint-create.html',
+  styleUrl: './sprint-create.scss'
 })
 export class SprintCreateComponent {
 

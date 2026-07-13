@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import {
   FormBuilder,
@@ -26,9 +26,22 @@ import { AuthService }
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
-export class Login {
+export class Login implements OnInit {
   form: FormGroup;
   showPassword = false;
+
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      const role = localStorage.getItem('role');
+      if (role === 'ADMIN') {
+        this.router.navigate(['/dashboard/admin']);
+      } else if (role === 'PROJECT_MANAGER') {
+        this.router.navigate(['/dashboard/pm']);
+      } else {
+        this.router.navigate(['/dashboard/developer']);
+      }
+    }
+  }
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;

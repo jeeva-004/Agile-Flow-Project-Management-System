@@ -37,8 +37,8 @@ from '../../../core/services/dashboard.service';
   ],
 
   templateUrl:
-
-    './pm-dashboard.html'
+    './pm-dashboard.html',
+  styleUrl: './pm-dashboard.scss'
 
 })
 export class PmDashboardComponent

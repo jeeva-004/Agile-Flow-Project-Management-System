@@ -17,7 +17,8 @@ import { UserService } from '../../../core/services/user.service';
     CommonModule,
     ReactiveFormsModule
   ],
-  templateUrl: './user-create.html'
+  templateUrl: './user-create.html',
+  styleUrl: './user-create.scss'
 })
 export class UserCreateComponent {
 

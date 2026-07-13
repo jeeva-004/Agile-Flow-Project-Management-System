@@ -12,7 +12,8 @@ import { CommentService } from '../../../core/services/comment.service';
     ReactiveFormsModule,
     RouterModule
   ],
-  templateUrl: './comment-edit.html'
+  templateUrl: './comment-edit.html',
+  styleUrl: './comment-edit.scss'
 })
 export class CommentEditComponent
 implements OnInit{

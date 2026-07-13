@@ -30,7 +30,8 @@ import { UserService } from '../../../core/services/user.service';
     CommonModule,
     ReactiveFormsModule
   ],
-  templateUrl: './project-create.html'
+  templateUrl: './project-create.html',
+  styleUrl: './project-create.scss'
 })
 export class ProjectCreateComponent implements OnInit {
   private readonly fb = inject(FormBuilder);

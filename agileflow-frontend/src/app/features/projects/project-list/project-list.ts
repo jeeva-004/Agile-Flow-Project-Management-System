@@ -34,7 +34,8 @@ import { ToastService } from '../../../core/services/toast.service';
   ],
 
   templateUrl:
-    './project-list.html'
+    './project-list.html',
+  styleUrl: './project-list.scss'
 
 })
 export class ProjectListComponent

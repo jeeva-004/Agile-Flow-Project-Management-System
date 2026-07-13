@@ -13,7 +13,8 @@ import { ToastService } from '../../../core/services/toast.service';
     ReactiveFormsModule,
     RouterModule
   ],
-  templateUrl: './comment-create.html'
+  templateUrl: './comment-create.html',
+  styleUrl: './comment-create.scss'
 })
 export class CommentCreateComponent {
 

@@ -35,8 +35,8 @@ import { DialogService } from '../../../core/services/dialog.service';
   ],
 
   templateUrl:
-
-    './sprint-list.html'
+    './sprint-list.html',
+  styleUrl: './sprint-list.scss'
 
 })
 export class SprintListComponent

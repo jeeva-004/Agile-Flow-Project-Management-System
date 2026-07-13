@@ -20,7 +20,8 @@ import { DialogService } from '../../../core/services/dialog.service';
   selector: 'app-user-list',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './user-list.html'
+  templateUrl: './user-list.html',
+  styleUrl: './user-list.scss'
 })
 export class UserList
 implements OnInit {

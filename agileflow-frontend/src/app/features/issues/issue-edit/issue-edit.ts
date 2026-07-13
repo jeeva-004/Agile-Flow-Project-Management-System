@@ -55,8 +55,8 @@ import { ToastService } from '../../../core/services/toast.service';
   ],
 
   templateUrl:
-
-    './issue-edit.html'
+    './issue-edit.html',
+  styleUrl: './issue-edit.scss'
 
 })
 export class IssueEdit

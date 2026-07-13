@@ -21,7 +21,8 @@ import { ToastService } from '../../../core/services/toast.service';
     RouterModule,
     FormsModule
   ],
-  templateUrl: './issue-list.html'
+  templateUrl: './issue-list.html',
+  styleUrl: './issue-list.scss'
 })
 export class IssueListComponent implements OnInit, OnDestroy {
   private readonly service = inject(IssueService);

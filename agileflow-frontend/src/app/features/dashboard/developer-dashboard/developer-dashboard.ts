@@ -37,8 +37,8 @@ from '../../../core/services/dashboard.service';
   ],
 
   templateUrl:
-
-    './developer-dashboard.html'
+    './developer-dashboard.html',
+  styleUrl: './developer-dashboard.scss'
 
 })
 export class DeveloperDashboardComponent

@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
   selector: 'app-dashboard',
   standalone: true,
   imports: [],
-  template: ''
+  template: '',
+  styleUrl: './dashboard.scss'
 })
 export class Dashboard implements OnInit {
   private readonly router = inject(Router);

@@ -14,7 +14,8 @@ import { UserService } from '../../core/services/user.service';
     FormsModule,
     RouterModule
   ],
-  templateUrl: './project-members.html'
+  templateUrl: './project-members.html',
+  styleUrl: './project-members.scss'
 })
 
 export class ProjectMembersComponent

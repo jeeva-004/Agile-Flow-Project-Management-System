@@ -59,8 +59,8 @@ FormsModule
 ],
 
 templateUrl:
-
-'./comment-list.html'
+'./comment-list.html',
+styleUrl: './comment-list.scss'
 
 })
 export class CommentListComponent

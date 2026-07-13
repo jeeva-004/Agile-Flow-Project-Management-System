@@ -29,7 +29,8 @@ from '../../../core/services/user.service';
     ReactiveFormsModule
   ],
   templateUrl:
-    './user-edit.html'
+    './user-edit.html',
+  styleUrl: './user-edit.scss'
 })
 export class UserEditComponent
 implements OnInit {

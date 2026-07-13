@@ -44,7 +44,8 @@ import { UserService } from '../../../core/services/user.service';
   ],
 
   templateUrl:
-    './project-edit.html'
+    './project-edit.html',
+  styleUrl: './project-edit.scss'
 
 })
 export class ProjectEditComponent
