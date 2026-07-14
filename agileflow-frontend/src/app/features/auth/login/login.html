@@ -96,120 +96,89 @@
 
       <!-- Interactive Demo Access Section -->
       <div class="demo-access-container">
-        <!-- Collapsed Clickable Header -->
-        <button type="button" class="demo-toggle-row" (click)="toggleDemoAccess()" [class.active]="showDemoHelper">
-          <span class="icon">🗝</span>
-          <span class="text">Explore Demo Login Credentials</span>
-          <span class="arrow" [class.rotated]="showDemoHelper">▼</span>
-        </button>
-
-        <!-- Expandable Content Panel -->
-        <div class="demo-content-panel" [class.expanded]="showDemoHelper">
-          
-          <!-- Keycard swipe playful unlock interaction -->
-          <div class="keycard-scanner-box" *ngIf="!demoUnlocked" (click)="unlockDemo()">
-            <div class="scanner-header">
-              <span class="scanner-light" [class.blinking]="isSwiping"></span>
-              <span class="scanner-title">Security Keycard Terminal</span>
-            </div>
-            
-            <div class="keycard-swipe-area" [class.swiping]="isSwiping">
-              <div class="swipe-slot"></div>
-              <div class="keycard">
-                <div class="chip"></div>
-                <div class="logo">AF</div>
-                <div class="stripe"></div>
-                <span class="label">DEMO ACCESS</span>
-              </div>
-            </div>
-            <p class="swipe-instruction">Click/Tap the card to swipe and unlock</p>
+        <div class="credentials-box">
+          <div class="credentials-header">
+            <h3>⚡ Quick Demo Access</h3>
+            <p>Use the following accounts to explore AgileFlow.</p>
           </div>
 
-          <!-- Unlocked Credentials Cards -->
-          <div class="credentials-box" *ngIf="demoUnlocked">
-            <div class="credentials-header">
-              <h3>Demo Credentials</h3>
-              <p>Use the following accounts to explore AgileFlow.</p>
+          <div class="accounts-grid">
+            <!-- ADMIN Card -->
+            <div class="account-card role-admin">
+              <div class="card-role-header">
+                <div class="avatar admin-avatar">A</div>
+                <div>
+                  <span class="role-badge admin-badge">ADMIN</span>
+                  <h4 class="role-title">System Admin</h4>
+                </div>
+              </div>
+              <div class="credential-field">
+                <span class="label">Email</span>
+                <div class="value-row">
+                  <span class="value">admin@agileflow.com</span>
+                  <button type="button" class="copy-btn" (click)="copyToClipboard('admin@agileflow.com', 'Admin Email')" title="Copy Email">📋</button>
+                </div>
+              </div>
+              <div class="credential-field">
+                <span class="label">Password</span>
+                <div class="value-row">
+                  <span class="value">Admin&#64;123</span>
+                  <button type="button" class="copy-btn" (click)="copyToClipboard('Admin@123', 'Admin Password')" title="Copy Password">📋</button>
+                </div>
+              </div>
+              <button type="button" class="btn-copy-all" (click)="copyAll('admin@agileflow.com', 'Admin@123', 'Admin')">Copy All Credentials</button>
             </div>
 
-            <div class="accounts-grid">
-              <!-- ADMIN Card -->
-              <div class="account-card role-admin">
-                <div class="card-role-header">
-                  <div class="avatar admin-avatar">A</div>
-                  <div>
-                    <span class="role-badge admin-badge">ADMIN</span>
-                    <h4 class="role-title">System Admin</h4>
-                  </div>
+            <!-- PM Card -->
+            <div class="account-card role-pm">
+              <div class="card-role-header">
+                <div class="avatar pm-avatar">M</div>
+                <div>
+                  <span class="role-badge pm-badge">PM</span>
+                  <h4 class="role-title">Project Manager</h4>
                 </div>
-                <div class="credential-field">
-                  <span class="label">Email</span>
-                  <div class="value-row">
-                    <span class="value">admin@agileflow.com</span>
-                    <button type="button" class="copy-btn" (click)="copyToClipboard('admin@agileflow.com', 'Admin Email')" title="Copy Email">📋</button>
-                  </div>
-                </div>
-                <div class="credential-field">
-                  <span class="label">Password</span>
-                  <div class="value-row">
-                    <span class="value">Admin&#64;123</span>
-                    <button type="button" class="copy-btn" (click)="copyToClipboard('Admin@123', 'Admin Password')" title="Copy Password">📋</button>
-                  </div>
-                </div>
-                <button type="button" class="btn-copy-all" (click)="copyAll('admin@agileflow.com', 'Admin@123', 'Admin')">Copy All Credentials</button>
               </div>
+              <div class="credential-field">
+                <span class="label">Email</span>
+                <div class="value-row">
+                  <span class="value">pm@gmail.com</span>
+                  <button type="button" class="copy-btn" (click)="copyToClipboard('pm@gmail.com', 'PM Email')" title="Copy Email">📋</button>
+                </div>
+              </div>
+              <div class="credential-field">
+                <span class="label">Password</span>
+                <div class="value-row">
+                  <span class="value">manager&#64;1234</span>
+                  <button type="button" class="copy-btn" (click)="copyToClipboard('manager@1234', 'PM Password')" title="Copy Password">📋</button>
+                </div>
+              </div>
+              <button type="button" class="btn-copy-all" (click)="copyAll('pm@gmail.com', 'manager@1234', 'PM')">Copy All Credentials</button>
+            </div>
 
-              <!-- PM Card -->
-              <div class="account-card role-pm">
-                <div class="card-role-header">
-                  <div class="avatar pm-avatar">M</div>
-                  <div>
-                    <span class="role-badge pm-badge">PM</span>
-                    <h4 class="role-title">Project Manager</h4>
-                  </div>
+            <!-- DEVELOPER Card -->
+            <div class="account-card role-dev">
+              <div class="card-role-header">
+                <div class="avatar dev-avatar">D</div>
+                <div>
+                  <span class="role-badge dev-badge">DEV</span>
+                  <h4 class="role-title">Developer</h4>
                 </div>
-                <div class="credential-field">
-                  <span class="label">Email</span>
-                  <div class="value-row">
-                    <span class="value">pm@agileflow.com</span>
-                    <button type="button" class="copy-btn" (click)="copyToClipboard('pm@agileflow.com', 'PM Email')" title="Copy Email">📋</button>
-                  </div>
-                </div>
-                <div class="credential-field">
-                  <span class="label">Password</span>
-                  <div class="value-row">
-                    <span class="value">Password&#64;123</span>
-                    <button type="button" class="copy-btn" (click)="copyToClipboard('Password@123', 'PM Password')" title="Copy Password">📋</button>
-                  </div>
-                </div>
-                <button type="button" class="btn-copy-all" (click)="copyAll('pm@agileflow.com', 'Password@123', 'PM')">Copy All Credentials</button>
               </div>
-
-              <!-- DEVELOPER Card -->
-              <div class="account-card role-dev">
-                <div class="card-role-header">
-                  <div class="avatar dev-avatar">D</div>
-                  <div>
-                    <span class="role-badge dev-badge">DEV</span>
-                    <h4 class="role-title">Developer</h4>
-                  </div>
+              <div class="credential-field">
+                <span class="label">Email</span>
+                <div class="value-row">
+                  <span class="value">dev@gmail.com</span>
+                  <button type="button" class="copy-btn" (click)="copyToClipboard('dev@gmail.com', 'Developer Email')" title="Copy Email">📋</button>
                 </div>
-                <div class="credential-field">
-                  <span class="label">Email</span>
-                  <div class="value-row">
-                    <span class="value">dev@agileflow.com</span>
-                    <button type="button" class="copy-btn" (click)="copyToClipboard('dev@agileflow.com', 'Developer Email')" title="Copy Email">📋</button>
-                  </div>
-                </div>
-                <div class="credential-field">
-                  <span class="label">Password</span>
-                  <div class="value-row">
-                    <span class="value">Password&#64;123</span>
-                    <button type="button" class="copy-btn" (click)="copyToClipboard('Password@123', 'Developer Password')" title="Copy Password">📋</button>
-                  </div>
-                </div>
-                <button type="button" class="btn-copy-all" (click)="copyAll('dev@agileflow.com', 'Password@123', 'Developer')">Copy All Credentials</button>
               </div>
+              <div class="credential-field">
+                <span class="label">Password</span>
+                <div class="value-row">
+                  <span class="value">dev&#64;1234</span>
+                  <button type="button" class="copy-btn" (click)="copyToClipboard('dev@1234', 'Developer Password')" title="Copy Password">📋</button>
+                </div>
+              </div>
+              <button type="button" class="btn-copy-all" (click)="copyAll('dev@gmail.com', 'dev@1234', 'Developer')">Copy All Credentials</button>
             </div>
           </div>
         </div>

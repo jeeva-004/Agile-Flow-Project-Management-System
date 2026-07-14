@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { filter } from 'rxjs/operators';
 import { IssueService } from './core/services/issue.service';
+import { DialogService } from './core/services/dialog.service';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ export class App implements OnInit {
   private readonly router = inject(Router);
   private readonly loadingService = inject(LoadingService);
   private readonly issueService = inject(IssueService);
+  private readonly dialogService = inject(DialogService);
 
   isLoading = this.loadingService.isLoading;
 
@@ -146,11 +148,21 @@ export class App implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
-    this.role = null;
-    this.currentProjectId = null;
-    this.currentProjectName = null;
-    this.router.navigate(['/login']);
+    this.dialogService.confirm({
+      title: 'Confirm Logout',
+      message: 'Are you sure you want to log out of AgileFlow?',
+      confirmText: 'Logout',
+      cancelText: 'Cancel',
+      intent: 'danger'
+    }).subscribe(confirmed => {
+      if (confirmed) {
+        localStorage.clear();
+        this.role = null;
+        this.currentProjectId = null;
+        this.currentProjectName = null;
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   private getEmailFromToken(): string | null {

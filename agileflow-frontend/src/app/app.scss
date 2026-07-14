@@ -333,15 +333,15 @@
   }
 }
 
-/* Global Premium Loading Bar & Glassmorphic Overlay */
-.global-loading-bar {
-  position: fixed;
+/* Module-level Premium Loading Bar & Glassmorphic Overlay */
+.module-loading-bar {
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
+  right: 0;
   height: 3px;
   background-color: transparent;
-  z-index: 99999;
+  z-index: 99;
   overflow: hidden;
   
   .loading-bar-progress {
@@ -353,19 +353,19 @@
   }
 }
 
-.global-loading-overlay {
-  position: fixed;
+.module-loading-overlay {
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  bottom: 0;
   background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99998;
+  z-index: 98;
   animation: fadeIn 0.2s ease-in-out;
 }
 

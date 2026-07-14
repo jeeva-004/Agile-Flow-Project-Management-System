@@ -32,23 +32,6 @@ export class Login implements OnInit {
   showPassword = false;
 
   private readonly toastService = inject(ToastService);
-  showDemoHelper = false;
-  demoUnlocked = false;
-  isSwiping = false;
-
-  toggleDemoAccess(): void {
-    this.showDemoHelper = !this.showDemoHelper;
-  }
-
-  unlockDemo(): void {
-    if (this.demoUnlocked) return;
-    this.isSwiping = true;
-    setTimeout(() => {
-      this.isSwiping = false;
-      this.demoUnlocked = true;
-      this.toastService.success('Access Granted', 'Demo credentials unlocked!');
-    }, 1200);
-  }
 
   copyToClipboard(text: string, label: string): void {
     navigator.clipboard.writeText(text).then(() => {
