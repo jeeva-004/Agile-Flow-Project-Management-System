@@ -122,14 +122,17 @@
 /* RIGHT PANEL (60%) */
 .right-panel {
   width: 60%;
+  height: 100vh;
+  overflow-y: auto;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 2rem;
   box-sizing: border-box;
 }
 
 .login-card {
+  margin: auto;
   width: 100%;
   max-width: 440px;
   background-color: var(--card-bg);
