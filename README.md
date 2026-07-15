@@ -142,7 +142,6 @@ The backend exposes secured, modular REST APIs categorized by domain:
 
 ## 📸 Screenshots
 
-*(Replace the placeholders below with actual screenshots of your application)*
 
 | Login | Dashboard |
 |:---:|:---:|
@@ -252,12 +251,7 @@ This project serves as a comprehensive demonstration of:
 
 **AgileFlow** was conceptualized and developed with a focus on modern software engineering practices.
 
-- **GitHub**: [Your GitHub Profile](#)
-- **LinkedIn**: [Your LinkedIn Profile](#)
-- **Email**: [Your Email Address](#)
+- **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/jeeva--m/)
+- **Email**: (devjeeva.m@gmail.com)
 
 ---
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
