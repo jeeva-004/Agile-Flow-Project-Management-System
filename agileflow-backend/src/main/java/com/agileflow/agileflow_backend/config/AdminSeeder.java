@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-@Component
+// @Component
 @Order(3)
 public class AdminSeeder implements CommandLineRunner {
 

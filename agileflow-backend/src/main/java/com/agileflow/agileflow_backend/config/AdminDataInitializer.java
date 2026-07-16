@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-@Component
+// @Component
 @Order(2)
 public class AdminDataInitializer implements CommandLineRunner {
 
