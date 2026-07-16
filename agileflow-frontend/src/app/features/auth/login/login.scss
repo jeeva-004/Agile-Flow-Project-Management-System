@@ -503,6 +503,9 @@
   border-radius: 20px 20px 0 0;
   transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
+  max-height: 85vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 
   &.open {
     bottom: 0;
@@ -845,6 +848,7 @@
   /* Mobile Drawer Styling */
   .demo-drawer {
     border-radius: 20px 20px 0 0;
+    max-height: 80vh;
     
     .drawer-inner-grid {
       flex-direction: column;
@@ -865,9 +869,9 @@
     .drawer-roles-grid {
       grid-template-columns: 1fr;
       gap: 1rem;
-      max-height: 50vh;
-      overflow-y: auto;
-      padding-right: 4px;
+      max-height: none;
+      overflow-y: visible;
+      padding-right: 0;
     }
   }
 }
