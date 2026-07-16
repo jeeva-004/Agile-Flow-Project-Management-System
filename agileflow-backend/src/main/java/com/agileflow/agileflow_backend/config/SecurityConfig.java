@@ -97,7 +97,8 @@ public class SecurityConfig {
                                 "/**"
                         ).permitAll()
                         .requestMatchers(
-                                "/api/v1/auth/login"
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/test-users"
                         ).permitAll().requestMatchers("/api/v1/users/**")
                         .hasRole("ADMIN")
                         .requestMatchers(
