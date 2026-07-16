@@ -7,109 +7,229 @@
     </div>
     
     <div class="quick-actions">
-      <button class="btn-action secondary">
-        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <button class="btn-action secondary" routerLink="/issues">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         Log Work
       </button>
-      <button class="btn-action primary">
-        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <button class="btn-action primary" routerLink="/issues">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         New Issue
       </button>
     </div>
   </header>
 
   <ng-container *ngIf="dashboard; else loadingSkeleton">
-    
-    <!-- Row 1: Statistics -->
+    <!-- Row 1: KPI Statistics Grid -->
     <div class="stats-grid">
+      <!-- Assigned Issues -->
       <div class="stat-card">
-        <div class="icon-wrapper primary">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <div class="stat-main">
+          <div class="stat-info">
+            <span class="stat-label">Assigned Issues</span>
+            <span class="stat-value">{{dashboard.assignedIssues}}</span>
+          </div>
+          <div class="trend-badge negative">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <span>14.3%</span>
+          </div>
         </div>
-        <div class="stat-info">
-          <span class="stat-value">{{dashboard.assignedIssues}}</span>
-          <span class="stat-label">Assigned Issues</span>
+        <div class="stat-sub">active assignments</div>
+      </div>
+
+      <!-- Completed Issues -->
+      <div class="stat-card">
+        <div class="stat-main">
+          <div class="stat-info">
+            <span class="stat-label">Completed Issues</span>
+            <span class="stat-value">{{dashboard.completedIssues}}</span>
+          </div>
+          <div class="trend-badge positive">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            <span>28.5%</span>
+          </div>
+        </div>
+        <div class="stat-sub">resolved tasks</div>
+      </div>
+
+      <!-- My Comments -->
+      <div class="stat-card">
+        <div class="stat-main">
+          <div class="stat-info">
+            <span class="stat-label">My Comments</span>
+            <span class="stat-value">{{dashboard.myComments}}</span>
+          </div>
+          <div class="trend-badge positive">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            <span>10.2%</span>
+          </div>
+        </div>
+        <div class="stat-sub">discussions active</div>
+      </div>
+
+      <!-- My Worklogs -->
+      <div class="stat-card">
+        <div class="stat-main">
+          <div class="stat-info">
+            <span class="stat-label">My Worklogs</span>
+            <span class="stat-value">{{dashboard.myWorkLogs}}</span>
+          </div>
+          <div class="trend-badge positive">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            <span>15.6%</span>
+          </div>
+        </div>
+        <div class="stat-sub">hours logged</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Charts and Graphs -->
+    <div class="charts-row">
+      <!-- Issues Workload Card -->
+      <div class="chart-card">
+        <h3 class="chart-title">Issues Workload</h3>
+        <div class="chart-content">
+          <div class="donut-chart projects-donut">
+            <div class="donut-inner">
+              <span class="donut-count">{{dashboard.assignedIssues}}</span>
+              <span class="donut-label">Issues</span>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="legend-indicator color-blue"></span>
+              <span class="legend-name">Bugs</span>
+              <span class="legend-value">{{bugsCount}} (20%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator color-purple"></span>
+              <span class="legend-name">Tasks</span>
+              <span class="legend-value">{{tasksCount}} (40%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator color-orange"></span>
+              <span class="legend-name">Features</span>
+              <span class="legend-value">{{featuresCount}} (30%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator color-green"></span>
+              <span class="legend-name">Subtasks</span>
+              <span class="legend-value">{{subtasksCount}} (10%)</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="icon-wrapper success">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value">{{dashboard.completedIssues}}</span>
-          <span class="stat-label">Completed Issues</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="icon-wrapper warning">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value">{{dashboard.myComments}}</span>
-          <span class="stat-label">My Comments</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="icon-wrapper danger">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value">{{dashboard.myWorkLogs}}</span>
-          <span class="stat-label">My Worklogs</span>
+      <!-- Time Logged Card -->
+      <div class="chart-card">
+        <h3 class="chart-title">Time Logged</h3>
+        <div class="chart-content">
+          <div class="donut-chart issues-donut">
+            <div class="donut-inner">
+              <span class="donut-count">{{dashboard.myWorkLogs}}</span>
+              <span class="donut-label">Worklogs</span>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="legend-indicator color-blue"></span>
+              <span class="legend-name">Development</span>
+              <span class="legend-value">{{devLogsCount}} (50%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator color-purple"></span>
+              <span class="legend-name">Testing</span>
+              <span class="legend-value">{{testLogsCount}} (20%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator color-orange"></span>
+              <span class="legend-name">Research</span>
+              <span class="legend-value">{{researchLogsCount}} (20%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator color-green"></span>
+              <span class="legend-name">Documentation</span>
+              <span class="legend-value">{{docsLogsCount}} (10%)</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Row 2: Assigned Issues & Today's Tasks -->
-    <div class="row-70-30">
-      
+    <!-- Row 3: Assigned Issues list & Worklog Summary -->
+    <div class="details-row">
       <!-- Assigned Issues -->
-      <div class="section-card">
-        <div class="card-header">
-          <h3>My Assigned Issues</h3>
-          <a href="/issues" class="view-all">View all</a>
+      <div class="details-card">
+        <div class="card-title-bar">
+          <h3>Assigned Issues</h3>
+          <a routerLink="/issues" class="view-all-link">View all</a>
         </div>
-        
-        <div class="empty-state">
-          <div class="empty-icon">
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <div class="projects-list">
+          <div class="project-row-item">
+            <div class="project-name-group">
+              <div class="project-avatar p-blue" style="border-radius: 50%;">B</div>
+              <span>Fix connection pool issues</span>
+            </div>
+            <span class="badge on-hold" style="background-color: #FEF2F2; color: #DC2626;">High</span>
           </div>
-          <h4 class="empty-title">All caught up!</h4>
-          <p class="empty-desc">You don't have any open issues assigned to you.</p>
+
+          <div class="project-row-item">
+            <div class="project-name-group">
+              <div class="project-avatar p-purple" style="border-radius: 50%;">T</div>
+              <span>Add loading animations to screens</span>
+            </div>
+            <span class="badge in-progress">Medium</span>
+          </div>
+
+          <div class="project-row-item">
+            <div class="project-name-group">
+              <div class="project-avatar p-green" style="border-radius: 50%;">F</div>
+              <span>Implement notification counts</span>
+            </div>
+            <span class="badge planning" style="background-color: #ECFDF5; color: #065F46;">Low</span>
+          </div>
         </div>
       </div>
 
-      <!-- Today's Tasks & Worklog -->
-      <div class="section-card">
-        <div class="card-header">
+      <!-- Worklog Summary Card -->
+      <div class="details-card">
+        <div class="card-title-bar">
           <h3>Worklog Summary</h3>
         </div>
-        
-        <div class="empty-state">
-          <div class="empty-icon" style="width: 48px; height: 48px; border-radius: 50%;">
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <div class="projects-list">
+          <div class="project-row-item" style="flex-direction: column; align-items: stretch; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 700;">
+              <span>Database Query Tuning</span>
+              <span style="color: var(--primary-color);">4h logged</span>
+            </div>
+            <div style="width: 100%; height: 6px; background-color: var(--border-color); border-radius: 3px; overflow: hidden;">
+              <div style="width: 60%; height: 100%; background-color: var(--primary-color);"></div>
+            </div>
           </div>
-          <h4 class="empty-title">No time logged today</h4>
-          <p class="empty-desc" style="max-width: 200px;">Track your time on issues to update the burndown chart.</p>
+
+          <div class="project-row-item" style="flex-direction: column; align-items: stretch; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 700;">
+              <span>Unit Testing Auth Service</span>
+              <span style="color: #10B981;">2h logged</span>
+            </div>
+            <div style="width: 100%; height: 6px; background-color: var(--border-color); border-radius: 3px; overflow: hidden;">
+              <div style="width: 30%; height: 100%; background-color: #10B981;"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    
   </ng-container>
 
   <ng-template #loadingSkeleton>
     <div class="stats-grid">
       <div class="stat-card skeleton" *ngFor="let item of [1,2,3,4]">
-        <div class="icon-wrapper" style="background-color: #F3F4F6;"></div>
-        <div class="stat-info">
-          <div class="skeleton-value"></div>
-          <div class="skeleton-label"></div>
+        <div class="stat-main">
+          <div class="stat-info">
+            <div class="skeleton-label"></div>
+            <div class="skeleton-value"></div>
+          </div>
         </div>
       </div>
     </div>
   </ng-template>
-
 </div>
