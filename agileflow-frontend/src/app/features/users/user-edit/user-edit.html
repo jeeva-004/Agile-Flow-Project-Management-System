@@ -66,17 +66,31 @@
       <div class="form-section">
         <h3 class="section-title">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          Account Status
+          Permissions & Status
         </h3>
         
-        <div class="form-group">
-          <label>Status</label>
-          <div class="input-with-icon">
-            <select formControlName="status">
-              <option value="ACTIVE">Active</option>
-              <option value="INACTIVE">Inactive</option>
-            </select>
-            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Role</label>
+            <div class="input-with-icon">
+              <select formControlName="roleId">
+                <option [value]="1">Administrator</option>
+                <option [value]="2">Project Manager</option>
+                <option [value]="3">Developer</option>
+              </select>
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <div class="input-with-icon">
+              <select formControlName="status">
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
           </div>
         </div>
       </div>

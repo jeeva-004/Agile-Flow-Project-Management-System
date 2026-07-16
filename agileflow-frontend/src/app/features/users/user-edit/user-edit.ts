@@ -54,11 +54,8 @@ implements OnInit {
   userId!: number;
 
   form = this.fb.group({
-
     firstName: ['', Validators.required],
-
     lastName: ['', Validators.required],
-
     email: [
       '',
       [
@@ -66,89 +63,66 @@ implements OnInit {
         Validators.email
       ]
     ],
-
-    status: [
-      'ACTIVE'
-    ],
-
-    roleIds: [
-      [3]
-    ]
-
+    status: ['ACTIVE'],
+    roleId: [3, Validators.required]
   });
 
   ngOnInit(): void {
-
     this.userId = Number(
-
-      this.route.snapshot.paramMap
-        .get('id')
-
+      this.route.snapshot.paramMap.get('id')
     );
 
     this.userService
       .findById(this.userId)
-
       .subscribe({
-
         next: response => {
-
-          const user =
-            response.data;
+          const user = response.data;
+          
+          // Map user role name string to the corresponding form roleId
+          const userRole = user.roles && user.roles.length > 0 ? user.roles[0] : 'DEVELOPER';
+          let roleId = 3;
+          if (userRole === 'ADMIN') {
+            roleId = 1;
+          } else if (userRole === 'PROJECT_MANAGER') {
+            roleId = 2;
+          }
 
           this.form.patchValue({
-
-            firstName:
-              user.firstName,
-
-            lastName:
-              user.lastName,
-
-            email:
-              user.email,
-
-            status:
-              user.status
-
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            status: user.status,
+            roleId: roleId
           });
-
         }
-
       });
-
   }
 
   submit(): void {
-
     if (this.form.invalid) {
       return;
     }
 
+    const value = this.form.getRawValue();
+    const payload = {
+      firstName: value.firstName,
+      lastName: value.lastName,
+      email: value.email,
+      status: value.status,
+      roleIds: [value.roleId]
+    };
+
     this.userService
-      .update(
-
-        this.userId,
-
-        this.form
-          .getRawValue() as any
-
-      )
-
+      .update(this.userId, payload as any)
       .subscribe({
-
         next: () => {
           this.toastService.success('User Updated', 'The user was successfully updated.');
-          this.router.navigate([
-            '/users'
-          ]);
-
+          this.router.navigate(['/users']);
         },
         error: () => {
           this.toastService.error('Error', 'Failed to update user.');
         }
-
       });
-
   }
 
 }
