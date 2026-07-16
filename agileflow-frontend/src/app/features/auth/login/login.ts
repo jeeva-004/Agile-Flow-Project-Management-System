@@ -30,8 +30,13 @@ import { ToastService } from '../../../core/services/toast.service';
 export class Login implements OnInit {
   form: FormGroup;
   showPassword = false;
+  showDemo = false;
 
   private readonly toastService = inject(ToastService);
+
+  toggleDemo(): void {
+    this.showDemo = !this.showDemo;
+  }
 
   copyToClipboard(text: string, label: string): void {
     navigator.clipboard.writeText(text).then(() => {
@@ -101,84 +106,35 @@ export class Login implements OnInit {
 
   }
 
+  loading = false;
+
   submit(): void {
-
-    if (
-
-      this.form.invalid
-
-    ) {
-
+    if (this.form.invalid) {
       return;
-
     }
 
+    this.loading = true;
     this.authService.login(
-
       this.form.getRawValue()
-
     )
-
       .subscribe({
-
         next: response => {
-
-          const role =
-
-            response.data.role;
-
-          if (
-
-            role === 'ADMIN'
-
-          ) {
-
-            this.router.navigate([
-
-              '/dashboard/admin'
-
-            ]);
-
+          this.loading = false;
+          const role = response.data.role;
+          if (role === 'ADMIN') {
+            this.router.navigate(['/dashboard/admin']);
+          } else if (role === 'PROJECT_MANAGER') {
+            this.router.navigate(['/dashboard/pm']);
+          } else {
+            this.router.navigate(['/dashboard/developer']);
           }
-
-          else if (
-
-            role === 'PROJECT_MANAGER'
-
-          ) {
-
-            this.router.navigate([
-
-              '/dashboard/pm'
-
-            ]);
-
-          }
-
-          else {
-
-            this.router.navigate([
-
-              '/dashboard/developer'
-
-            ]);
-
-          }
-
         },
-
         error: error => {
-
-          console.error(
-
-            error
-
-          );
-
+          this.loading = false;
+          console.error(error);
+          this.toastService.error('Login Failed', 'Invalid email or password.');
         }
-
       });
-
   }
 
 }
