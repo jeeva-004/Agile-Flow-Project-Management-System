@@ -1,17 +1,17 @@
-<div class="sprints-container">
+<div class="page-container">
   
   <!-- Header -->
   <div class="page-header">
-    <div class="header-content">
-      <h1>Sprints</h1>
-      <p class="page-subtitle">Plan, organize and manage project sprints</p>
+    <div>
+      <h2>Sprints</h2>
+      <p class="text-secondary" style="font-size: 13px; margin-top: 4px;">Plan, organize and manage project sprints</p>
     </div>
     <div class="header-actions">
-      <button class="btn-action secondary" routerLink="/projects" style="margin-right: 12px;">
+      <button class="btn btn-outline" routerLink="/projects" style="margin-right: 12px;">
         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         Projects
       </button>
-      <button *ngIf="role !== 'DEVELOPER'" class="btn-action primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
+      <button *ngIf="role !== 'DEVELOPER'" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Create Sprint
       </button>
@@ -19,44 +19,44 @@
   </div>
 
   <!-- Project Summary Card -->
-  <div class="project-summary-card">
-    <div class="summary-item">
-      <div class="icon">
+  <div class="card" style="display: flex; gap: 24px; align-items: center; padding: 20px 24px; margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 40px; height: 40px; border-radius: 8px; background: #DBEAFE; color: #1D4ED8; display: flex; align-items: center; justify-content: center;">
         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
       </div>
-      <div class="meta">
-        <span class="label">Project Context</span>
-        <span class="value">Project #{{ projectId }}</span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 13px; color: var(--text-secondary); font-weight: 500;">Project Context</span>
+        <span style="font-size: 15px; font-weight: 600; color: var(--text-main);">Project #{{ projectId }}</span>
       </div>
     </div>
-    <div class="divider"></div>
-    <div class="summary-item">
-      <div class="icon" style="background:#F3E8FF; color:#6B21A8;">
+    <div style="width: 1px; height: 40px; background-color: var(--border-color);"></div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 40px; height: 40px; border-radius: 8px; background:#F3E8FF; color:#6B21A8; display: flex; align-items: center; justify-content: center;">
         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
       </div>
-      <div class="meta">
-        <span class="label">Total Sprints</span>
-        <span class="value">{{ totalElements }}</span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 13px; color: var(--text-secondary); font-weight: 500;">Total Sprints</span>
+        <span style="font-size: 15px; font-weight: 600; color: var(--text-main);">{{ totalElements }}</span>
       </div>
     </div>
   </div>
 
   <!-- Toolbar -->
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <div class="search-input">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="Search sprints...">
+  <div class="flex justify-between align-center mb-lg gap-md" style="flex-wrap: wrap;">
+    <div class="flex gap-sm" style="flex: 1; min-width: 300px;">
+      <div style="position: relative; max-width: 320px; flex: 1;">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="form-control" placeholder="Search sprints..." style="padding-left: 36px;">
       </div>
     </div>
-    <div class="toolbar-right">
-      <select class="sort-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+    <div class="flex gap-sm align-center">
+      <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)" style="width: auto;">
         <option value="id">Sort by Created Order</option>
         <option value="name">Sort by Sprint Name</option>
         <option value="startDate">Sort by Start Date</option>
         <option value="endDate">Sort by End Date</option>
       </select>
-      <button class="btn-action secondary" (click)="toggleSortDir()" title="Toggle sort direction">
+      <button class="btn btn-outline" (click)="toggleSortDir()" title="Toggle sort direction" style="padding: 8px;">
         <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
         <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </button>
@@ -64,9 +64,9 @@
   </div>
 
   <!-- Table -->
-  <div class="table-card">
-    <div class="table-wrapper">
-      <table class="enterprise-table">
+  <div class="card" style="padding: 0;">
+    <div class="table-container">
+      <table class="table">
         <thead>
           <tr>
             <th>Sprint</th>
@@ -78,40 +78,40 @@
         <tbody>
           <tr *ngFor="let sprint of sprints">
             <td>
-              <div class="sprint-info">
-                <div class="icon">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 32px; height: 32px; border-radius: 6px; background: #F3F4F6; color: #4B5563; display: flex; align-items: center; justify-content: center;">
                   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
                 </div>
-                <div class="details">
-                  <span class="name">{{ sprint.name }}</span>
-                  <span class="id">SPR-{{ sprint.id }}</span>
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-weight: 500; color: var(--text-main); font-size: 14px;">{{ sprint.name }}</span>
+                  <span style="font-size: 12px; color: var(--text-secondary);">SPR-{{ sprint.id }}</span>
                 </div>
               </div>
             </td>
             <td>
-              <div class="duration-block">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary);">
                 <span>{{ sprint.startDate }}</span>
-                <svg class="arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--text-light);"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 <span>{{ sprint.endDate }}</span>
               </div>
             </td>
             <td>
               <!-- Defaulting to Active if status is unknown for UI presentation -->
-              <span class="status-badge" [ngClass]="{
-                  'active': sprint.status === 'ACTIVE' || !sprint.status,
-                  'planning': sprint.status === 'PLANNING',
-                  'completed': sprint.status === 'COMPLETED',
-                  'overdue': sprint.status === 'OVERDUE'
+              <span class="badge" [ngClass]="{
+                  'badge-success': sprint.status === 'ACTIVE' || !sprint.status,
+                  'badge-info': sprint.status === 'PLANNING',
+                  'badge-primary': sprint.status === 'COMPLETED',
+                  'badge-danger': sprint.status === 'OVERDUE'
                 }">
                 {{ sprint.status || 'ACTIVE' }}
               </span>
             </td>
             <td *ngIf="role !== 'DEVELOPER'">
-              <div class="action-buttons" style="justify-content: flex-end;">
+              <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
                 <button class="btn-icon" (click)="editSprint(sprint.id)" title="Edit Sprint">
                   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
-                <button class="btn-icon danger" (click)="deleteSprint(sprint.id)" title="Delete Sprint">
+                <button class="btn-icon" (click)="deleteSprint(sprint.id)" title="Delete Sprint" style="color: var(--danger-color);">
                   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
               </div>
@@ -122,12 +122,12 @@
           <tr *ngIf="sprints.length === 0">
             <td [attr.colspan]="role !== 'DEVELOPER' ? 4 : 3">
               <div class="empty-state">
-                <div class="empty-icon">
+                <div class="empty-state-icon">
                   <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
                 </div>
-                <h3>No Sprints Created</h3>
-                <p>Create your first sprint to begin planning your project.</p>
-                <button *ngIf="role !== 'DEVELOPER'" class="btn-action primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
+                <h3 class="empty-state-title">No Sprints Created</h3>
+                <p class="empty-state-description">Create your first sprint to begin planning your project.</p>
+                <button *ngIf="role !== 'DEVELOPER'" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'create']">
                   Create Sprint
                 </button>
               </div>
@@ -138,13 +138,13 @@
     </div>
     
     <!-- Pagination -->
-    <div class="pagination" *ngIf="sprints.length > 0">
-      <div class="page-info">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; border-top: 1px solid var(--border-color);" *ngIf="sprints.length > 0">
+      <div style="font-size: 13px; color: var(--text-secondary);">
         Showing <span>{{ (page * 10) + 1 }}</span> to <span>{{ ((page * 10) + sprints.length) }}</span> of <span>{{ totalElements }}</span> results
       </div>
-      <div class="page-actions">
-        <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
-        <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-outline" (click)="prevPage()" [disabled]="page === 0" style="padding: 6px 12px; font-size: 13px;">Previous</button>
+        <button class="btn btn-outline" (click)="nextPage()" [disabled]="page + 1 >= totalPages" style="padding: 6px 12px; font-size: 13px;">Next</button>
       </div>
     </div>
   </div>

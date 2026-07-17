@@ -1,39 +1,39 @@
-<div class="comments-container">
+<div class="page-container">
   
   <!-- Header -->
   <div class="page-header">
     <div>
-      <div class="header-content">
-        <span class="issue-key" *ngIf="issueId">IS-{{ issueId }}</span>
-        <h1>Discussion</h1>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="badge" *ngIf="issueId" style="font-size: 14px; font-weight: 600; background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-main);">IS-{{ issueId }}</span>
+        <h2>Discussion</h2>
       </div>
-      <p class="subtitle">Project discussion and collaboration</p>
+      <p class="text-secondary" style="font-size: 13px; margin-top: 4px;">Project discussion and collaboration</p>
     </div>
     
     <div class="header-actions" style="display: flex; gap: 12px;">
-      <button class="btn-action secondary" [routerLink]="['/issues', issueId, 'edit']">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <button class="btn btn-outline" [routerLink]="['/issues', issueId, 'edit']">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 6px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         Back to Issue
       </button>
-      <button class="btn-action primary" [routerLink]="['/issues', issueId, 'comments', 'create']">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="12" y1="9" x2="12" y2="15"></line><line x1="9" y1="12" x2="15" y2="12"></line></svg>
+      <button class="btn btn-primary" [routerLink]="['/issues', issueId, 'comments', 'create']">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="12" y1="9" x2="12" y2="15"></line><line x1="9" y1="12" x2="15" y2="12"></line></svg>
         Add Comment
       </button>
     </div>
   </div>
 
   <!-- Toolbar -->
-  <div class="toolbar">
-    <div class="comment-count">
-      Comments <span class="badge">{{ totalElements }}</span>
+  <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div style="font-size: 15px; font-weight: 600; color: var(--text-main);">
+      Comments <span class="badge" style="margin-left: 4px;">{{ totalElements }}</span>
     </div>
     
-    <div class="sort-controls">
-      <select [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)" style="padding: 6px 12px; height: auto;">
         <option value="id">Created Order</option>
         <option value="createdAt">Date Created</option>
       </select>
-      <button class="btn-action secondary" (click)="toggleSortDir()" title="Toggle sort direction">
+      <button class="btn btn-outline" style="padding: 6px;" (click)="toggleSortDir()" title="Toggle sort direction">
         <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
         <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </button>
@@ -41,41 +41,41 @@
   </div>
 
   <!-- Comments List -->
-  <div class="comments-list">
+  <div style="display: flex; flex-direction: column; gap: 24px;">
     
-    <div class="comment-card" *ngFor="let comment of comments">
-      <div class="comment-header">
-        <div class="user-meta">
-          <div class="avatar">{{ comment.authorName?.charAt(0) || 'U' }}</div>
-          <div class="info">
-            <span class="name">{{ comment.authorName }}</span>
-            <span class="time">{{ comment.createdAt | date:'medium' }}</span>
+    <div class="card" *ngFor="let comment of comments" style="padding: 24px; position: relative;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600;">{{ comment.authorName?.charAt(0) || 'U' }}</div>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 14px; font-weight: 600; color: var(--text-main);">{{ comment.authorName }}</span>
+            <span class="text-secondary" style="font-size: 12px;">{{ comment.createdAt | date:'medium' }}</span>
           </div>
         </div>
         
-        <div class="actions">
-          <button (click)="edit(comment.id)" title="Edit Comment">
+        <div style="display: flex; gap: 4px;">
+          <button class="btn btn-outline" style="padding: 6px;" (click)="edit(comment.id)" title="Edit Comment">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
           </button>
-          <button class="danger" (click)="delete(comment.id)" title="Delete Comment">
+          <button class="btn btn-outline" style="padding: 6px; color: var(--danger-color); border-color: transparent;" (click)="delete(comment.id)" title="Delete Comment" onmouseover="this.style.borderColor='var(--danger-color)'; this.style.backgroundColor='rgba(220,38,38,0.1)'" onmouseout="this.style.borderColor='transparent'; this.style.backgroundColor='transparent'">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           </button>
         </div>
       </div>
       
-      <div class="comment-body">
+      <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; padding-left: 52px;">
         {{ comment.message }}
       </div>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="comments.length === 0" class="empty-state">
-      <div class="icon">
+    <div *ngIf="comments.length === 0" class="card" style="padding: 48px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <div style="width: 64px; height: 64px; background: rgba(37, 99, 235, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--primary-color);">
         <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
       </div>
-      <h3>No comments yet</h3>
-      <p>Start the discussion by posting the first comment.</p>
-      <button class="btn-action primary" [routerLink]="['/issues', issueId, 'comments', 'create']">
+      <h3 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">No comments yet</h3>
+      <p class="text-secondary" style="font-size: 14px; margin-bottom: 24px;">Start the discussion by posting the first comment.</p>
+      <button class="btn btn-primary" [routerLink]="['/issues', issueId, 'comments', 'create']">
         Add Comment
       </button>
     </div>
@@ -83,13 +83,13 @@
   </div>
 
   <!-- Pagination -->
-  <div class="pagination" *ngIf="comments.length > 0">
-    <div class="page-info">
-      Showing <span>{{ (page * 10) + 1 }}</span> to <span>{{ ((page * 10) + comments.length) }}</span> of <span>{{ totalElements }}</span> comments
+  <div *ngIf="comments.length > 0" style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; font-size: 13px; color: var(--text-secondary);">
+    <div>
+      Showing <span style="font-weight: 600; color: var(--text-main);">{{ (page * 10) + 1 }}</span> to <span style="font-weight: 600; color: var(--text-main);">{{ ((page * 10) + comments.length) }}</span> of <span style="font-weight: 600; color: var(--text-main);">{{ totalElements }}</span> comments
     </div>
-    <div class="page-actions">
-      <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
-      <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-outline" style="padding: 4px 12px;" (click)="prevPage()" [disabled]="page === 0">Previous</button>
+      <button class="btn btn-outline" style="padding: 4px 12px;" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
     </div>
   </div>
 

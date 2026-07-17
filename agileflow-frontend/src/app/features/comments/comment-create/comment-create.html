@@ -1,31 +1,29 @@
-<div class="comment-form-container">
+<div class="page-container">
   
   <div class="page-header">
-    <div class="header-content">
-      <h1>Add Comment</h1>
-      <p class="page-subtitle">Share your thoughts on Issue IS-{{ issueId }}</p>
+    <div>
+      <h2>Add Comment</h2>
+      <p class="text-secondary" style="font-size: 13px; margin-top: 4px;">Share your thoughts on Issue IS-{{ issueId }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn-action secondary" [routerLink]="['/issues', issueId, 'comments']">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <button class="btn btn-outline" [routerLink]="['/issues', issueId, 'comments']">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 6px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         Cancel
       </button>
     </div>
   </div>
 
-  <div class="form-card">
+  <div class="card" style="padding: 24px;">
     <form [formGroup]="form" (ngSubmit)="submit()">
       
-      <div class="form-section">
-        <div class="composer-wrapper">
-          <textarea placeholder="Write your comment here... Markdown and plain text supported." formControlName="message" style="min-height: 180px;"></textarea>
-        </div>
+      <div style="margin-bottom: 24px;">
+        <textarea class="form-control" placeholder="Write your comment here... Markdown and plain text supported." formControlName="message" style="min-height: 180px; resize: vertical;"></textarea>
       </div>
 
       <!-- Footer Actions -->
-      <div class="form-actions">
-        <button class="btn-action secondary" type="button" [routerLink]="['/issues', issueId, 'comments']">Cancel</button>
-        <button class="btn-action primary" type="submit" [disabled]="form.invalid">
+      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+        <button class="btn btn-outline" type="button" [routerLink]="['/issues', issueId, 'comments']">Cancel</button>
+        <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
           <span *ngIf="!form.invalid">Post Comment</span>
           <span *ngIf="form.invalid">Write something...</span>
         </button>

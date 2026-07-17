@@ -1,51 +1,51 @@
-<div class="worklog-section">
+<div class="page-container">
   
   <!-- Header -->
-  <div class="section-header">
-    <div class="header-info">
-      <h3>Time Tracking</h3>
-      <p>Log and review time spent on this issue.</p>
+  <div class="page-header">
+    <div>
+      <h2>Time Tracking</h2>
+      <p class="text-secondary" style="font-size: 13px; margin-top: 4px;">Log and review time spent on this issue.</p>
     </div>
     
-    <div style="display: flex; gap: 12px;">
-      <button class="btn btn-secondary" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; border: 1px solid #E5E7EB; background: white;" [routerLink]="['/issues', issueId, 'edit']">
+    <div class="header-actions">
+      <button class="btn btn-outline" [routerLink]="['/issues', issueId, 'edit']">
         Back to Issue
       </button>
-      <button class="btn btn-primary" style="padding: 8px 16px; border-radius: 8px; font-weight: 600; background: #2563EB; color: white; border: none; display: flex; align-items: center; gap: 8px;" (click)="create()">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <button class="btn btn-primary" (click)="create()">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Log Work
       </button>
     </div>
   </div>
 
   <!-- Summary Cards -->
-  <div class="summary-cards" *ngIf="worklogs.length > 0">
-    <div class="summary-card">
-      <span class="summary-title">Total Entries</span>
-      <span class="summary-value">{{ totalElements }}</span>
+  <div *ngIf="worklogs.length > 0" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+    <div class="card" style="padding: 20px;">
+      <span style="font-size: 13px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Total Entries</span>
+      <span style="font-size: 24px; font-weight: 700; color: var(--text-main);">{{ totalElements }}</span>
     </div>
-    <div class="summary-card">
-      <span class="summary-title">Recent Activity</span>
-      <span class="summary-value" style="font-size: 18px;">{{ worklogs[0]?.workDate | date:'mediumDate' }}</span>
+    <div class="card" style="padding: 20px;">
+      <span style="font-size: 13px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Recent Activity</span>
+      <span style="font-size: 18px; font-weight: 600; color: var(--text-main);">{{ worklogs[0]?.workDate | date:'mediumDate' }}</span>
     </div>
-    <div class="summary-card">
-      <span class="summary-title">Page Hours</span>
-      <span class="summary-value" style="color: #16A34A;">Detailed Below</span>
+    <div class="card" style="padding: 20px;">
+      <span style="font-size: 13px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Page Hours</span>
+      <span style="font-size: 18px; font-weight: 600; color: var(--success-color);">Detailed Below</span>
     </div>
   </div>
 
   <!-- Toolbar -->
-  <div class="toolbar" *ngIf="worklogs.length > 0">
-    <div style="font-size: 14px; font-weight: 500; color: #374151;">
+  <div class="toolbar" *ngIf="worklogs.length > 0" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <div style="font-size: 16px; font-weight: 600; color: var(--text-main);">
       Worklog History
     </div>
-    <div class="sort-controls">
-      <select [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)" style="padding: 6px 12px; height: auto;">
         <option value="id">Created Order</option>
         <option value="workDate">Work Date</option>
         <option value="hoursSpent">Hours Spent</option>
       </select>
-      <button class="btn-action" style="padding: 8px; background: transparent; border: 1px solid #D1D5DB; border-radius: 6px; cursor: pointer;" (click)="toggleSortDir()" title="Toggle sort direction">
+      <button class="btn btn-outline" style="padding: 6px;" (click)="toggleSortDir()" title="Toggle sort direction">
         <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
         <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </button>
@@ -53,41 +53,40 @@
   </div>
 
   <!-- Timeline Cards -->
-  <div class="worklog-timeline" *ngIf="worklogs.length > 0">
-    <div class="worklog-card" *ngFor="let worklog of worklogs">
+  <div *ngIf="worklogs.length > 0" style="position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); margin-left: 12px; display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px;">
+    <div class="card" *ngFor="let worklog of worklogs" style="position: relative; padding: 20px;">
       
-      <div class="timeline-indicator">
-        <div class="dot"></div>
+      <div style="position: absolute; left: -29px; top: 24px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg-surface); border: 4px solid var(--primary-color);">
       </div>
       
-      <div class="card-content">
-        <div class="card-header">
-          <div class="user-info">
-            <div class="avatar">{{ worklog.userName?.charAt(0) || 'U' }}</div>
-            <div class="meta">
-              <span class="name">{{ worklog.userName }}</span>
-              <span class="date">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600;">{{ worklog.userName?.charAt(0) || 'U' }}</div>
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-size: 14px; font-weight: 600; color: var(--text-main);">{{ worklog.userName }}</span>
+              <span style="font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
                 <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 {{ worklog.workDate }}
               </span>
             </div>
           </div>
-          <div class="hours-badge">
+          <div class="badge badge-success" style="font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; padding: 6px 10px;">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             {{ worklog.hoursSpent }}h
           </div>
         </div>
         
-        <div class="card-body">
+        <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; margin-bottom: 16px;">
           {{ worklog.description }}
         </div>
         
-        <div class="card-footer">
-          <button class="btn-action" (click)="edit(worklog.id)" title="Edit">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        <div style="display: flex; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <button class="btn btn-outline" style="padding: 6px 12px;" (click)="edit(worklog.id)" title="Edit">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 6px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Edit
           </button>
-          <button class="btn-action danger" (click)="delete(worklog.id)" title="Delete">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          <button class="btn btn-outline" style="padding: 6px 12px; color: var(--danger-color); border-color: transparent;" (click)="delete(worklog.id)" title="Delete" onmouseover="this.style.borderColor='var(--danger-color)'; this.style.backgroundColor='rgba(220,38,38,0.1)'" onmouseout="this.style.borderColor='transparent'; this.style.backgroundColor='transparent'">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 6px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Delete
           </button>
         </div>
       </div>
@@ -96,25 +95,25 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="worklogs.length === 0" class="empty-state">
-    <div class="icon">
+  <div *ngIf="worklogs.length === 0" class="card" style="padding: 48px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="width: 64px; height: 64px; background: rgba(37, 99, 235, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--primary-color);">
       <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
     </div>
-    <h3>No Work Logs Yet</h3>
-    <p>Log work to track development progress and keep the team updated.</p>
-    <button class="btn btn-primary" style="padding: 10px 24px; border-radius: 8px; font-weight: 600; background: #2563EB; color: white; border: none; cursor: pointer;" (click)="create()">
+    <h3 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">No Work Logs Yet</h3>
+    <p class="text-secondary" style="font-size: 14px; margin-bottom: 24px;">Log work to track development progress and keep the team updated.</p>
+    <button class="btn btn-primary" (click)="create()">
       Log First Work
     </button>
   </div>
 
   <!-- Pagination -->
-  <div *ngIf="worklogs.length > 0" class="pagination">
-    <div class="page-info">
-      Showing <span>{{ (page * size) + 1 }}</span> to <span>{{ ((page * size) + worklogs.length) > totalElements ? totalElements : ((page * size) + worklogs.length) }}</span> of <span>{{ totalElements }}</span> logs
+  <div *ngIf="worklogs.length > 0" style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; font-size: 13px; color: var(--text-secondary);">
+    <div>
+      Showing <span style="font-weight: 600; color: var(--text-main);">{{ (page * size) + 1 }}</span> to <span style="font-weight: 600; color: var(--text-main);">{{ ((page * size) + worklogs.length) > totalElements ? totalElements : ((page * size) + worklogs.length) }}</span> of <span style="font-weight: 600; color: var(--text-main);">{{ totalElements }}</span> logs
     </div>
-    <div class="page-actions">
-      <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
-      <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-outline" style="padding: 4px 12px;" (click)="prevPage()" [disabled]="page === 0">Previous</button>
+      <button class="btn btn-outline" style="padding: 4px 12px;" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
     </div>
   </div>
 

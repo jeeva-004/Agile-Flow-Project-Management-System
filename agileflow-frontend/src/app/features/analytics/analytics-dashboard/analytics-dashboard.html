@@ -1,120 +1,118 @@
-<div class="analytics-container">
+<div class="page-container">
   
   <!-- Header -->
   <div class="page-header">
-    <div class="header-content">
-      <h1>Project Analytics</h1>
-      <p class="page-subtitle">Visual statistics and summary report for <strong>{{ projectName }}</strong></p>
+    <div>
+      <h2>Project Analytics</h2>
+      <p class="text-secondary" style="font-size: 13px; margin-top: 4px;">Visual statistics and summary report for <strong>{{ projectName }}</strong></p>
     </div>
     
     <div class="header-actions">
-      <button class="btn btn-secondary" style="background: white; border: 1px solid #D1D5DB; padding: 8px 16px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px;" routerLink="/projects">
+      <button class="btn btn-outline" routerLink="/projects">
         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         Back to Projects
       </button>
-      <button class="btn btn-secondary" style="background: white; border: 1px solid #D1D5DB; padding: 8px 12px; border-radius: 8px;" (click)="loadProjectData()">
+      <button class="btn btn-outline" (click)="loadProjectData()">
         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
       </button>
     </div>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading-skeleton">
-    <div class="skel-header"></div>
-    <div class="skel-grid">
-      <div class="skel-card"></div>
-      <div class="skel-card"></div>
-      <div class="skel-card"></div>
+  <div *ngIf="loading" style="display: flex; flex-direction: column; gap: 24px;">
+    <div style="height: 120px; border-radius: 8px; background-color: var(--border-color); animation: pulse 1.5s infinite;"></div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+      <div style="height: 300px; border-radius: 8px; background-color: var(--border-color); animation: pulse 1.5s infinite;" *ngFor="let i of [1,2,3]"></div>
     </div>
   </div>
 
   <div *ngIf="!loading && reportData">
     
     <!-- Top KPI Cards -->
-    <div class="kpi-grid">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 24px;">
       
       <!-- Project Health / Completion -->
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Project Health</span>
-          <div class="kpi-icon success">
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <span style="font-size: 14px; font-weight: 600; color: var(--text-main);">Project Health</span>
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(22, 163, 74, 0.1); color: var(--success-color); display: flex; align-items: center; justify-content: center;">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
           </div>
         </div>
-        <div class="kpi-body">
-          <div class="kpi-value">{{ reportData.completionPercentage | number:'1.0-1' }}%</div>
-          <div class="kpi-desc">Overall completion rate</div>
+        <div>
+          <div style="font-size: 32px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">{{ reportData.completionPercentage | number:'1.0-1' }}%</div>
+          <div class="text-secondary" style="font-size: 13px;">Overall completion rate</div>
         </div>
-        <div class="kpi-progress">
-          <div class="progress-bar" [style.width.%]="reportData.completionPercentage" style="background: #16A34A;"></div>
+        <div style="height: 6px; width: 100%; background: var(--border-color); border-radius: 3px; margin-top: 16px; overflow: hidden;">
+          <div [style.width.%]="reportData.completionPercentage" style="height: 100%; background: var(--success-color); border-radius: 3px;"></div>
         </div>
       </div>
 
       <!-- Issues Progress -->
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Issue Resolution</span>
-          <div class="kpi-icon primary">
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <span style="font-size: 14px; font-weight: 600; color: var(--text-main);">Issue Resolution</span>
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(37, 99, 235, 0.1); color: var(--primary-color); display: flex; align-items: center; justify-content: center;">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
           </div>
         </div>
-        <div class="kpi-body">
-          <div class="kpi-value">{{ reportData.completedIssues }} <span style="font-size: 18px; color: #9CA3AF; font-weight: 500;">/ {{ reportData.totalIssues }}</span></div>
-          <div class="kpi-desc">Completed vs Total Issues</div>
+        <div>
+          <div style="font-size: 32px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">{{ reportData.completedIssues }} <span style="font-size: 18px; color: var(--text-secondary); font-weight: 500;">/ {{ reportData.totalIssues }}</span></div>
+          <div class="text-secondary" style="font-size: 13px;">Completed vs Total Issues</div>
         </div>
-        <div class="kpi-progress">
-          <div class="progress-bar" [style.width.%]="(reportData.completedIssues / (reportData.totalIssues || 1)) * 100" style="background: #2563EB;"></div>
+        <div style="height: 6px; width: 100%; background: var(--border-color); border-radius: 3px; margin-top: 16px; overflow: hidden;">
+          <div [style.width.%]="(reportData.completedIssues / (reportData.totalIssues || 1)) * 100" style="height: 100%; background: var(--primary-color); border-radius: 3px;"></div>
         </div>
       </div>
 
       <!-- Total Logged Time -->
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">Work Effort</span>
-          <div class="kpi-icon warning">
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <span style="font-size: 14px; font-weight: 600; color: var(--text-main);">Work Effort</span>
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(217, 119, 6, 0.1); color: var(--warning-color); display: flex; align-items: center; justify-content: center;">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </div>
         </div>
-        <div class="kpi-body">
-          <div class="kpi-value">{{ reportData.totalWorklogHours | number:'1.0-1' }}<span style="font-size: 18px; color: #9CA3AF; font-weight: 500;">h</span></div>
-          <div class="kpi-desc">Total hours logged across team</div>
+        <div>
+          <div style="font-size: 32px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">{{ reportData.totalWorklogHours | number:'1.0-1' }}<span style="font-size: 18px; color: var(--text-secondary); font-weight: 500;">h</span></div>
+          <div class="text-secondary" style="font-size: 13px;">Total hours logged across team</div>
         </div>
-        <div class="kpi-progress">
-          <div class="progress-bar" style="width: 100%; background: #D97706;"></div>
+        <div style="height: 6px; width: 100%; background: var(--border-color); border-radius: 3px; margin-top: 16px; overflow: hidden;">
+          <div style="width: 100%; height: 100%; background: var(--warning-color); border-radius: 3px;"></div>
         </div>
       </div>
 
     </div>
 
     <!-- Charts Grid -->
-    <div class="charts-grid">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
       
       <!-- Status Chart -->
-      <div class="chart-card">
-        <div class="chart-header">
-          <h3>Issues by Status</h3>
+      <div class="card" style="padding: 24px;">
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 15px; font-weight: 600; margin: 0;">Issues by Status</h3>
         </div>
-        <div class="chart-container">
+        <div style="position: relative; height: 250px; width: 100%;">
           <canvas #statusChart></canvas>
         </div>
       </div>
 
       <!-- Priority Chart -->
-      <div class="chart-card">
-        <div class="chart-header">
-          <h3>Issues by Priority</h3>
+      <div class="card" style="padding: 24px;">
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 15px; font-weight: 600; margin: 0;">Issues by Priority</h3>
         </div>
-        <div class="chart-container">
+        <div style="position: relative; height: 250px; width: 100%;">
           <canvas #priorityChart></canvas>
         </div>
       </div>
 
       <!-- Velocity Chart -->
-      <div class="chart-card velocity-card">
-        <div class="chart-header">
-          <h3>Sprint Velocity (Planned vs Completed)</h3>
+      <div class="card" style="padding: 24px; grid-column: 1 / -1;">
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 15px; font-weight: 600; margin: 0;">Sprint Velocity (Planned vs Completed)</h3>
         </div>
-        <div class="chart-container" style="min-height: 320px;">
+        <div style="position: relative; height: 320px; width: 100%;">
           <canvas #velocityChart></canvas>
         </div>
       </div>
@@ -122,12 +120,12 @@
     </div>
 
     <!-- Member Contributions Table -->
-    <div class="table-card" *ngIf="reportData.memberContribution?.length > 0">
-      <div class="table-header">
-        <h3>Team Member Contributions</h3>
+    <div class="card" *ngIf="reportData.memberContribution?.length > 0" style="padding: 0; overflow: hidden;">
+      <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color);">
+        <h3 style="font-size: 15px; font-weight: 600; margin: 0;">Team Member Contributions</h3>
       </div>
-      <div class="table-responsive">
-        <table>
+      <div class="table-container">
+        <table class="table">
           <thead>
             <tr>
               <th>Team Member</th>
@@ -138,8 +136,8 @@
           <tbody>
             <tr *ngFor="let member of reportData.memberContribution">
               <td>
-                <div class="member-cell">
-                  <div class="avatar">{{ member.userName?.charAt(0) || 'U' }}</div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;">{{ member.userName?.charAt(0) || 'U' }}</div>
                   <span style="font-weight: 600;">{{ member.userName }}</span>
                 </div>
               </td>
@@ -147,8 +145,8 @@
                 <span style="font-weight: 500;">{{ member.assignedIssueCount }}</span> issues
               </td>
               <td>
-                <span class="metric-badge" [ngClass]="member.totalLoggedHours > 0 ? 'success' : 'warning'">
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span class="badge" [ngClass]="member.totalLoggedHours > 0 ? 'badge-success' : 'badge-warning'" style="display: inline-flex; align-items: center; gap: 4px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                   {{ member.totalLoggedHours | number:'1.0-1' }}h logged
                 </span>
               </td>
@@ -159,10 +157,10 @@
     </div>
     
     <!-- Empty State for members -->
-    <div class="table-card" *ngIf="!reportData.memberContribution || reportData.memberContribution.length === 0" style="padding: 48px; text-align: center;">
-      <svg viewBox="0 0 24 24" width="48" height="48" stroke="#9CA3AF" stroke-width="1.5" fill="none" style="margin-bottom: 16px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-      <h3 style="font-size: 18px; font-weight: 600; color: #111827; margin: 0 0 8px 0;">No Team Data Available</h3>
-      <p style="color: #6B7280; margin: 0;">Assign issues and log hours to see team member contributions.</p>
+    <div class="card" *ngIf="!reportData.memberContribution || reportData.memberContribution.length === 0" style="padding: 48px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--text-light)" stroke-width="1.5" fill="none" style="margin-bottom: 16px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      <h3 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">No Team Data Available</h3>
+      <p class="text-secondary" style="font-size: 14px; margin: 0;">Assign issues and log hours to see team member contributions.</p>
     </div>
 
   </div>
