@@ -1,62 +1,155 @@
-<div class="page-header">
-  <div>
-    <h2>Dashboard</h2>
-    <p class="page-subtitle">Overview of your projects and progress</p>
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h2>Dashboard</h2>
+      <p class="text-secondary" style="font-size: 13px; margin-top: 4px;">Overview of your projects and progress</p>
+    </div>
   </div>
-</div>
 
-<div class="stats-grid">
-  <div class="stat-card">
-    <div class="stat-content">
-      <span class="stat-label">Total Projects</span>
-      <span class="stat-value">12</span>
-    </div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-content">
-      <span class="stat-label">Total Issues</span>
-      <span class="stat-value">245</span>
-    </div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-content">
-      <span class="stat-label">Open Issues</span>
-      <span class="stat-value" style="color: var(--warning-color);">68</span>
-    </div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-content">
-      <span class="stat-label">Completed Issues</span>
-      <span class="stat-value" style="color: var(--success-color);">177</span>
-    </div>
-  </div>
-</div>
-
-<div class="mt-lg flex gap-lg">
-  <div class="card" style="flex: 2;">
-    <h3 style="font-size: 16px; margin-bottom: var(--spacing-md);">Recent Activity</h3>
-    <div class="empty-state" style="padding: var(--spacing-lg);">
-      <div class="empty-state-icon" style="font-size: 32px;">
-        <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="color: var(--primary-color); background: var(--primary-light);">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
       </div>
-      <p class="empty-state-description" style="margin-bottom: 0;">No recent activity to show.</p>
+      <div class="stat-content">
+        <span class="stat-value">12</span>
+        <span class="stat-label">Projects</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon" style="color: var(--success-color); background: var(--success-light);">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">5</span>
+        <span class="stat-label">Active Sprints</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon" style="color: var(--warning-color); background: var(--warning-light);">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">32</span>
+        <span class="stat-label">Open Issues</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon" style="color: var(--info-color); background: var(--info-light);">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">128</span>
+        <span class="stat-label">Completed Issues</span>
+      </div>
     </div>
   </div>
-  <div class="card" style="flex: 1;">
-    <h3 style="font-size: 16px; margin-bottom: var(--spacing-md);">Quick Links</h3>
-    <div class="flex flex-column gap-sm">
-      <a href="/projects" class="btn btn-secondary" style="justify-content: flex-start;">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 8px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-        All Projects
-      </a>
-      <a href="/issues" class="btn btn-secondary" style="justify-content: flex-start;">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 8px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-        My Issues
-      </a>
-      <a href="/users" class="btn btn-secondary" style="justify-content: flex-start;">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 8px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-        User Management
-      </a>
+
+  <div class="flex gap-lg mt-md" style="flex-wrap: wrap;">
+    <div class="card" style="flex: 2; min-width: 300px;">
+      <div class="flex justify-between align-center mb-md">
+        <h3 style="font-size: 16px; margin: 0;">Projects Overview</h3>
+        <a href="/projects" style="font-size: 13px; font-weight: 500;">View all projects</a>
+      </div>
+      
+      <div class="table-container" style="border: none; box-shadow: none;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="background-color: var(--bg-surface); padding-left: 0;">Project</th>
+              <th style="background-color: var(--bg-surface);">Key</th>
+              <th style="background-color: var(--bg-surface);">Status</th>
+              <th style="background-color: var(--bg-surface);">Progress</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding-left: 0; font-weight: 500;">Website Redesign</td>
+              <td>WRD</td>
+              <td><span class="badge badge-success">Active</span></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div style="flex: 1; height: 4px; background: var(--border-color); border-radius: 2px; overflow: hidden;">
+                    <div style="width: 75%; height: 100%; background: var(--primary-color);"></div>
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-secondary); min-width: 28px;">75%</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-left: 0; font-weight: 500;">Mobile App</td>
+              <td>MOB</td>
+              <td><span class="badge badge-success">Active</span></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div style="flex: 1; height: 4px; background: var(--border-color); border-radius: 2px; overflow: hidden;">
+                    <div style="width: 60%; height: 100%; background: var(--primary-color);"></div>
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-secondary); min-width: 28px;">60%</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-left: 0; font-weight: 500;">API Integration</td>
+              <td>API</td>
+              <td><span class="badge badge-success">Active</span></td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div style="flex: 1; height: 4px; background: var(--border-color); border-radius: 2px; overflow: hidden;">
+                    <div style="width: 40%; height: 100%; background: var(--primary-color);"></div>
+                  </div>
+                  <span style="font-size: 11px; color: var(--text-secondary); min-width: 28px;">40%</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="flex flex-column gap-lg" style="flex: 1; min-width: 300px;">
+      <div class="card" style="margin-bottom: 0;">
+        <div class="flex justify-between align-center mb-md">
+          <h3 style="font-size: 16px; margin: 0;">Sprint Progress</h3>
+        </div>
+        <div class="text-secondary" style="font-size: 12px; font-weight: 500; text-transform: uppercase; margin-bottom: 4px;">Current Sprint</div>
+        <div class="flex justify-between align-center mb-sm">
+          <div style="font-size: 16px; font-weight: 600; color: var(--text-main);">Sprint 14</div>
+          <div style="font-size: 12px; color: var(--text-secondary);">May 13 - May 26</div>
+        </div>
+        <div class="mt-md">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+            <span style="color: var(--text-secondary);">60% Complete</span>
+          </div>
+          <div style="height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden;">
+            <div style="width: 60%; height: 100%; background: var(--primary-color);"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-bottom: 0;">
+        <div class="flex justify-between align-center mb-md">
+          <h3 style="font-size: 16px; margin: 0;">My Tasks</h3>
+          <a href="/issues" style="font-size: 13px; font-weight: 500;">View all</a>
+        </div>
+        <div class="flex flex-column gap-sm">
+          <div class="flex justify-between align-center" style="padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+            <div style="font-size: 13px; font-weight: 500;">UI Fixes</div>
+            <span class="badge badge-info">In Progress</span>
+          </div>
+          <div class="flex justify-between align-center" style="padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+            <div style="font-size: 13px; font-weight: 500;">API Integration</div>
+            <span class="badge badge-neutral">To Do</span>
+          </div>
+          <div class="flex justify-between align-center" style="padding: 8px 0;">
+            <div style="font-size: 13px; font-weight: 500;">Bug Fix</div>
+            <span class="badge badge-info">In Progress</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
