@@ -90,6 +90,8 @@ export class IssueEdit
 
   sprints: any[] = [];
 
+  history: any[] = [];
+
   form = this.fb.group({
 
     title: [
@@ -198,10 +200,23 @@ export class IssueEdit
 
           this.loadSprints();
 
+          this.loadHistory();
+
         }
 
       });
 
+  }
+
+  loadHistory(): void {
+    this.issueService.getHistory(this.issueId).subscribe({
+      next: response => {
+        this.history = response.data || [];
+      },
+      error: error => {
+        console.error('Failed to load issue history:', error);
+      }
+    });
   }
 
   loadMembers(): void {

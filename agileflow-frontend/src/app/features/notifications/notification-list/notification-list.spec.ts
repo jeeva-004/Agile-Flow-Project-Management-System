@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { NotificationListComponent } from './notification-list';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DialogService } from '../../../core/services/dialog.service';
@@ -46,7 +47,8 @@ describe('NotificationListComponent', () => {
       imports: [NotificationListComponent],
       providers: [
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: DialogService, useValue: mockDialogService }
+        { provide: DialogService, useValue: mockDialogService },
+        provideRouter([])
       ]
     }).compileComponents();
 

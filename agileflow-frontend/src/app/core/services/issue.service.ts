@@ -126,4 +126,7 @@ export class IssueService {
 
   }
 
+  getHistory(issueId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/history/issues/${issueId}`);
+  }
 }

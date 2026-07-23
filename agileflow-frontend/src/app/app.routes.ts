@@ -82,6 +82,12 @@ export const routes: Routes = [
     component: SprintListComponent
   },
   {
+    path: 'projects/:id/activities',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/activities/activity-feed/activity-feed').then(m => m.ActivityFeed)
+  },
+  {
     path: 'notifications',
     canActivate: [authGuard],
     component: NotificationListComponent

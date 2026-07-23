@@ -145,7 +145,8 @@
               <span class="badge" [ngClass]="{
                   'badge-neutral': issue.status === 'TODO',
                   'badge-info': issue.status === 'IN_PROGRESS',
-                  'badge-success': issue.status === 'DONE'
+                  'badge-success': issue.status === 'DONE',
+                  'badge-danger': issue.status === 'BLOCKED'
                 }">
                 {{ issue.status }}
               </span>

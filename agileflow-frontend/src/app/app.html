@@ -48,6 +48,10 @@
         <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
         <span class="nav-text">Issues</span>
       </a>
+      <a *ngIf="currentProjectId" [routerLink]="['/projects', currentProjectId, 'activities']" routerLinkActive="active" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        <span class="nav-text">Activity Feed</span>
+      </a>
 
       <!-- Analytics & Reports (Requires Active Project & Role is ADMIN/PM) -->
       <a *ngIf="role !== 'DEVELOPER' && currentProjectId" [routerLink]="['/projects', currentProjectId, 'analytics']" routerLinkActive="active" class="nav-item">
@@ -117,13 +121,13 @@
 
         <!-- Notification Panel Dropdown -->
         <div class="notification-panel" *ngIf="panelOpen" style="position: absolute; top: 48px; right: 0; z-index: 1001; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 340px; max-height: 400px; overflow-y: auto;">
-          <app-notification-list></app-notification-list>
+          <app-notification-list [isDropdown]="true"></app-notification-list>
         </div>
 
         <div class="header-user" *ngIf="role">
           <div class="avatar" style="text-transform: uppercase;">{{ role.replace('ROLE_', '').charAt(0) }}</div>
           <div class="user-info">
-            <span class="user-name">Admin User</span>
+            <span class="user-name">{{ currentUserName }}</span>
             <span class="user-role">{{ role.replace('ROLE_', '').replace('_', ' ') }}</span>
           </div>
         </div>

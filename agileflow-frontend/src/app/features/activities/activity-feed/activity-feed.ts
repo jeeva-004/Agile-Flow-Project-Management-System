@@ -1,7 +1,8 @@
 import {
 Component,
 Input,
-OnInit
+OnInit,
+inject
 }
 from '@angular/core';
 
@@ -9,6 +10,7 @@ import {
 CommonModule
 }
 from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 import {
 ActivityService
@@ -40,6 +42,8 @@ activities:any[]=[];
 
 loading=false;
 
+private readonly route = inject(ActivatedRoute);
+
 constructor(
 
 private service:
@@ -48,9 +52,13 @@ ActivityService
 ){}
 
 ngOnInit():void{
-
-this.load();
-
+  if (!this.projectId) {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.projectId = Number(idParam);
+    }
+  }
+  this.load();
 }
 
 load():void{

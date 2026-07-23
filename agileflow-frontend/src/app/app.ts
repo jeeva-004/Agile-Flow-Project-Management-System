@@ -35,6 +35,10 @@ export class App implements OnInit {
     return this.notificationService.unreadCountSignal();
   }
 
+  get currentUserName(): string {
+    return localStorage.getItem('current_user_name') || 'User';
+  }
+
   searchQuery = '';
   searchResultsProjects: any[] = [];
   searchResultsIssues: any[] = [];
@@ -93,6 +97,7 @@ export class App implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.closeSidebar();
+      this.panelOpen = false;
       const prevRole = this.role;
       this.role = localStorage.getItem('role');
       this.extractProjectContext();

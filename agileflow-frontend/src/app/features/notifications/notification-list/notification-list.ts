@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { DialogService } from '../../../core/services/dialog.service';
@@ -18,11 +19,13 @@ interface NotificationItem {
 @Component({
   selector: 'app-notification-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './notification-list.html',
   styleUrls: ['./notification-list.scss']
 })
 export class NotificationListComponent implements OnInit {
+
+  @Input() isDropdown = false;
 
   private readonly notificationService = inject(NotificationService);
   private readonly toastService = inject(ToastService);
