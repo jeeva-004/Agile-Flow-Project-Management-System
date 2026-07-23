@@ -19,10 +19,10 @@
     <div class="flex gap-sm" style="flex: 1; min-width: 300px;">
       <div style="position: relative; max-width: 320px; flex: 1;">
         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" class="form-control" placeholder="Search projects..." style="padding-left: 36px;">
+        <input type="text" class="form-control" placeholder="Search projects..." style="padding-left: 36px;" [ngModel]="keyword" (ngModelChange)="onSearchChange($event)">
       </div>
       
-      <select class="form-select" style="width: auto;">
+      <select class="form-select" [(ngModel)]="statusFilter" (ngModelChange)="onFilterChange()" style="width: auto;">
         <option value="">All Statuses</option>
         <option value="Planning">Planning</option>
         <option value="Active">Active</option>
@@ -51,7 +51,7 @@
   <!-- Data Table -->
   <div class="card" style="padding: 0;">
     
-    <div class="table-container" *ngIf="projects.length > 0">
+    <div class="table-container" *ngIf="filteredProjects().length > 0">
       <table class="table">
         <thead>
           <tr>
@@ -63,7 +63,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let project of projects">
+          <tr *ngFor="let project of filteredProjects()">
             
             <!-- Project Name -->
             <td>
@@ -149,7 +149,7 @@
     </div>
 
     <!-- Empty State -->
-    <div class="empty-state" *ngIf="projects.length === 0">
+    <div class="empty-state" *ngIf="filteredProjects().length === 0">
       <div class="empty-state-icon">
         <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
       </div>
@@ -161,7 +161,7 @@
     </div>
 
     <!-- Pagination -->
-    <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; border-top: 1px solid var(--border-color);" *ngIf="projects.length > 0">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; border-top: 1px solid var(--border-color);" *ngIf="filteredProjects().length > 0">
       <div style="font-size: 13px; color: var(--text-secondary);">
         Showing page <strong>{{ page + 1 }}</strong> of <strong>{{ totalPages || 1 }}</strong> ({{ totalElements }} total)
       </div>

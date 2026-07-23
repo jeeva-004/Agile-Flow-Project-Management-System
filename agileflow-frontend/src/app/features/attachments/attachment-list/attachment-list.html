@@ -73,7 +73,7 @@
           <button class="btn btn-outline" style="padding: 6px;" (click)="download(item.id, item.originalFileName)" title="Download">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           </button>
-          <button class="btn btn-outline" style="padding: 6px; color: var(--danger-color); border-color: transparent;" (click)="remove(item.id)" title="Delete" onmouseover="this.style.borderColor='var(--danger-color)'; this.style.backgroundColor='rgba(220,38,38,0.1)'" onmouseout="this.style.borderColor='transparent'; this.style.backgroundColor='transparent'">
+          <button class="btn btn-outline-danger" style="padding: 6px;" (click)="remove(item.id)" title="Delete">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           </button>
         </div>

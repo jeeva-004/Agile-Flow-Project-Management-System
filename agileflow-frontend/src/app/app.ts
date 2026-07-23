@@ -178,9 +178,6 @@ export class App implements OnInit {
 
   togglePanel(): void {
     this.panelOpen = !this.panelOpen;
-    if (this.panelOpen) {
-      this.notificationService.unreadCount().subscribe();
-    }
   }
 
   toggleSidebar(): void {

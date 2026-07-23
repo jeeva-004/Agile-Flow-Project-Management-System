@@ -1,8 +1,12 @@
 import {
   Component,
   inject,
-  OnInit
+  OnInit,
+  OnDestroy
 } from '@angular/core';
+
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,7 +43,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
 })
 export class ProjectListComponent
-  implements OnInit {
+  implements OnInit, OnDestroy {
 
   private readonly service =
     inject(ProjectService);
@@ -60,30 +64,67 @@ export class ProjectListComponent
   sortBy = 'id';
   sortDir = 'desc';
 
+  keyword = '';
+  statusFilter = '';
+
+  private readonly searchSubject = new Subject<string>();
+  private searchSubscription!: Subscription;
+
   ngOnInit(): void {
     this.role = localStorage.getItem('role');
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.keyword = value;
+      this.page = 0;
+      this.loadProjects();
+    });
     this.loadProjects();
   }
 
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  onSearchChange(value: string): void {
+    this.searchSubject.next(value);
+  }
+
+  onFilterChange(): void {
+    this.page = 0;
+    this.loadProjects();
+  }
+
+  filteredProjects(): any[] {
+    if (!this.statusFilter) return this.projects;
+    return this.projects.filter((p: any) =>
+      (p.status || 'Active').toLowerCase() === this.statusFilter.toLowerCase()
+    );
+  }
+
   loadProjects(): void {
-
-    this.service.findAll(this.page, this.size, this.sortBy, this.sortDir)
-
-      .subscribe({
-
-        next: response => {
-
-          this.projects =
-            response.data?.content ?? [];
-          this.totalPages =
-            response.data?.totalPages ?? 0;
-          this.totalElements =
-            response.data?.totalElements ?? 0;
-
-        }
-
-      });
-
+    if (this.keyword) {
+      this.service.search(this.keyword, undefined, this.page, this.size, this.sortBy, this.sortDir)
+        .subscribe({
+          next: response => {
+            this.projects = response.data?.content ?? [];
+            this.totalPages = response.data?.totalPages ?? 0;
+            this.totalElements = response.data?.totalElements ?? 0;
+          }
+        });
+    } else {
+      this.service.findAll(this.page, this.size, this.sortBy, this.sortDir)
+        .subscribe({
+          next: response => {
+            this.projects = response.data?.content ?? [];
+            this.totalPages = response.data?.totalPages ?? 0;
+            this.totalElements = response.data?.totalElements ?? 0;
+          }
+        });
+    }
   }
 
   onSortChange(field: string): void {

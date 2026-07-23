@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -13,7 +13,7 @@ import { ProjectService } from '../../../core/services/project.service';
   templateUrl: './analytics-dashboard.html',
   styleUrls: ['./analytics-dashboard.scss']
 })
-export class AnalyticsDashboardComponent implements OnInit {
+export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly analyticsService = inject(AnalyticsService);
   private readonly projectService = inject(ProjectService);
@@ -196,5 +196,17 @@ export class AnalyticsDashboardComponent implements OnInit {
         }
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.statusChart) {
+      this.statusChart.destroy();
+    }
+    if (this.priorityChart) {
+      this.priorityChart.destroy();
+    }
+    if (this.velocityChart) {
+      this.velocityChart.destroy();
+    }
   }
 }
