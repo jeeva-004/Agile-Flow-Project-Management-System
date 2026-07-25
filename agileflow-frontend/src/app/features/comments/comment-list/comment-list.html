@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" style="max-width: 800px;">
   
   <!-- Header -->
   <div class="page-header">
@@ -10,8 +10,8 @@
       <p class="text-secondary" style="font-size: 13px; margin-top: 4px;">Project discussion and collaboration</p>
     </div>
     
-    <div class="header-actions" style="display: flex; gap: 12px;">
-      <button class="btn btn-outline" [routerLink]="['/issues', issueId, 'edit']">
+    <div class="header-actions">
+      <button class="btn btn-outline" [routerLink]="['/issues', issueId, 'edit']" style="margin-right: 8px;">
         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 6px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         Back to Issue
       </button>
@@ -23,17 +23,17 @@
   </div>
 
   <!-- Toolbar -->
-  <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+  <div class="toolbar">
     <div style="font-size: 15px; font-weight: 600; color: var(--text-main);">
       Comments <span class="badge" style="margin-left: 4px;">{{ totalElements }}</span>
     </div>
     
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)" style="padding: 6px 12px; height: auto;">
+    <div class="toolbar-actions">
+      <select class="form-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)" style="padding: 6px 12px; height: auto; width: auto;">
         <option value="id">Created Order</option>
         <option value="createdAt">Date Created</option>
       </select>
-      <button class="btn btn-outline" style="padding: 6px;" (click)="toggleSortDir()" title="Toggle sort direction">
+      <button class="btn btn-outline" style="padding: 8px;" (click)="toggleSortDir()" title="Toggle sort direction">
         <svg *ngIf="sortDir === 'asc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
         <svg *ngIf="sortDir === 'desc'" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
       </button>
@@ -41,15 +41,15 @@
   </div>
 
   <!-- Comments List -->
-  <div style="display: flex; flex-direction: column; gap: 24px;">
+  <div style="display: flex; flex-direction: column; gap: 16px;">
     
-    <div class="card" *ngFor="let comment of comments" style="padding: 24px; position: relative;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600;">{{ comment.authorName?.charAt(0) || 'U' }}</div>
-          <div style="display: flex; flex-direction: column;">
-            <span style="font-size: 14px; font-weight: 600; color: var(--text-main);">{{ comment.authorName }}</span>
-            <span class="text-secondary" style="font-size: 12px;">{{ comment.createdAt | date:'medium' }}</span>
+    <div class="card" *ngFor="let comment of comments" style="padding: 20px;">
+      <div class="comment-header" style="margin-bottom: 12px;">
+        <div class="user-cell">
+          <div class="user-avatar">{{ comment.authorName?.charAt(0) || 'U' }}</div>
+          <div class="user-info-column">
+            <span class="user-name">{{ comment.authorName }}</span>
+            <span class="user-sub">{{ comment.createdAt | date:'medium' }}</span>
           </div>
         </div>
         
@@ -63,18 +63,18 @@
         </div>
       </div>
       
-      <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; padding-left: 52px;">
+      <div class="comment-body" style="padding-left: 52px; white-space: pre-wrap;">
         {{ comment.message }}
       </div>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="comments.length === 0" class="card" style="padding: 48px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <div style="width: 64px; height: 64px; background: rgba(37, 99, 235, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--primary-color);">
+    <div *ngIf="comments.length === 0" class="empty-state card" style="padding: 48px;">
+      <div class="empty-state-icon">
         <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
       </div>
-      <h3 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">No comments yet</h3>
-      <p class="text-secondary" style="font-size: 14px; margin-bottom: 24px;">Start the discussion by posting the first comment.</p>
+      <h3 class="empty-state-title">No comments yet</h3>
+      <p class="empty-state-description">Start the discussion by posting the first comment.</p>
       <button class="btn btn-primary" [routerLink]="['/issues', issueId, 'comments', 'create']">
         Add Comment
       </button>

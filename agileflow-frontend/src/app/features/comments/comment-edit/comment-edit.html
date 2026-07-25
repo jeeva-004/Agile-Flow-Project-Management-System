@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" style="max-width: 800px;">
   
   <div class="page-header">
     <div>
@@ -13,15 +13,15 @@
     </div>
   </div>
 
-  <div class="card" style="padding: 24px;">
+  <div class="card" style="padding: 0;">
     <form [formGroup]="form" (ngSubmit)="submit()">
       
-      <div style="margin-bottom: 24px;">
-        <textarea class="form-control" placeholder="Write your comment here... Markdown and plain text supported." formControlName="message" style="min-height: 180px; resize: vertical;"></textarea>
+      <div style="padding: 24px;">
+        <textarea class="form-control" placeholder="Write your comment here..." formControlName="message" style="min-height: 180px; resize: vertical;"></textarea>
       </div>
 
       <!-- Footer Actions -->
-      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+      <div class="form-actions" style="margin-top: 0;">
         <button class="btn btn-outline" type="button" [routerLink]="['/issues', issueId, 'comments']">Cancel</button>
         <button class="btn btn-primary" type="submit" [disabled]="form.invalid || !form.dirty">
           <span *ngIf="!form.invalid">Save Changes</span>

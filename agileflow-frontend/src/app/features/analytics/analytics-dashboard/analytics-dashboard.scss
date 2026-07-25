@@ -6,3 +6,130 @@
   0%, 100% { opacity: 1; }
   50% { opacity: .5; }
 }
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 160px;
+}
+
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  
+  span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+}
+
+.kpi-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &.health {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--success-color);
+  }
+  
+  &.resolution {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+  }
+  
+  &.effort {
+    background: rgba(217, 119, 6, 0.1);
+    color: var(--warning-color);
+  }
+}
+
+.kpi-content {
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    
+    span {
+      font-size: 18px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+  }
+}
+
+.progress-bar-container {
+  height: 6px;
+  width: 100%;
+  background: var(--border-color);
+  border-radius: 3px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  
+  &.success {
+    background: var(--success-color);
+  }
+  &.primary {
+    background: var(--primary-color);
+  }
+  &.warning {
+    background: var(--warning-color);
+  }
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  padding: 24px;
+  
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .chart-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+  }
+  
+  .chart-wrapper {
+    position: relative;
+    height: 250px;
+    width: 100%;
+    
+    &.large {
+      height: 320px;
+    }
+  }
+}
+

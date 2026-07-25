@@ -26,14 +26,14 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: start;">
+    <div class="issue-edit-grid">
       
       <!-- LEFT COLUMN -->
       <div style="display: flex; flex-direction: column; gap: 24px;">
         
         <div class="card" style="padding: 24px;">
           <div>
-            <input type="text" class="form-control" placeholder="Issue Summary" formControlName="title" style="font-size: 18px; font-weight: 600; padding: 12px; border: 1px solid transparent; background: transparent; transition: all 0.2s; border-radius: 6px; width: 100%; box-sizing: border-box;" onfocus="this.style.background='#fff'; this.style.borderColor='var(--border-color)'; this.style.boxShadow='0 0 0 3px rgba(37, 99, 235, 0.1)';" onblur="if(!this.value){this.style.background='#fff'; this.style.borderColor='var(--danger-color)';} else {this.style.background='transparent'; this.style.borderColor='transparent'; this.style.boxShadow='none';}">
+            <input type="text" class="issue-title-input" placeholder="Issue Summary" formControlName="title">
             <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="invalid-feedback" style="margin-top: 4px; padding-left: 12px;">
               Title is required
             </div>

@@ -17,9 +17,9 @@
     <form [formGroup]="form" (ngSubmit)="submit()">
       
       <!-- Basic Information Section -->
-      <div class="form-section" style="padding: 32px; border-bottom: 1px solid var(--border-color);">
-        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 24px 0; display: flex; align-items: center; gap: 8px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--primary-color);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
           Basic Information
         </h3>
         
@@ -40,13 +40,13 @@
       </div>
 
       <!-- Categorization Section -->
-      <div class="form-section" style="padding: 32px; border-bottom: 1px solid var(--border-color);">
-        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 24px 0; display: flex; align-items: center; gap: 8px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--primary-color);"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
           Categorization
         </h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="form-row">
           <div class="form-group">
             <label>Issue Type <span class="required">*</span></label>
             <div class="input-with-icon">
@@ -74,13 +74,13 @@
       </div>
 
       <!-- Assignment & Scheduling Section -->
-      <div class="form-section" style="padding: 32px; border-bottom: 1px solid var(--border-color);">
-        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 24px 0; display: flex; align-items: center; gap: 8px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--primary-color);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           Assignment & Scheduling
         </h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="form-row">
           <div class="form-group">
             <label>Assignee</label>
             <div class="input-with-icon">
@@ -102,7 +102,7 @@
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="form-row">
           <div class="form-group">
             <label>Estimate Hours</label>
             <div class="input-with-icon">
@@ -122,7 +122,7 @@
       </div>
 
       <!-- Footer Actions -->
-      <div style="padding: 24px 32px; background-color: var(--bg-surface); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+      <div class="form-actions">
         <button class="btn btn-outline" type="button" [routerLink]="['/projects', projectId, 'issues']">Cancel</button>
         <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
           <span *ngIf="!form.invalid">Create Issue</span>

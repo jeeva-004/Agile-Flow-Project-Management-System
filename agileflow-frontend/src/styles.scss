@@ -520,3 +520,218 @@ select.form-control, .form-select {
   background-color: var(--primary-light);
   color: var(--primary-color);
 }
+
+/* Form layouts and sections */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}
+
+.form-section {
+  padding: var(--spacing-lg) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+  
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.form-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--text-main);
+  
+  svg {
+    color: var(--primary-color);
+  }
+}
+
+.form-actions {
+  padding: var(--spacing-lg) var(--spacing-lg);
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  border-bottom-left-radius: var(--border-radius-lg);
+  border-bottom-right-radius: var(--border-radius-lg);
+}
+
+/* Toolbars & Filters */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.toolbar-search {
+  position: relative;
+  max-width: 320px;
+  flex: 1;
+  min-width: 240px;
+  
+  svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  
+  .form-control {
+    padding-left: 36px;
+  }
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* User avatar and cell details */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+  text-transform: uppercase;
+  border: 1.5px solid var(--primary-border);
+}
+
+.user-avatar-sm {
+  width: 28px;
+  height: 28px;
+  font-size: var(--font-size-xs);
+}
+
+.user-info-column {
+  display: flex;
+  flex-direction: column;
+  
+  .user-name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-main);
+  }
+  
+  .user-sub {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+  }
+}
+
+/* Comments layout elements */
+.comment-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-lg);
+  position: relative;
+  transition: border-color 0.15s ease;
+  
+  &:hover {
+    border-color: var(--border-color-hover);
+  }
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.comment-body {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  padding-left: 48px;
+}
+
+/* Priority & Status colors */
+.priority-high {
+  background-color: var(--danger-light);
+  color: var(--danger-hover);
+  border: 1px solid #fecaca;
+}
+
+.priority-medium {
+  background-color: var(--warning-light);
+  color: var(--warning-color);
+  border: 1px solid #fde68a;
+}
+
+.priority-low {
+  background-color: var(--success-light);
+  color: var(--success-color);
+  border: 1px solid #a7f3d0;
+}
+
+/* Input layout helper */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  
+  svg {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: color 0.15s ease;
+  }
+  
+  .form-control, .form-select {
+    padding-left: 40px;
+  }
+}
+
+/* Required form mark */
+.required {
+  color: var(--danger-color);
+  margin-left: 2px;
+}
+
+/* Invalid Feedback */
+.invalid-feedback {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--danger-color);
+  margin-top: 6px;
+  font-weight: 500;
+}

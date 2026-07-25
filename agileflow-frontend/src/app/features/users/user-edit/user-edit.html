@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" style="max-width: 800px;">
   
   <div class="page-header">
     <div>
@@ -13,90 +13,90 @@
     </div>
   </div>
 
-  <div class="card" style="padding: 24px;">
+  <div class="card" style="padding: 0;">
     <form [formGroup]="form" (ngSubmit)="submit()">
       
       <!-- Personal Information Section -->
-      <div style="margin-bottom: 32px;">
-        <h3 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--primary-color);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           Personal Information
         </h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="form-row">
           <div class="form-group">
-            <label style="font-size: 13px; font-weight: 500; color: var(--text-main); margin-bottom: 8px; display: block;">First Name</label>
-            <div style="position: relative;">
-              <input type="text" class="form-control" placeholder="e.g. John" formControlName="firstName" style="padding-left: 36px;">
-              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <label>First Name <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <input type="text" class="form-control" placeholder="e.g. John" formControlName="firstName">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </div>
-            <div *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched" style="color: var(--danger-color); font-size: 12px; margin-top: 6px; display: flex; align-items: center; gap: 4px;">
+            <div *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched" class="invalid-feedback">
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
               First Name is required
             </div>
           </div>
           
           <div class="form-group">
-            <label style="font-size: 13px; font-weight: 500; color: var(--text-main); margin-bottom: 8px; display: block;">Last Name</label>
-            <div style="position: relative;">
-              <input type="text" class="form-control" placeholder="e.g. Doe" formControlName="lastName" style="padding-left: 36px;">
-              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <label>Last Name</label>
+            <div class="input-with-icon">
+              <input type="text" class="form-control" placeholder="e.g. Doe" formControlName="lastName">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Account Information Section -->
-      <div style="margin-bottom: 32px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-        <h3 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--primary-color);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           Account Information
         </h3>
         
         <div class="form-group">
-          <label style="font-size: 13px; font-weight: 500; color: var(--text-main); margin-bottom: 8px; display: block;">Email Address</label>
-          <div style="position: relative;">
-            <input type="email" class="form-control" placeholder="john.doe@example.com" formControlName="email" style="padding-left: 36px;">
-            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <label>Email Address <span class="required">*</span></label>
+          <div class="input-with-icon">
+            <input type="email" class="form-control" placeholder="john.doe@example.com" formControlName="email">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
           </div>
         </div>
       </div>
 
       <!-- Permissions Section -->
-      <div style="margin-bottom: 32px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-        <h3 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--primary-color);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
           Permissions & Status
         </h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="form-row">
           <div class="form-group">
-            <label style="font-size: 13px; font-weight: 500; color: var(--text-main); margin-bottom: 8px; display: block;">Role</label>
-            <div style="position: relative;">
-              <select formControlName="roleId" class="form-select" style="padding-left: 36px;">
+            <label>Role <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <select formControlName="roleId" class="form-select">
                 <option [value]="1">Administrator</option>
                 <option [value]="2">Project Manager</option>
                 <option [value]="3">Developer</option>
               </select>
-              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             </div>
           </div>
 
           <div class="form-group">
-            <label style="font-size: 13px; font-weight: 500; color: var(--text-main); margin-bottom: 8px; display: block;">Status</label>
-            <div style="position: relative;">
-              <select formControlName="status" class="form-select" style="padding-left: 36px;">
+            <label>Status <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <select formControlName="status" class="form-select">
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
               </select>
-              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Footer Actions -->
-      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+      <div class="form-actions">
         <button class="btn btn-outline" type="button" routerLink="/users">Cancel</button>
         <button class="btn btn-primary" type="submit" [disabled]="form.invalid || !form.dirty">
           <span *ngIf="!form.invalid">Update User</span>

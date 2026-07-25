@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" style="max-width: 800px;">
   
   <!-- Header -->
   <div class="page-header">
@@ -12,20 +12,22 @@
   </div>
 
   <!-- Summary Cards (Visible only when loaded and has items) -->
-  <div *ngIf="!loading && activities.length > 0" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-    <div class="card" style="padding: 20px;">
-      <span style="font-size: 13px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Total Activities</span>
-      <span style="font-size: 24px; font-weight: 700; color: var(--text-main);">{{ activities.length }}</span>
+  <div *ngIf="!loading && activities.length > 0" class="summary-cards">
+    <div class="card summary-card">
+      <span class="summary-label">Total Activities</span>
+      <span class="summary-value">{{ activities.length }}</span>
     </div>
-    <div class="card" style="padding: 20px;">
-      <span style="font-size: 13px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Latest Activity</span>
+    <div class="card summary-card">
+      <span class="summary-label">Latest Activity</span>
       <span style="font-size: 18px; font-weight: 600; color: var(--text-main);">{{ activities[0]?.createdAt | date:'mediumDate' }}</span>
     </div>
   </div>
 
   <!-- Toolbar -->
-  <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-    <span style="font-size: 16px; font-weight: 600; color: var(--text-main);">Project Timeline</span>
+  <div class="toolbar">
+    <div style="font-size: 16px; font-weight: 600; color: var(--text-main);">
+      Project Timeline
+    </div>
     <button class="btn btn-outline" (click)="load()">
       <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-right: 6px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
       Refresh
@@ -33,30 +35,29 @@
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" style="display: flex; flex-direction: column; gap: 16px;">
-    <div class="card" style="padding: 16px; display: flex; align-items: center; gap: 16px;" *ngFor="let i of [1,2,3]">
-      <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--border-color); animation: pulse 1.5s infinite;"></div>
+  <div *ngIf="loading" class="loading-state">
+    <div class="card skeleton-card" *ngFor="let i of [1,2,3]">
+      <div class="skeleton-avatar"></div>
       <div style="height: 16px; width: 60%; background-color: var(--border-color); border-radius: 4px; animation: pulse 1.5s infinite;"></div>
     </div>
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="!loading && activities.length === 0" class="card" style="padding: 48px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <div style="width: 64px; height: 64px; background: rgba(37, 99, 235, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--primary-color);">
+  <div *ngIf="!loading && activities.length === 0" class="empty-state card" style="padding: 48px;">
+    <div class="empty-state-icon">
       <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
     </div>
-    <h4 style="font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 8px;">No Activity Yet</h4>
-    <p class="text-secondary" style="font-size: 14px; max-width: 400px; margin: 0 auto;">Activities performed within this project will appear here automatically.</p>
+    <h4 class="empty-state-title">No Activity Yet</h4>
+    <p class="empty-state-description">Activities performed within this project will appear here automatically.</p>
   </div>
 
   <!-- Timeline -->
-  <div *ngIf="!loading && activities.length > 0" class="card" style="padding: 24px;">
-    <div style="position: relative; padding-left: 32px; border-left: 2px solid var(--border-color);">
-      <div *ngFor="let activity of activities" style="position: relative; margin-bottom: 24px;">
+  <div *ngIf="!loading && activities.length > 0" class="card timeline-card">
+    <div class="timeline-container">
+      <div *ngFor="let activity of activities" class="timeline-item">
         
         <!-- Timeline Icon -->
-        <div style="position: absolute; left: -43px; top: 0; width: 20px; height: 20px; background: white; border: 2px solid var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color);">
-          <!-- Simplified icon logic by just using a dot or small icon, keeping the complex ngIfs in the original -->
+        <div class="timeline-icon">
           <!-- Issue -->
           <svg *ngIf="(activity.entityType || '').toLowerCase() === 'issue'" viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="3" fill="none"><circle cx="12" cy="12" r="10"></circle></svg>
           <!-- Project -->
@@ -75,10 +76,10 @@
           <svg *ngIf="!activity.entityType || !['issue','project','sprint','comment','worklog','attachment','member'].includes(activity.entityType.toLowerCase())" viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="3" fill="none"><circle cx="12" cy="12" r="10"></circle></svg>
         </div>
         
-        <div style="background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">{{ activity.userName?.charAt(0) || 'U' }}</div>
+        <div class="timeline-content">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div class="user-cell">
+              <div class="user-avatar user-avatar-sm" style="width: 24px; height: 24px; font-size: 11px;">{{ activity.userName?.charAt(0) || 'U' }}</div>
               <span style="font-weight: 600; font-size: 14px; color: var(--text-main);">{{ activity.userName || 'System' }}</span>
               <span class="badge" *ngIf="activity.entityType" style="font-size: 11px;">{{ activity.entityType }}</span>
             </div>

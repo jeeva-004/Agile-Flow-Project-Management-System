@@ -485,3 +485,112 @@
   }
 }
 
+/* Reusable layout classes for app main structure */
+.brand-logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.sidebar-project-context {
+  padding: 12px;
+  margin: 0 16px var(--spacing-md) 16px;
+  background: var(--primary-light);
+  border-radius: var(--border-radius-md);
+  font-size: 13px;
+  border-left: 3px solid var(--primary-color);
+  
+  .project-context-label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+  
+  .project-context-value {
+    color: var(--primary-hover);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: var(--spacing-md) 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.logout-link {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.header-search {
+  position: relative;
+}
+
+.header-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.notification-bell-btn {
+  position: relative;
+}
+
+.unread-badge {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  padding: 2px 5px;
+  font-weight: 700;
+  border: 1.5px solid var(--bg-surface);
+}
+
+.notification-panel {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  z-index: 1001;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 340px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.user-avatar-text {
+  text-transform: uppercase;
+}
+
+.non-auth-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-body);
+}
+
+

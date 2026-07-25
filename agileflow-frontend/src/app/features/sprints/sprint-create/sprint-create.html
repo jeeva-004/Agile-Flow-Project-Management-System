@@ -17,9 +17,9 @@
     <form [formGroup]="form" (ngSubmit)="submit()">
       
       <!-- General Information Section -->
-      <div class="form-section" style="padding: 32px; border-bottom: 1px solid var(--border-color);">
-        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 24px 0; display: flex; align-items: center; gap: 8px;">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--primary-color);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
           Sprint Details
         </h3>
         
@@ -29,13 +29,13 @@
             <input type="text" class="form-control" placeholder="e.g. Sprint 1 - MVP Features" formControlName="name">
             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
           </div>
-          <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="invalid-feedback" style="display: flex; align-items: center; gap: 4px;">
+          <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="invalid-feedback">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
             Sprint Name is required
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="form-row">
           <div class="form-group">
             <label>Start Date <span class="required">*</span></label>
             <div class="input-with-icon">
@@ -55,7 +55,7 @@
       </div>
 
       <!-- Footer Actions -->
-      <div style="padding: 24px 32px; background-color: var(--bg-surface); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+      <div class="form-actions">
         <button class="btn btn-outline" type="button" [routerLink]="['/projects', projectId, 'sprints']">Cancel</button>
         <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
           <span *ngIf="!form.invalid">Create Sprint</span>
