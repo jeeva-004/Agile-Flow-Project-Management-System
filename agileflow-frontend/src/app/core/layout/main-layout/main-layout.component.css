@@ -1,0 +1,42 @@
+.layout-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--bg-main);
+}
+
+.layout-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  z-index: 10;
+}
+
+.layout-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.layout-topnav {
+  height: 60px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  z-index: 5;
+}
+
+.layout-main {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--spacing-6);
+}
+
+@media (max-width: 768px) {
+  .layout-sidebar {
+    display: none; /* In a real app, we'd add a mobile toggle */
+  }
+}

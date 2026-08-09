@@ -1,0 +1,48 @@
+<div class="attachments-section mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="section-title m-0">Attachments ({{ totalElements }})</h4>
+    
+    <div class="upload-btn-wrapper">
+      <button class="btn btn-primary btn-sm" [disabled]="isUploading">
+        {{ isUploading ? 'Uploading...' : 'Upload File' }}
+      </button>
+      <input type="file" name="myfile" (change)="onFileSelected($event)" [disabled]="isUploading" />
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="attachments-grid" *ngIf="!isLoading">
+    <div class="attachment-card" *ngFor="let file of attachments">
+      <div class="attachment-icon">
+        📄
+      </div>
+      <div class="attachment-details">
+        <div class="attachment-name" title="{{ file.originalFileName }}">{{ file.originalFileName }}</div>
+        <div class="attachment-meta">
+          {{ formatBytes(file.fileSize) }} • {{ file.uploadedByName }}
+        </div>
+      </div>
+      <div class="attachment-actions">
+        <button class="btn-icon" title="Download" (click)="downloadAttachment(file.id, file.originalFileName)">
+          ↓
+        </button>
+        <button class="btn-icon text-danger" title="Delete" (click)="deleteAttachment(file.id)">
+          &times;
+        </button>
+      </div>
+    </div>
+    
+    <div *ngIf="attachments.length === 0" class="no-attachments">
+      No attachments found. Upload a file to share with the team.
+    </div>
+  </div>
+
+  <!-- Pagination if needed -->
+  <div class="pagination d-flex justify-content-end gap-2 mt-3" *ngIf="totalElements > pageSize">
+    <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">Previous</button>
+    <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">Next</button>
+  </div>
+</div>

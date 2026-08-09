@@ -1,0 +1,79 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th, .table td {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--gray-500);
+  background-color: var(--gray-50);
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.clickable-row:hover {
+  background-color: var(--gray-50);
+}
+
+.py-4 {
+  padding-top: var(--spacing-4);
+  padding-bottom: var(--spacing-4);
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8);
+}
+
+.text-muted {
+  color: var(--gray-500);
+}
+
+.gap-2 {
+  gap: var(--spacing-2);
+}
+
+/* Badges for Issue Types, Priorities, Statuses */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+/* Types */
+.badge-type-bug { background-color: #FEE2E2; color: #B91C1C; }
+.badge-type-story { background-color: #E0E7FF; color: #4338CA; }
+.badge-type-task { background-color: #DBEAFE; color: #1D4ED8; }
+.badge-type-epic { background-color: #F3E8FF; color: #7E22CE; }
+
+/* Priorities */
+.badge-priority-low { color: #6B7280; }
+.badge-priority-medium { color: #D97706; }
+.badge-priority-high { color: #EA580C; }
+.badge-priority-critical { color: #DC2626; font-weight: 700; }
+
+/* Statuses */
+.badge-status { border: 1px solid transparent; }
+.badge-status-todo { background-color: var(--gray-100); color: var(--gray-700); border-color: var(--gray-300); }
+.badge-status-in_progress { background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE; }
+.badge-status-done { background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0; }

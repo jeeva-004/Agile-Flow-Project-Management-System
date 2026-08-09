@@ -1,0 +1,86 @@
+<div class="dashboard-header">
+  <h2>Dashboard</h2>
+</div>
+
+<div *ngIf="isLoading" class="loading-state">
+  <div class="spinner"></div>
+  <p>Loading dashboard...</p>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">
+  {{ error }}
+</div>
+
+<div *ngIf="!isLoading && !error" class="dashboard-content">
+  <!-- Admin Dashboard -->
+  <div *ngIf="adminData" class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-title">Total Users</div>
+      <div class="metric-value">{{ adminData.totalUsers }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Total Projects</div>
+      <div class="metric-value">{{ adminData.totalProjects }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Total Issues</div>
+      <div class="metric-value">{{ adminData.totalIssues }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Open Issues</div>
+      <div class="metric-value">{{ adminData.openIssues }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Completed Issues</div>
+      <div class="metric-value">{{ adminData.completedIssues }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Total Worklogs</div>
+      <div class="metric-value">{{ adminData.totalWorkLogs }}</div>
+    </div>
+  </div>
+
+  <!-- PM Dashboard -->
+  <div *ngIf="pmData" class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-title">Managed Projects</div>
+      <div class="metric-value">{{ pmData.managedProjects }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Team Members</div>
+      <div class="metric-value">{{ pmData.teamMembers }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Active Sprints</div>
+      <div class="metric-value">{{ pmData.activeSprints }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Open Issues</div>
+      <div class="metric-value">{{ pmData.openIssues }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Completed Issues</div>
+      <div class="metric-value">{{ pmData.completedIssues }}</div>
+    </div>
+  </div>
+
+  <!-- Developer Dashboard -->
+  <div *ngIf="devData" class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-title">Assigned Issues</div>
+      <div class="metric-value">{{ devData.assignedIssues }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Completed Issues</div>
+      <div class="metric-value">{{ devData.completedIssues }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">My Comments</div>
+      <div class="metric-value">{{ devData.myComments }}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">My Worklogs</div>
+      <div class="metric-value">{{ devData.myWorkLogs }}</div>
+    </div>
+  </div>
+</div>

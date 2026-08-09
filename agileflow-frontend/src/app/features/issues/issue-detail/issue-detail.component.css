@@ -1,0 +1,97 @@
+.issue-layout {
+  display: flex;
+  gap: var(--spacing-6);
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.issue-main {
+  flex: 1 1 600px;
+}
+
+.issue-sidebar {
+  flex: 0 0 350px;
+}
+
+.description-content {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: var(--gray-800);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-3);
+  align-items: center;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: var(--spacing-4) 0;
+}
+
+.text-danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.text-danger:hover {
+  background-color: var(--danger-light);
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8);
+}
+
+.gap-3 { gap: var(--spacing-3); }
+.gap-2 { gap: var(--spacing-2); }
+.m-0 { margin: 0; }
+.mb-2 { margin-bottom: var(--spacing-2); }
+.mb-3 { margin-bottom: var(--spacing-3); }
+.mb-4 { margin-bottom: var(--spacing-4); }
+.mt-4 { margin-top: var(--spacing-4); }
+.p-4 { padding: var(--spacing-4); }
+.py-4 { padding-top: var(--spacing-4); padding-bottom: var(--spacing-4); }
+
+.text-muted { color: var(--gray-500); }
+.text-sm { font-size: 0.875rem; }
+.text-uppercase { text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Badges for Issue Types, Priorities, Statuses */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+/* Types */
+.badge-type-bug { background-color: #FEE2E2; color: #B91C1C; }
+.badge-type-story { background-color: #E0E7FF; color: #4338CA; }
+.badge-type-task { background-color: #DBEAFE; color: #1D4ED8; }
+.badge-type-epic { background-color: #F3E8FF; color: #7E22CE; }
+
+/* Priorities */
+.badge-priority-low { color: #6B7280; }
+.badge-priority-medium { color: #D97706; }
+.badge-priority-high { color: #EA580C; }
+.badge-priority-critical { color: #DC2626; font-weight: 700; }
+
+/* Statuses */
+.badge-status { border: 1px solid transparent; }
+.badge-status-todo { background-color: var(--gray-100); color: var(--gray-700); border-color: var(--gray-300); }
+.badge-status-in_progress { background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE; }
+.badge-status-done { background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0; }

@@ -1,0 +1,89 @@
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+  <h2>{{ isEditMode ? 'Edit' : 'Create' }} Issue</h2>
+  <button class="btn btn-outline" [routerLink]="['/projects', projectId, 'issues']">Back to Issues</button>
+</div>
+
+<div *ngIf="error" class="alert alert-danger mb-4">
+  {{ error }}
+</div>
+
+<div class="card form-card">
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <form [formGroup]="issueForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" id="title" class="form-control" formControlName="title" placeholder="Brief summary of the issue...">
+      <div class="error-text" *ngIf="issueForm.get('title')?.invalid && issueForm.get('title')?.touched">
+        Title is required.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" class="form-control" formControlName="description" rows="5" placeholder="Detailed description..."></textarea>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="type">Issue Type</label>
+        <select id="type" class="form-control" formControlName="type">
+          <option *ngFor="let type of issueTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="priority">Priority</label>
+        <select id="priority" class="form-control" formControlName="priority">
+          <option *ngFor="let priority of issuePriorities" [value]="priority">{{ priority }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="isEditMode">
+        <label for="status">Status</label>
+        <select id="status" class="form-control" formControlName="status">
+          <option *ngFor="let status of issueStatuses" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="assigneeId">Assignee</label>
+        <select id="assigneeId" class="form-control" formControlName="assigneeId">
+          <option [ngValue]="null">Unassigned</option>
+          <option *ngFor="let member of projectMembers" [ngValue]="member.userId">
+            {{ member.userName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sprintId">Sprint</label>
+        <select id="sprintId" class="form-control" formControlName="sprintId">
+          <option [ngValue]="null">Backlog (No Sprint)</option>
+          <option *ngFor="let sprint of projectSprints" [ngValue]="sprint.id">
+            {{ sprint.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="estimateHours">Estimate (Hours)</label>
+        <input type="number" id="estimateHours" class="form-control" formControlName="estimateHours" min="0" placeholder="e.g., 4">
+      </div>
+
+      <div class="form-group">
+        <label for="dueDate">Due Date</label>
+        <input type="date" id="dueDate" class="form-control" formControlName="dueDate">
+      </div>
+    </div>
+
+    <div class="form-actions mt-4">
+      <button type="submit" class="btn btn-primary" [disabled]="issueForm.invalid || isLoading">
+        {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Issue' : 'Create Issue') }}
+      </button>
+    </div>
+  </form>
+</div>

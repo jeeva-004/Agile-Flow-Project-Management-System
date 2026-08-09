@@ -1,0 +1,72 @@
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+  <h2 class="m-0">Projects</h2>
+  <div class="d-flex gap-3 align-items-center">
+    <div class="search-container">
+      <input type="text" class="form-control" placeholder="Search projects..." [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()">
+      <button class="btn btn-outline ml-2" (click)="onSearch()">Search</button>
+    </div>
+    <button class="btn btn-primary" *ngIf="isAdminOrPM" [routerLink]="['new']">Create Project</button>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-state">
+  <div class="spinner"></div>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">
+  {{ error }}
+</div>
+
+<div class="card" *ngIf="!isLoading && !error">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Owner</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of projects">
+          <td>#{{ project.id }}</td>
+          <td>
+            <strong>{{ project.name }}</strong>
+            <div class="text-muted text-sm" *ngIf="project.description">{{ project.description.substring(0, 50) }}{{ project.description.length > 50 ? '...' : '' }}</div>
+          </td>
+          <td>{{ project.ownerName }}</td>
+          <td>{{ project.startDate | date }}</td>
+          <td>{{ project.endDate | date }}</td>
+          <td class="text-right">
+            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'sprints']">Sprints</button>
+            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'issues']">Issues</button>
+            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'members']">Members</button>
+            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'activity']">Activity</button>
+            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'analytics']">Analytics</button>
+            
+            <ng-container *ngIf="isAdminOrPM">
+              <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'edit']">Edit</button>
+              <button class="btn btn-outline btn-sm text-danger" (click)="deleteProject(project.id)">Delete</button>
+            </ng-container>
+          </td>
+        </tr>
+        <tr *ngIf="projects.length === 0">
+          <td colspan="6" class="text-center py-4">No projects found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="totalElements > 0">
+    <div class="text-muted text-sm">
+      Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} projects
+    </div>
+    <div class="pagination gap-2 d-flex">
+      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">Previous</button>
+      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">Next</button>
+    </div>
+  </div>
+</div>

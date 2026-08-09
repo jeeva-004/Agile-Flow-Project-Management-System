@@ -1,0 +1,48 @@
+<div class="top-nav">
+  <div class="nav-left">
+    <!-- Breadcrumbs or page title could go here -->
+  </div>
+  
+  <div class="nav-right d-flex align-items-center gap-4">
+    
+    <!-- Notification Bell -->
+    <div class="notification-wrapper">
+      <button class="btn-icon bell-btn" (click)="toggleDropdown()">
+        <span class="bell-icon">🔔</span>
+        <span class="badge badge-danger unread-badge" *ngIf="unreadCount > 0">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+      </button>
+
+      <!-- Dropdown -->
+      <div class="notification-dropdown" *ngIf="showDropdown">
+        <div class="dropdown-header">
+          <h4 class="m-0 text-sm font-weight-bold">Notifications</h4>
+          <button class="btn-link text-xs" *ngIf="unreadCount > 0" (click)="markAllAsRead()">Mark all read</button>
+        </div>
+        
+        <div class="dropdown-body">
+          <div class="notification-item" 
+               *ngFor="let notif of notifications" 
+               [class.unread]="!notif.read"
+               (click)="markAsRead(notif)">
+            <div class="notif-title">{{ notif.title }}</div>
+            <div class="notif-message">{{ notif.message }}</div>
+            <div class="notif-time">{{ notif.createdAt | date:'short' }}</div>
+          </div>
+          
+          <div class="notification-empty" *ngIf="notifications.length === 0">
+            No notifications right now.
+          </div>
+        </div>
+        
+        <div class="dropdown-footer text-center">
+          <a class="btn-link text-xs" routerLink="/notifications" (click)="showDropdown = false">View All</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- User & Logout -->
+    <button class="btn btn-outline btn-sm logout-btn" (click)="logout()">
+      Logout
+    </button>
+  </div>
+</div>

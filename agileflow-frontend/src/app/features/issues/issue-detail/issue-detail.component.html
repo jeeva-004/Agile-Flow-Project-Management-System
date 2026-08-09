@@ -1,0 +1,102 @@
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex align-items-center gap-3">
+    <button class="btn btn-outline btn-sm" [routerLink]="['/projects', projectId, 'issues']">← Back</button>
+    <h2 class="m-0" *ngIf="issue">Issue #{{ issue.id }}</h2>
+  </div>
+  <div class="d-flex gap-2" *ngIf="issue">
+    <button class="btn btn-outline" [routerLink]="['edit']">Edit Issue</button>
+    <button class="btn btn-outline text-danger" (click)="deleteIssue()">Delete</button>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-state">
+  <div class="spinner"></div>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">
+  {{ error }}
+</div>
+
+<div class="issue-layout" *ngIf="issue && !isLoading">
+  <!-- Main Content -->
+  <div class="issue-main">
+    <div class="card p-4">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <span class="badge" [ngClass]="'badge-type-' + issue.type.toLowerCase()">{{ issue.type }}</span>
+        <h3 class="m-0">{{ issue.title }}</h3>
+      </div>
+      
+      <div class="issue-description mt-4">
+        <h4 class="text-muted text-sm text-uppercase">Description</h4>
+        <div class="description-content">
+          {{ issue.description || 'No description provided.' }}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Attachments -->
+    <app-issue-attachments *ngIf="issueId" [issueId]="issueId"></app-issue-attachments>
+    
+    <!-- Worklogs -->
+    <app-issue-worklogs *ngIf="issueId" [issueId]="issueId"></app-issue-worklogs>
+
+    <!-- Comments -->
+    <div class="mt-5">
+      <app-issue-comments *ngIf="issueId" [issueId]="issueId"></app-issue-comments>
+    </div>
+
+    <!-- Issue History -->
+    <div class="mt-5">
+      <h4 class="text-muted text-sm text-uppercase mb-3">History</h4>
+      <app-issue-history *ngIf="issueId" [issueId]="issueId"></app-issue-history>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="issue-sidebar">
+    <div class="card p-4">
+      <h4 class="text-muted text-sm text-uppercase mb-3">Details</h4>
+      
+      <div class="detail-row">
+        <span class="detail-label">Status:</span>
+        <span class="badge badge-status" [ngClass]="'badge-status-' + issue.status.toLowerCase()">
+          {{ issue.status }}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Priority:</span>
+        <span class="badge" [ngClass]="'badge-priority-' + issue.priority.toLowerCase()">
+          {{ issue.priority }}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Assignee:</span>
+        <span>{{ issue.assigneeName || 'Unassigned' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Sprint:</span>
+        <span>{{ issue.sprintName || 'None' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Estimate:</span>
+        <span>{{ issue.estimateHours ? issue.estimateHours + 'h' : 'None' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Due Date:</span>
+        <span>{{ (issue.dueDate | date) || 'None' }}</span>
+      </div>
+      
+      <div class="divider"></div>
+
+      <div class="detail-row text-sm">
+        <span class="detail-label text-muted">Created By:</span>
+        <span>{{ issue.createdByName }}</span>
+      </div>
+    </div>
+  </div>
+</div>

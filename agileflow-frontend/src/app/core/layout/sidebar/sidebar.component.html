@@ -1,0 +1,27 @@
+<div class="sidebar-wrapper">
+  <div class="sidebar-header">
+    <div class="brand">
+      <span class="brand-icon">AF</span>
+      <span class="brand-text">AgileFlow</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li *ngFor="let item of navItems" class="nav-item">
+        <a [routerLink]="item.path" routerLinkActive="active" class="nav-link">
+          <span class="nav-text">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer" *ngIf="authService.currentUser$ | async as user">
+    <div class="user-info">
+      <div class="avatar">{{ user.role.charAt(0) }}</div>
+      <div class="user-details">
+        <div class="role-badge">{{ user.role }}</div>
+      </div>
+    </div>
+  </div>
+</div>

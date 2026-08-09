@@ -2,7 +2,9 @@ package com.agileflow.agileflow_backend.projectmember.service.impl;
 
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
+import com.agileflow.agileflow_backend.common.enums.NotificationType;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
+import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
 import com.agileflow.agileflow_backend.projectmember.dto.AddProjectMemberRequest;
@@ -12,8 +14,15 @@ import com.agileflow.agileflow_backend.projectmember.repository.ProjectMemberRep
 import com.agileflow.agileflow_backend.projectmember.service.ProjectMemberService;
 import lombok.*;
 import org.springframework.stereotype.Service;
+import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
+import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
+import com.agileflow.agileflow_backend.worklog.repository.WorkLogRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
+import com.agileflow.agileflow_backend.security.CurrentUserService;
 
 @Getter
 @Setter
@@ -27,13 +36,28 @@ public class ProjectMemberServiceImpl
 
     private final UserRepository userRepository;
 
+    private final NotificationService notificationService;
+
+    private final IssueRepository issueRepository;
+    private final CommentRepository commentRepository;
+    private final WorkLogRepository workLogRepository;
+    private final ActivityService activityService;
+
+    private final CurrentUserService currentUserService;
     public ProjectMemberServiceImpl(
 
             ProjectMemberRepository repository,
 
             ProjectRepository projectRepository,
 
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            NotificationService notificationService,
+            IssueRepository issueRepository,
+            CommentRepository commentRepository,
+            WorkLogRepository workLogRepository,
+            ActivityService activityService,
+
+            CurrentUserService currentUserService) {
 
         this.repository = repository;
 
@@ -41,6 +65,13 @@ public class ProjectMemberServiceImpl
 
         this.userRepository = userRepository;
 
+        this.notificationService = notificationService;
+        this.issueRepository = issueRepository;
+        this.commentRepository = commentRepository;
+        this.workLogRepository = workLogRepository;
+        this.activityService = activityService;
+
+        this.currentUserService = currentUserService;
     }
 
     @Override
@@ -94,7 +125,65 @@ public class ProjectMemberServiceImpl
 
         member = repository.save(member);
 
+        User actor = currentUserService.getCurrentUser();
+
+        activityService.create(
+
+                actor,
+
+                project,
+
+                "ADD_MEMBER",
+
+                actor.getFirstName()
+
+                        + " added "
+
+                        + user.getFirstName()
+
+                        + " to project "
+
+                        + project.getName(),
+
+                "PROJECT_MEMBER",
+
+                member.getId()
+
+        );
+
+        notificationService.create(
+
+                user,
+
+                "Added to Project",
+
+                "You were added to " + project.getName(),
+
+                NotificationType.PROJECT_MEMBER_ADDED,
+
+                "/projects/" + project.getId()
+
+        );
         return map(member);
+
+    }
+
+    @Override
+    public Page<ProjectMemberResponse>
+
+    findByProject(
+
+            Long projectId,
+            Pageable pageable) {
+
+        return repository
+
+                .findByProjectId(
+
+                        projectId,
+                        pageable)
+
+                .map(this::map);
 
     }
 
@@ -133,6 +222,63 @@ public class ProjectMemberServiceImpl
                                 new ResourceNotFoundException(
 
                                         "Member not found"));
+
+        Long projectId = member.getProject().getId();
+        Long userId = member.getUser().getId();
+
+        if (issueRepository.existsByProjectIdAndAssigneeId(projectId, userId)) {
+            throw new IllegalArgumentException("Member has assigned issues in this project");
+        }
+        if (issueRepository.existsByProjectIdAndCreatedById(projectId, userId)) {
+            throw new IllegalArgumentException("Member has created issues in this project");
+        }
+        if (commentRepository.existsByIssueProjectIdAndAuthorId(projectId, userId)) {
+            throw new IllegalArgumentException("Member has authored comments in this project");
+        }
+        if (workLogRepository.existsByIssueProjectIdAndUserId(projectId, userId)) {
+            throw new IllegalArgumentException("Member has worklogs in this project");
+        }
+
+        notificationService.create(
+
+                member.getUser(),
+
+                "Removed from Project",
+
+                "You were removed from "
+                        + member.getProject().getName(),
+
+                NotificationType.PROJECT_MEMBER_REMOVED,
+
+                "/projects"
+
+        );
+
+        User actor = currentUserService.getCurrentUser();
+
+        activityService.create(
+
+                actor,
+
+                member.getProject(),
+
+                "REMOVE_MEMBER",
+
+                actor.getFirstName()
+
+                        + " removed "
+
+                        + member.getUser().getFirstName()
+
+                        + " from project "
+
+                        + member.getProject().getName(),
+
+                "PROJECT_MEMBER",
+
+                member.getId()
+
+        );
 
         repository.delete(member);
 

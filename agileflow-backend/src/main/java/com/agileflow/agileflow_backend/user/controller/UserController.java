@@ -5,6 +5,9 @@ import com.agileflow.agileflow_backend.user.dto.CreateUserRequest;
 import com.agileflow.agileflow_backend.user.dto.UpdateUserRequest;
 import com.agileflow.agileflow_backend.user.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,12 +35,22 @@ public class UserController {
     }
 
     @GetMapping
-    public ApiResponse<?> findAll() {
+    public ApiResponse<?> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         return new ApiResponse<>(
                 true,
                 "Users fetched successfully",
-                userService.findAll()
+                userService.findAll(pageable)
         );
     }
 

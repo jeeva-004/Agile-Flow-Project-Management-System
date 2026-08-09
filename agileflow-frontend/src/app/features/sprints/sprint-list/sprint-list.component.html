@@ -1,0 +1,56 @@
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+  <h2>Sprints</h2>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline" routerLink="/projects">Back to Projects</button>
+    <button *ngIf="isAdminOrPM" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'new']">Create Sprint</button>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-state">
+  <div class="spinner"></div>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">
+  {{ error }}
+</div>
+
+<div class="card" *ngIf="!isLoading && !error">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th *ngIf="isAdminOrPM" class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sprint of sprints">
+          <td>#{{ sprint.id }}</td>
+          <td><strong>{{ sprint.name }}</strong></td>
+          <td>{{ sprint.startDate | date }}</td>
+          <td>{{ sprint.endDate | date }}</td>
+          <td *ngIf="isAdminOrPM" class="text-right">
+            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', projectId, 'sprints', sprint.id, 'edit']">Edit</button>
+            <button class="btn btn-outline btn-sm text-danger" (click)="deleteSprint(sprint.id)">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="sprints.length === 0">
+          <td [attr.colspan]="isAdminOrPM ? 5 : 4" class="text-center py-4">No sprints found for this project.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="totalElements > 0">
+    <div class="text-muted text-sm">
+      Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} sprints
+    </div>
+    <div class="pagination gap-2 d-flex">
+      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">Previous</button>
+      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">Next</button>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 package com.agileflow.agileflow_backend.comment.service.impl;
 
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
 import com.agileflow.agileflow_backend.comment.dto.CommentResponse;
@@ -8,11 +9,15 @@ import com.agileflow.agileflow_backend.comment.dto.UpdateCommentRequest;
 import com.agileflow.agileflow_backend.comment.entity.Comment;
 import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
 import com.agileflow.agileflow_backend.comment.service.CommentService;
+import com.agileflow.agileflow_backend.common.enums.NotificationType;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
+import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.security.CurrentUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -28,6 +33,10 @@ public class CommentServiceImpl
 
     private final CurrentUserService currentUserService;
 
+    private final NotificationService notificationService;
+
+    private final ActivityService activityService;
+
     public CommentServiceImpl(
 
             CommentRepository commentRepository,
@@ -36,7 +45,9 @@ public class CommentServiceImpl
 
             UserRepository userRepository,
 
-            CurrentUserService currentUserService) {
+            CurrentUserService currentUserService,
+            NotificationService notificationService,
+            ActivityService activityService) {
 
         this.commentRepository =
                 commentRepository;
@@ -48,6 +59,10 @@ public class CommentServiceImpl
                 userRepository;
 
         this.currentUserService = currentUserService;
+
+        this.notificationService = notificationService;
+
+        this.activityService = activityService;
     }
 
     @Override
@@ -95,10 +110,82 @@ public class CommentServiceImpl
                 commentRepository.save(
 
                         comment);
+        activityService.create(
 
+                author,
+
+                issue.getProject(),
+
+                "CREATE_COMMENT",
+
+                author.getFirstName()
+
+                        + " commented on "
+
+                        + issue.getTitle(),
+
+                "COMMENT",
+
+                comment.getId()
+
+        );
+        User recipient =
+
+                issue.getAssignee();
+
+        if (
+
+                recipient != null &&
+
+                        !recipient.getId().equals(
+
+                                author.getId()
+
+                        )
+
+        ) {
+
+            notificationService.create(
+
+                    recipient,
+
+                    "New Comment",
+
+                    author.getFirstName()
+
+                            + " commented on "
+
+                            + issue.getTitle(),
+
+                    NotificationType.COMMENT_ADDED,
+
+                    "/issues/" + issue.getId()
+
+            );
+
+        }
         return map(
 
                 comment);
+
+    }
+
+    @Override
+    public Page<CommentResponse>
+
+    findByIssue(
+
+            Long issueId,
+            Pageable pageable) {
+
+        return commentRepository
+
+                .findByIssueId(
+
+                        issueId,
+                        pageable)
+
+                .map(this::map);
 
     }
 
@@ -175,6 +262,55 @@ public class CommentServiceImpl
 
                         comment);
 
+        if (comment.getIssue().getAssignee() != null) {
+            notificationService.create(
+
+                    comment.getIssue()
+
+                            .getAssignee(),
+
+                    "Comment Updated",
+
+                    comment.getIssue()
+
+                            .getTitle(),
+
+                    NotificationType.COMMENT_UPDATED,
+
+                    "/issues/" +
+
+                            comment.getIssue()
+
+                                    .getId()
+
+            );
+        }
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                comment.getIssue()
+                        .getProject(),
+
+                "UPDATE_COMMENT",
+
+                user.getFirstName()
+
+                        + " updated a comment on "
+
+                        + comment.getIssue()
+                        .getTitle(),
+
+                "COMMENT",
+
+                comment.getId()
+
+        );
         return map(
 
                 comment);
@@ -197,6 +333,57 @@ public class CommentServiceImpl
                                 new ResourceNotFoundException(
 
                                         "Comment not found"));
+
+        if (comment.getIssue().getAssignee() != null) {
+            notificationService.create(
+
+                    comment.getIssue()
+
+                            .getAssignee(),
+
+                    "Comment Deleted",
+
+                    comment.getIssue()
+
+                            .getTitle(),
+
+                    NotificationType.COMMENT_DELETED,
+
+                    "/issues/" +
+
+                            comment.getIssue()
+
+                                    .getId()
+
+            );
+        }
+
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                comment.getIssue()
+                        .getProject(),
+
+                "DELETE_COMMENT",
+
+                user.getFirstName()
+
+                        + " deleted a comment on "
+
+                        + comment.getIssue()
+                        .getTitle(),
+
+                "COMMENT",
+
+                comment.getId()
+
+        );
 
         commentRepository.delete(
 

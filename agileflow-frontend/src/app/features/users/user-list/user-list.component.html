@@ -1,0 +1,63 @@
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+  <h2>Users</h2>
+  <button *ngIf="isAdmin" class="btn btn-primary" routerLink="new">Add User</button>
+</div>
+
+<div *ngIf="isLoading" class="loading-state">
+  <div class="spinner"></div>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">
+  {{ error }}
+</div>
+
+<div class="card" *ngIf="!isLoading && !error">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Roles</th>
+          <th *ngIf="isAdmin" class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>#{{ user.id }}</td>
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="badge" [ngClass]="'badge-' + user.status.toLowerCase()">
+              {{ user.status }}
+            </span>
+          </td>
+          <td>
+            <span class="role-tags">
+              <span *ngFor="let role of user.roles" class="role-tag">{{ role.replace('ROLE_', '') }}</span>
+            </span>
+          </td>
+          <td *ngIf="isAdmin" class="text-right">
+            <button class="btn btn-outline btn-sm me-2" [routerLink]="[user.id, 'edit']">Edit</button>
+            <button class="btn btn-outline btn-sm text-danger" (click)="deleteUser(user.id)">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="users.length === 0">
+          <td [attr.colspan]="isAdmin ? 6 : 5" class="text-center py-4">No users found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="totalElements > 0">
+    <div class="text-muted text-sm">
+      Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} users
+    </div>
+    <div class="pagination gap-2 d-flex">
+      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">Previous</button>
+      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">Next</button>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,9 @@ import com.agileflow.agileflow_backend.comment.dto.UpdateCommentRequest;
 import com.agileflow.agileflow_backend.comment.service.CommentService;
 import com.agileflow.agileflow_backend.common.payload.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -59,7 +62,22 @@ public class CommentController {
 
             @PathVariable
 
-            Long issueId) {
+            Long issueId,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+
+        if (page != null && size != null) {
+            Sort sort = sortDir.equalsIgnoreCase("asc")
+                    ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            Pageable pageable = PageRequest.of(page, size, sort);
+            return new ApiResponse<>(
+                    true,
+                    "Comments fetched successfully",
+                    service.findByIssue(issueId, pageable));
+        }
 
         return new ApiResponse<>(
 

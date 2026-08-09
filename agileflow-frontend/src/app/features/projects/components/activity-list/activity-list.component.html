@@ -1,0 +1,38 @@
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+  <h2>Activity Stream</h2>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline" routerLink="/projects">Back to Projects</button>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-state">
+  <div class="spinner"></div>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">
+  {{ error }}
+</div>
+
+<div class="activity-feed" *ngIf="!isLoading && !error">
+  <div class="timeline">
+    <div class="timeline-item" *ngFor="let activity of activities">
+      <div class="timeline-icon">
+        {{ getIcon(activity.action) }}
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-header">
+          <strong>{{ activity.userName }}</strong> {{ activity.message }}
+        </div>
+        <div class="timeline-meta text-muted text-sm">
+          <span>{{ activity.createdAt | date:'medium' }}</span>
+          <span class="dot-separator">&middot;</span>
+          <span class="badge badge-outline text-xs">{{ activity.entityType }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="timeline-empty" *ngIf="activities.length === 0">
+      No activity recorded for this project yet.
+    </div>
+  </div>
+</div>

@@ -10,21 +10,47 @@ import com.agileflow.agileflow_backend.sprint.entity.Sprint;
 import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import com.agileflow.agileflow_backend.sprint.service.SprintService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import com.agileflow.agileflow_backend.notification.service.NotificationService;
+import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
+import com.agileflow.agileflow_backend.common.enums.NotificationType;
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
+import com.agileflow.agileflow_backend.auth.entity.User;
+import com.agileflow.agileflow_backend.security.CurrentUserService;
+
 
 @Service
 public class SprintServiceImpl implements SprintService {
 
     private final SprintRepository sprintRepository;
     private final ProjectRepository projectRepository;
+    private final NotificationService notificationService;
+    private final IssueRepository issueRepository;
+    private final ActivityService activityService;
+    private final CurrentUserService currentUserService;
 
     public SprintServiceImpl(
             SprintRepository sprintRepository,
-            ProjectRepository projectRepository) {
+            ProjectRepository projectRepository,
+            NotificationService notificationService,
+            IssueRepository issueRepository,
+            ActivityService activityService,
+
+            CurrentUserService currentUserService
+            ) {
 
         this.sprintRepository = sprintRepository;
         this.projectRepository = projectRepository;
+        this.notificationService = notificationService;
+        this.issueRepository = issueRepository;
+        this.activityService =
+                activityService;
+
+        this.currentUserService =
+                currentUserService;
     }
 
     @Override
@@ -55,8 +81,60 @@ public class SprintServiceImpl implements SprintService {
         sprint = sprintRepository.save(
                 sprint);
 
+        notificationService.create(
+
+                project.getOwner(),
+
+                "Sprint Created",
+
+                "Sprint " + sprint.getName() + " created",
+
+                NotificationType.SPRINT_CREATED,
+
+                "/sprints/" + sprint.getId()
+
+        );
+
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                project,
+
+                "CREATE_SPRINT",
+
+                user.getFirstName()
+
+                        + " created sprint "
+
+                        + sprint.getName(),
+
+                "SPRINT",
+
+                sprint.getId()
+
+        );
+
         return map(
                 sprint);
+
+    }
+
+    @Override
+    public Page<SprintResponse> findByProject(
+            Long projectId,
+            Pageable pageable) {
+
+        return sprintRepository
+                .findByProjectId(
+                        projectId,
+                        pageable)
+                .map(this::map);
 
     }
 
@@ -112,7 +190,44 @@ public class SprintServiceImpl implements SprintService {
 
         sprint = sprintRepository.save(
                 sprint);
+        notificationService.create(
 
+                sprint.getProject().getOwner(),
+
+                "Sprint Updated",
+
+                "Sprint " + sprint.getName() + " updated",
+
+                NotificationType.SPRINT_UPDATED,
+
+                "/sprints/" + sprint.getId()
+
+        );
+
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                sprint.getProject(),
+
+                "UPDATE_SPRINT",
+
+                user.getFirstName()
+
+                        + " updated sprint "
+
+                        + sprint.getName(),
+
+                "SPRINT",
+
+                sprint.getId()
+
+        );
         return map(
                 sprint);
 
@@ -128,6 +243,49 @@ public class SprintServiceImpl implements SprintService {
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Sprint not found"));
+
+        if (issueRepository.existsBySprintId(id)) {
+            throw new IllegalArgumentException("Sprint contains issues. Delete issues first.");
+        }
+
+        notificationService.create(
+
+                sprint.getProject().getOwner(),
+
+                "Sprint Deleted",
+
+                "Sprint " + sprint.getName() + " deleted",
+
+                NotificationType.SPRINT_DELETED,
+
+                "/sprints"
+
+        );
+
+        User user =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                user,
+
+                sprint.getProject(),
+
+                "DELETE_SPRINT",
+
+                user.getFirstName()
+
+                        + " deleted sprint "
+
+                        + sprint.getName(),
+
+                "SPRINT",
+
+                sprint.getId()
+
+        );
 
         sprintRepository.delete(
                 sprint);

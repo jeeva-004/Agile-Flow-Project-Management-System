@@ -36,39 +36,78 @@ public class AdminDataInitializer implements CommandLineRunner {
 
         // Create default roles if missing
         Role adminRole = roleRepository.findByName(RoleName.ADMIN)
-                .orElseGet(() ->
-                        roleRepository.save(
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName(RoleName.ADMIN);
+                    return roleRepository.save(role);
+                });
 
-                                        roleRepository.findByName(RoleName.ADMIN)
-                                                .orElseThrow(() ->
-                                                        new IllegalStateException(
-                                                                "ADMIN role not found"
-                                                        ))));
+        Role pmRole = roleRepository.findByName(RoleName.PROJECT_MANAGER)
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName(RoleName.PROJECT_MANAGER);
+                    return roleRepository.save(role);
+                });
 
-        roleRepository.findByName(RoleName.PROJECT_MANAGER)
-                .orElseGet(() ->
-                        roleRepository.save(
-                                new Role(2L, RoleName.PROJECT_MANAGER)));
+        Role devRole = roleRepository.findByName(RoleName.DEVELOPER)
+                .orElseGet(() -> {
+                    Role role = new Role();
+                    role.setName(RoleName.DEVELOPER);
+                    return roleRepository.save(role);
+                });
 
-        roleRepository.findByName(RoleName.DEVELOPER)
-                .orElseGet(() ->
-                        roleRepository.save(
-                                new Role(3L, RoleName.DEVELOPER)));
-
-        // Create default admin user if missing
-        if (userRepository.existsByEmail("admin@agileflow.com")) {
-            return;
+        // 1. Ensure admin@agileflow.com exists and has ADMIN role
+        User admin = userRepository.findByEmail("admin@agileflow.com").orElse(null);
+        if (admin == null) {
+            admin = new User();
+            admin.setFirstName("System");
+            admin.setLastName("Admin");
+            admin.setEmail("admin@agileflow.com");
+            admin.setPassword(passwordEncoder.encode("Admin@123"));
+            admin.setStatus(UserStatus.ACTIVE);
+            admin.setRoles(Set.of(adminRole));
+            userRepository.save(admin);
+        } else {
+            if (!admin.getRoles().contains(adminRole)) {
+                admin.setRoles(Set.of(adminRole));
+                userRepository.save(admin);
+            }
         }
 
-        User admin = new User();
+        // 2. Ensure pm@gmail.com exists and has PROJECT_MANAGER role
+        User pm = userRepository.findByEmail("pm@gmail.com").orElse(null);
+        if (pm == null) {
+            pm = new User();
+            pm.setFirstName("Project");
+            pm.setLastName("Manager");
+            pm.setEmail("pm@gmail.com");
+            pm.setPassword(passwordEncoder.encode("manager@1234"));
+            pm.setStatus(UserStatus.ACTIVE);
+            pm.setRoles(Set.of(pmRole));
+            userRepository.save(pm);
+        } else {
+            if (!pm.getRoles().contains(pmRole)) {
+                pm.setRoles(Set.of(pmRole));
+                userRepository.save(pm);
+            }
+        }
 
-        admin.setFirstName("System");
-        admin.setLastName("Admin");
-        admin.setEmail("admin@agileflow.com");
-        admin.setPassword(passwordEncoder.encode("Admin@123"));
-        admin.setStatus(UserStatus.ACTIVE);
-        admin.setRoles(Set.of(adminRole));
-
-        userRepository.save(admin);
+        // 3. Ensure dev@gmail.com exists and has DEVELOPER role
+        User dev = userRepository.findByEmail("dev@gmail.com").orElse(null);
+        if (dev == null) {
+            dev = new User();
+            dev.setFirstName("project");
+            dev.setLastName(" dev");
+            dev.setEmail("dev@gmail.com");
+            dev.setPassword(passwordEncoder.encode("dev@1234"));
+            dev.setStatus(UserStatus.ACTIVE);
+            dev.setRoles(Set.of(devRole));
+            userRepository.save(dev);
+        } else {
+            if (!dev.getRoles().contains(devRole)) {
+                dev.setRoles(Set.of(devRole));
+                userRepository.save(dev);
+            }
+        }
     }
 }

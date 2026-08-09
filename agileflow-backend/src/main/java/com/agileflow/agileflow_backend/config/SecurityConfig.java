@@ -51,7 +51,11 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:4200")
+                List.of(
+                        "http://localhost",
+                        "http://localhost:4200",
+                        "https://agileflow-org.netlify.app"
+                )
         );
 
         configuration.setAllowedMethods(
@@ -93,9 +97,36 @@ public class SecurityConfig {
                                 "/**"
                         ).permitAll()
                         .requestMatchers(
-                                "/api/v1/auth/login"
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/test-users"
                         ).permitAll().requestMatchers("/api/v1/users/**")
                         .hasRole("ADMIN")
+                        // Specific sub-paths of /api/v1/projects/** MUST be declared
+                        // before the broader /api/v1/projects/** matchers below,
+                        // since Spring Security authorizes on a first-match-wins basis.
+                        .requestMatchers(
+                                "/api/v1/projects/*/analytics/**"
+                        )
+                        .hasAnyRole(
+                                "ADMIN",
+                                "PROJECT_MANAGER"
+                        )
+                        .requestMatchers(
+                                "/api/v1/projects/*/report/**"
+                        )
+                        .hasAnyRole(
+                                "ADMIN",
+                                "PROJECT_MANAGER"
+                        )
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/api/v1/projects/**"
+                        )
+                        .hasAnyRole(
+                                "ADMIN",
+                                "PROJECT_MANAGER",
+                                "DEVELOPER"
+                        )
                         .requestMatchers(
                                 "/api/v1/projects/**"
                         )
@@ -104,34 +135,40 @@ public class SecurityConfig {
                                 "PROJECT_MANAGER"
                         )
                         .requestMatchers(
-
+                                org.springframework.http.HttpMethod.GET,
                                 "/api/v1/project-members/**",
-
                                 "/api/v1/projects/*/members"
-
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
-                                "PROJECT_MANAGER"
-
+                                "PROJECT_MANAGER",
+                                "DEVELOPER"
                         )
                         .requestMatchers(
-
-                                "/api/v1/sprints/**",
-
-                                "/api/v1/projects/*/sprints"
-
+                                "/api/v1/project-members/**",
+                                "/api/v1/projects/*/members"
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
                                 "PROJECT_MANAGER"
-
+                        )
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/api/v1/sprints/**",
+                                "/api/v1/projects/*/sprints"
+                        )
+                        .hasAnyRole(
+                                "ADMIN",
+                                "PROJECT_MANAGER",
+                                "DEVELOPER"
+                        )
+                        .requestMatchers(
+                                "/api/v1/sprints/**",
+                                "/api/v1/projects/*/sprints"
+                        )
+                        .hasAnyRole(
+                                "ADMIN",
+                                "PROJECT_MANAGER"
                         )
                         .requestMatchers(
 
@@ -192,7 +229,7 @@ public class SecurityConfig {
                         )
                         .requestMatchers(
 
-                                "/api/v1/dashboard/**"
+                                "/api/v1/notifications/**"
 
                         )
 
@@ -205,6 +242,39 @@ public class SecurityConfig {
                                 "DEVELOPER"
 
                         )
+                        .requestMatchers(
+
+                                "/api/v1/attachments/**"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
+
+                                "DEVELOPER"
+
+                        )
+                        .requestMatchers(
+
+                                "/api/v1/history/**"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
+
+                                "DEVELOPER"
+
+                        )
+                        // Specific /api/v1/dashboard/{role} matchers MUST be declared
+                        // before the broader /api/v1/dashboard/** matcher below, for the
+                        // same first-match-wins reason as the /api/v1/projects/** rules.
                         .requestMatchers(
 
                                 "/api/v1/dashboard/admin"
@@ -236,6 +306,21 @@ public class SecurityConfig {
                         )
 
                         .hasRole(
+
+                                "DEVELOPER"
+
+                        )
+                        .requestMatchers(
+
+                                "/api/v1/dashboard/**"
+
+                        )
+
+                        .hasAnyRole(
+
+                                "ADMIN",
+
+                                "PROJECT_MANAGER",
 
                                 "DEVELOPER"
 

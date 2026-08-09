@@ -2,6 +2,8 @@ package com.agileflow.agileflow_backend.worklog.service;
 
 import com.agileflow.agileflow_backend.worklog.dto.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface WorkLogService {
@@ -11,6 +13,24 @@ public interface WorkLogService {
             Long issueId,
 
             CreateWorkLogRequest request
+
+    );
+
+    Page<WorkLogResponse>
+
+    findByIssue(
+
+            Long issueId,
+            Pageable pageable
+
+    );
+
+    Page<WorkLogResponse>
+
+    findByUser(
+
+            Long userId,
+            Pageable pageable
 
     );
 

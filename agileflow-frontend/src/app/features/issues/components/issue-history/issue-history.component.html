@@ -1,0 +1,35 @@
+<div class="issue-history-container">
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading history...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div class="timeline" *ngIf="!isLoading && !error">
+    <div class="timeline-item" *ngFor="let log of historyLogs">
+      <div class="timeline-icon">
+        {{ getIcon(log.action) }}
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-header">
+          <strong>{{ log.userName }}</strong> {{ log.action }}
+        </div>
+        <div class="timeline-body" *ngIf="log.fieldName">
+          Changed <strong>{{ log.fieldName }}</strong> 
+          from <span class="badge badge-outline">{{ log.oldValue || 'None' }}</span> 
+          to <span class="badge badge-outline">{{ log.newValue || 'None' }}</span>
+        </div>
+        <div class="timeline-meta text-muted text-xs">
+          {{ log.createdAt | date:'medium' }}
+        </div>
+      </div>
+    </div>
+    
+    <div class="timeline-empty" *ngIf="historyLogs.length === 0">
+      No history recorded for this issue.
+    </div>
+  </div>
+</div>

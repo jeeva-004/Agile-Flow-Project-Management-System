@@ -2,21 +2,34 @@ package com.agileflow.agileflow_backend.issue.service.impl;
 
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
+import com.agileflow.agileflow_backend.common.enums.IssuePriority;
 import com.agileflow.agileflow_backend.common.enums.IssueStatus;
+import com.agileflow.agileflow_backend.common.enums.NotificationType;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
+import com.agileflow.agileflow_backend.issue.specification.IssueSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import com.agileflow.agileflow_backend.issue.dto.*;
 import com.agileflow.agileflow_backend.issue.entity.Issue;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
 import com.agileflow.agileflow_backend.issue.service.IssueService;
+import com.agileflow.agileflow_backend.issuehistory.service.IssueHistoryService;
+import com.agileflow.agileflow_backend.notification.service.NotificationService;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
 import com.agileflow.agileflow_backend.security.CurrentUserService;
 import com.agileflow.agileflow_backend.sprint.entity.Sprint;
 import com.agileflow.agileflow_backend.sprint.repository.SprintRepository;
 import org.springframework.stereotype.Service;
+import com.agileflow.agileflow_backend.comment.repository.CommentRepository;
+import com.agileflow.agileflow_backend.worklog.repository.WorkLogRepository;
+import com.agileflow.agileflow_backend.attachment.repository.AttachmentRepository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-
+import java.util.Objects;
+import com.agileflow.agileflow_backend.activity.service.ActivityService;
 @Service
 public class IssueServiceImpl
         implements IssueService {
@@ -31,6 +44,13 @@ public class IssueServiceImpl
 
     private final CurrentUserService currentUserService;
 
+    private final NotificationService notificationService;
+    private final CommentRepository commentRepository;
+    private final WorkLogRepository workLogRepository;
+    private final ActivityService activityService;
+    private final IssueHistoryService issueHistoryService;
+    private final AttachmentRepository attachmentRepository;
+
     public IssueServiceImpl(
 
             IssueRepository issueRepository,
@@ -41,8 +61,15 @@ public class IssueServiceImpl
 
             UserRepository userRepository,
 
-            CurrentUserService currentUserService
-            ) {
+            CurrentUserService currentUserService,
+
+            NotificationService notificationService,
+            CommentRepository commentRepository,
+            WorkLogRepository workLogRepository,
+            ActivityService activityService,
+            IssueHistoryService issueHistoryService,
+            AttachmentRepository attachmentRepository
+    ) {
 
         this.issueRepository =
                 issueRepository;
@@ -58,7 +85,14 @@ public class IssueServiceImpl
 
         this.currentUserService = currentUserService;
 
+        this.notificationService = notificationService;
+        this.commentRepository = commentRepository;
+        this.workLogRepository = workLogRepository;
+        this.activityService =  activityService;
+        this.issueHistoryService = issueHistoryService;
+        this.attachmentRepository = attachmentRepository;
     }
+
 
     @Override
     public IssueResponse create(
@@ -171,6 +205,101 @@ public class IssueServiceImpl
 
                 issue);
 
+        activityService.create(
+
+                createdBy,
+
+                project,
+
+                "CREATE_ISSUE",
+
+                createdBy.getFirstName()
+                        + " created issue "
+                        + issue.getTitle(),
+
+                "ISSUE",
+
+                issue.getId()
+
+        );
+
+        issueHistoryService.create(
+
+                createdBy,
+
+                issue,
+
+                "CREATE",
+
+                "status",
+
+                null,
+
+                issue.getStatus() != null
+                        ? issue.getStatus().toString()
+                        : null
+
+        );
+
+        issueHistoryService.create(
+
+                createdBy,
+
+                issue,
+
+                "CREATE",
+
+                "priority",
+
+                null,
+
+                issue.getPriority() != null
+                        ? issue.getPriority().toString()
+                        : null
+
+        );
+
+        if (assignee != null) {
+
+            issueHistoryService.create(
+
+                    createdBy,
+
+                    issue,
+
+                    "CREATE",
+
+                    "assignee",
+
+                    null,
+
+                    assignee.getFirstName()
+                            + " "
+                            + assignee.getLastName()
+
+            );
+
+        }
+
+        if (assignee != null) {
+
+            notificationService.create(
+
+                    assignee,
+
+                    "Issue Assigned",
+
+                    issue.getTitle(),
+
+                    NotificationType.ISSUE_ASSIGNED,
+
+                    "/issues/" + issue.getId()
+
+            );
+
+        }
+
+
         return map(
 
                 issue);
@@ -178,24 +307,37 @@ public class IssueServiceImpl
     }
 
     @Override
-    public List<IssueResponse>
+    public Page<IssueResponse>
 
     findByProject(
 
-            Long projectId) {
+            Long projectId,
+
+            Pageable pageable) {
 
         return issueRepository
 
                 .findByProjectId(
 
-                        projectId)
+                        projectId,
 
-                .stream()
+                        pageable)
 
-                .map(this::map)
+                .map(this::map);
 
-                .toList();
+    }
 
+    @Override
+    public Page<IssueResponse> search(
+            Long projectId,
+            String keyword,
+            IssueStatus status,
+            IssuePriority priority,
+            Long assigneeId,
+            Pageable pageable) {
+        Specification<Issue> spec = IssueSpecification.filterIssues(
+                projectId, keyword, status, priority, assigneeId);
+        return issueRepository.findAll(spec, pageable).map(this::map);
     }
 
     @Override
@@ -286,6 +428,18 @@ public class IssueServiceImpl
 
                                         "Issue not found"));
 
+        IssueStatus oldStatus =
+
+                issue.getStatus();
+
+        Object oldPriority =
+
+                issue.getPriority();
+
+        User oldAssignee =
+
+                issue.getAssignee();
+
         issue.setTitle(
 
                 request.getTitle());
@@ -364,6 +518,167 @@ public class IssueServiceImpl
 
                         issue);
 
+        User currentUser =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                currentUser,
+
+                issue.getProject(),
+
+                "UPDATE_ISSUE",
+
+                currentUser.getFirstName()
+
+                        + " updated issue "
+
+                        + issue.getTitle(),
+
+                "ISSUE",
+
+                issue.getId()
+
+        );
+
+        if (
+
+                !Objects.equals(
+
+                        oldStatus,
+
+                        issue.getStatus())
+
+        ) {
+
+            issueHistoryService.create(
+
+                    currentUser,
+
+                    issue,
+
+                    "UPDATE",
+
+                    "status",
+
+                    oldStatus != null
+                            ? oldStatus.toString()
+                            : null,
+
+                    issue.getStatus() != null
+                            ? issue.getStatus().toString()
+                            : null
+
+            );
+
+        }
+
+        if (
+
+                !Objects.equals(
+
+                        oldPriority,
+
+                        issue.getPriority())
+
+        ) {
+
+            issueHistoryService.create(
+
+                    currentUser,
+
+                    issue,
+
+                    "UPDATE",
+
+                    "priority",
+
+                    oldPriority != null
+                            ? oldPriority.toString()
+                            : null,
+
+                    issue.getPriority() != null
+                            ? issue.getPriority().toString()
+                            : null
+
+            );
+
+        }
+
+        Long oldAssigneeId =
+
+                oldAssignee != null
+                        ? oldAssignee.getId()
+                        : null;
+
+        Long newAssigneeId =
+
+                issue.getAssignee() != null
+                        ? issue.getAssignee().getId()
+                        : null;
+
+        if (
+
+                !Objects.equals(
+
+                        oldAssigneeId,
+
+                        newAssigneeId)
+
+        ) {
+
+            issueHistoryService.create(
+
+                    currentUser,
+
+                    issue,
+
+                    "UPDATE",
+
+                    "assignee",
+
+                    oldAssignee != null
+                            ? oldAssignee.getFirstName()
+                              + " "
+                              + oldAssignee.getLastName()
+                            : null,
+
+                    issue.getAssignee() != null
+                            ? issue.getAssignee().getFirstName()
+                              + " "
+                              + issue.getAssignee().getLastName()
+                            : null
+
+            );
+
+        }
+
+        if (
+
+                request.getAssigneeId()!=null &&
+
+                        issue.getAssignee()!=null
+
+        ) {
+
+            notificationService.create(
+
+                    issue.getAssignee(),
+
+                    "Issue Updated",
+
+                    issue.getTitle(),
+
+                    NotificationType.ISSUE_UPDATED,
+
+                    "/issues/" + issue.getId()
+
+            );
+
+        }
+
         return map(
 
                 issue);
@@ -371,28 +686,74 @@ public class IssueServiceImpl
     }
 
     @Override
+    @Transactional
     public void delete(
 
             Long id) {
 
         Issue issue =
-
                 issueRepository
-
                         .findById(
-
                                 id)
-
                         .orElseThrow(() ->
-
                                 new ResourceNotFoundException(
-
                                         "Issue not found"));
 
+        if (commentRepository.existsByIssueId(id)) {
+            throw new IllegalArgumentException("Issue contains comments. Delete comments first.");
+        }
+        if (workLogRepository.existsByIssueId(id)) {
+            throw new IllegalArgumentException("Issue contains worklogs. Delete worklogs first.");
+        }
+        if (attachmentRepository.existsByIssueId(id)) {
+            throw new IllegalArgumentException("Issue contains attachments. Delete attachments first.");
+        }
+
+        if (issue.getAssignee() != null) {
+            notificationService.create(
+
+                    issue.getAssignee(),
+
+                    "Issue Deleted",
+
+                    issue.getTitle(),
+
+                    NotificationType.ISSUE_DELETED,
+
+                    "/issues"
+
+            );
+        }
+
+        User currentUser =
+
+                currentUserService
+                        .getCurrentUser();
+
+        activityService.create(
+
+                currentUser,
+
+                issue.getProject(),
+
+                "DELETE_ISSUE",
+
+                currentUser.getFirstName()
+
+                        + " deleted issue "
+
+                        + issue.getTitle(),
+
+                "ISSUE",
+
+                issue.getId()
+
+        );
+
+        issueHistoryService.deleteByIssueId(id);
+
         issueRepository.delete(
-
                 issue);
-
     }
 
     private IssueResponse map(
