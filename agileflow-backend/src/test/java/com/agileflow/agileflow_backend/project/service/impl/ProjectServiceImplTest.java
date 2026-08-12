@@ -76,6 +76,7 @@ class ProjectServiceImplTest {
         request.setOwnerId(1L);
 
         User owner = createMockUser(1L, "Owner", "User");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(owner));
         when(currentUserService.getCurrentUser()).thenReturn(owner);
         when(projectRepository.save(any(Project.class))).thenAnswer(invocation -> {
             Project p = invocation.getArgument(0);

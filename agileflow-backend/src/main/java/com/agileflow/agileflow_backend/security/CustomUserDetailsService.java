@@ -28,6 +28,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
+                user.getStatus() == com.agileflow.agileflow_backend.common.enums.UserStatus.ACTIVE,
+                true,
+                true,
+                true,
                 user.getRoles()
                         .stream()
                         .map(role ->

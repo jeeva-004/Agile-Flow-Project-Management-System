@@ -159,7 +159,7 @@ public class CommentServiceImpl
 
                     NotificationType.COMMENT_ADDED,
 
-                    "/issues/" + issue.getId()
+                    "/projects/" + issue.getProject().getId() + "/issues/" + issue.getId()
 
             );
 
@@ -277,11 +277,7 @@ public class CommentServiceImpl
 
                     NotificationType.COMMENT_UPDATED,
 
-                    "/issues/" +
-
-                            comment.getIssue()
-
-                                    .getId()
+                    "/projects/" + comment.getIssue().getProject().getId() + "/issues/" + comment.getIssue().getId()
 
             );
         }
@@ -349,11 +345,7 @@ public class CommentServiceImpl
 
                     NotificationType.COMMENT_DELETED,
 
-                    "/issues/" +
-
-                            comment.getIssue()
-
-                                    .getId()
+                    "/projects/" + comment.getIssue().getProject().getId() + "/issues/" + comment.getIssue().getId()
 
             );
         }

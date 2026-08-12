@@ -293,7 +293,7 @@ public class IssueServiceImpl
 
                     NotificationType.ISSUE_ASSIGNED,
 
-                    "/issues/" + issue.getId()
+                    "/projects/" + issue.getProject().getId() + "/issues/" + issue.getId()
 
             );
 
@@ -673,7 +673,7 @@ public class IssueServiceImpl
 
                     NotificationType.ISSUE_UPDATED,
 
-                    "/issues/" + issue.getId()
+                    "/projects/" + issue.getProject().getId() + "/issues/" + issue.getId()
 
             );
 

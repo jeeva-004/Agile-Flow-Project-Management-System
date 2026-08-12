@@ -71,7 +71,7 @@ export class UserFormComponent implements OnInit {
             status: res.data.status,
             // Simple mapping since backend returns strings, we'd need IDs.
             // In a real app we'd map role names to role IDs properly.
-            roleIds: res.data.roles.map(r => this.availableRoles.find(ar => ar.name === r)?.id).filter(id => id)
+            roleIds: res.data.roles.map(r => this.availableRoles.find(ar => ar.name === r)?.id).find(id => id) || null
           });
         }
         this.isLoading = false;

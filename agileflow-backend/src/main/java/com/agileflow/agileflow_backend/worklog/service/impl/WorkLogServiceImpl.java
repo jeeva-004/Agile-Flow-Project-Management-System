@@ -164,7 +164,7 @@ public class WorkLogServiceImpl
 
                     NotificationType.WORKLOG_CREATED,
 
-                    "/issues/" + issue.getId()
+                    "/projects/" + issue.getProject().getId() + "/issues/" + issue.getId()
 
             );
 
@@ -338,11 +338,7 @@ public class WorkLogServiceImpl
 
                     NotificationType.WORKLOG_UPDATED,
 
-                    "/issues/" +
-
-                            workLog.getIssue()
-
-                                    .getId()
+                    "/projects/" + workLog.getIssue().getProject().getId() + "/issues/" + workLog.getIssue().getId()
 
             );
         }
@@ -415,11 +411,7 @@ public class WorkLogServiceImpl
 
                     NotificationType.WORKLOG_DELETED,
 
-                    "/issues/" +
-
-                            workLog.getIssue()
-
-                                    .getId()
+                    "/projects/" + workLog.getIssue().getProject().getId() + "/issues/" + workLog.getIssue().getId()
 
             );
         }

@@ -59,7 +59,9 @@ public class ProjectServiceImpl
     @Override
     public ProjectResponse create(
             CreateProjectRequest request) {
-        User owner = currentUserService.getCurrentUser();
+        User currentUser = currentUserService.getCurrentUser();
+        User owner = userRepository.findById(request.getOwnerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found"));
 
         Project project =
                 new Project();
@@ -93,13 +95,13 @@ public class ProjectServiceImpl
         );
         activityService.create(
 
-                owner,
+                currentUser,
 
                 project,
 
                 "CREATE_PROJECT",
 
-                owner.getFirstName()
+                currentUser.getFirstName()
 
                         + " created project "
 

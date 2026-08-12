@@ -215,8 +215,7 @@ public class AttachmentServiceImpl
 
                         NotificationType.ATTACHMENT_UPLOADED,
 
-                        "/issues/"
-                                + issueId
+                        "/projects/" + issue.getProject().getId() + "/issues/" + issueId
 
                 );
 

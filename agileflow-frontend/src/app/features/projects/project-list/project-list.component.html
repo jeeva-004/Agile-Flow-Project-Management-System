@@ -45,7 +45,7 @@
             <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'issues']">Issues</button>
             <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'members']">Members</button>
             <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'activity']">Activity</button>
-            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'analytics']">Analytics</button>
+            <button class="btn btn-outline btn-sm me-2" *ngIf="isAdminOrPM" [routerLink]="['/projects', project.id, 'analytics']">Analytics</button>
             
             <ng-container *ngIf="isAdminOrPM">
               <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'edit']">Edit</button>

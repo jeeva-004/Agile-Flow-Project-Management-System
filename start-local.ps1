@@ -18,6 +18,8 @@ $dbPort = $env:DB_PORT
 if (-not $dbPort) { $dbPort = "3308" }
 $port = $env:PORT
 if (-not $port) { $port = "8080" }
+$frontendPort = $env:FRONTEND_PORT
+if (-not $frontendPort) { $frontendPort = "4200" }
 
 Write-Host "Checking if MySQL is running on $dbHost:$dbPort..." -ForegroundColor Cyan
 $portCheck = Get-NetTCPConnection -LocalPort $dbPort -ErrorAction SilentlyContinue
@@ -66,9 +68,9 @@ $backendCmd = "cd agileflow-backend; `$env:DB_HOST='$dbHost'; `$env:DB_PORT='$db
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $backendCmd
 
 # Prepare frontend execution command
-$frontendCmd = "cd agileflow-frontend; npm start"
+$frontendCmd = "cd agileflow-frontend; npm start -- --port $frontendPort"
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $frontendCmd
 
 Write-Host "`nServices launched!" -ForegroundColor Green
-Write-Host "Frontend should be available at http://localhost:4200"
+Write-Host "Frontend should be available at http://localhost:$frontendPort"
 Write-Host "Backend API should be available at http://localhost:$port/api/v1"

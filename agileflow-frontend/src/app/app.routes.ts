@@ -1,6 +1,28 @@
-import { Routes } from '@angular/router';
+import { Routes, Router } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
+import { inject } from '@angular/core';
+import { ProjectService } from './features/projects/services/project.service';
+import { map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+export const issuesRedirectGuard = () => {
+  const projectService = inject(ProjectService);
+  const router = inject(Router);
+
+  return projectService.getProjects(0, 1).pipe(
+    map(res => {
+      if (res.success && res.data && res.data.content && res.data.content.length > 0) {
+        const firstProjectId = res.data.content[0].id;
+        return router.createUrlTree(['/projects', firstProjectId, 'issues']);
+      }
+      return router.createUrlTree(['/projects']);
+    }),
+    catchError(() => {
+      return of(router.createUrlTree(['/projects']));
+    })
+  );
+};
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -84,6 +106,11 @@ export const routes: Routes = [
       {
         path: 'notifications',
         loadComponent: () => import('./features/notifications/notification-list/notification-list.component').then(m => m.NotificationListComponent)
+      },
+      {
+        path: 'issues',
+        canActivate: [issuesRedirectGuard],
+        loadComponent: () => import('./features/projects/project-list/project-list.component').then(m => m.ProjectListComponent)
       }
     ]
   }

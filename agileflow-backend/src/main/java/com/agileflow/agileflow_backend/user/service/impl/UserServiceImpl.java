@@ -96,6 +96,10 @@ public class UserServiceImpl implements UserService {
                                 new ResourceNotFoundException(
                                         "User not found"));
 
+        if (!user.getEmail().equalsIgnoreCase(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email already exists");
+        }
+
         Set<Role> roles =
                 roleRepository.findAllById(
                                 request.getRoleIds())
