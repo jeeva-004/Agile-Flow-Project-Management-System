@@ -72,8 +72,8 @@ export class ProjectAnalyticsComponent implements OnInit {
         }
         this.isLoading = false;
       },
-      error: () => {
-        this.error = 'Failed to load analytics data.';
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to load analytics data.';
         this.isLoading = false;
       }
     });

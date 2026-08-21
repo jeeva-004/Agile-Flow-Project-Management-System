@@ -4,6 +4,8 @@ import com.agileflow.agileflow_backend.auth.dto.LoginRequest;
 import com.agileflow.agileflow_backend.auth.dto.LoginResponse;
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
+import com.agileflow.agileflow_backend.common.exception.BadRequestException;
+import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.security.JwtService;
 import org.springframework.security.authentication.*;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class AuthService {
 
         User user = userRepository
                 .findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + request.getEmail()));
 
         String token =
                 jwtService.generateToken(user.getEmail());
@@ -45,7 +47,7 @@ public class AuthService {
                 user.getRoles()
                         .stream()
                         .findFirst()
-                        .orElseThrow()
+                        .orElseThrow(() -> new BadRequestException("User has no assigned roles"))
                         .getName()
                         .name();
 

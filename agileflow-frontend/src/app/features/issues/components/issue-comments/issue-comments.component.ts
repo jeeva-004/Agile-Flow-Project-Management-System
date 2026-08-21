@@ -72,10 +72,11 @@ export class IssueCommentsComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.commentForm.invalid) return;
+    const message = this.commentForm.value.message?.trim();
+    if (!message || this.commentForm.invalid) return;
 
     this.isSubmitting = true;
-    const request = { message: this.commentForm.value.message };
+    const request = { message };
     
     this.commentService.createComment(this.issueId, request).subscribe({
       next: (res) => {
@@ -87,8 +88,8 @@ export class IssueCommentsComponent implements OnInit {
         }
         this.isSubmitting = false;
       },
-      error: () => {
-        alert('Failed to post comment.');
+      error: (err) => {
+        alert(err.error?.message || 'Failed to post comment.');
         this.isSubmitting = false;
       }
     });
@@ -105,9 +106,10 @@ export class IssueCommentsComponent implements OnInit {
   }
 
   submitEdit(id: number): void {
-    if (this.editForm.invalid) return;
+    const message = this.editForm.value.message?.trim();
+    if (!message || this.editForm.invalid) return;
 
-    const request = { message: this.editForm.value.message };
+    const request = { message };
     this.commentService.updateComment(id, request).subscribe({
       next: (res) => {
         if (res.success) {
@@ -115,8 +117,8 @@ export class IssueCommentsComponent implements OnInit {
           this.loadComments();
         }
       },
-      error: () => {
-        alert('Failed to update comment.');
+      error: (err) => {
+        alert(err.error?.message || 'Failed to update comment.');
       }
     });
   }
@@ -135,8 +137,8 @@ export class IssueCommentsComponent implements OnInit {
               this.loadComments();
             }
           },
-          error: () => {
-            alert('Failed to delete comment.');
+          error: (err) => {
+            alert(err.error?.message || 'Failed to delete comment.');
           }
         });
       }

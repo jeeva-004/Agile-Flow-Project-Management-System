@@ -73,8 +73,8 @@ export class IssueDetailComponent implements OnInit {
               this.router.navigate(['/projects', this.projectId, 'issues']);
             }
           },
-          error: () => {
-            alert('Failed to delete issue.');
+          error: (err) => {
+            alert(err.error?.message || 'Failed to delete issue.');
           }
         });
       }

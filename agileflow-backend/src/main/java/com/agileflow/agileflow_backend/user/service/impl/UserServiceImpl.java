@@ -51,6 +51,10 @@ public class UserServiceImpl implements UserService {
                         .stream()
                         .collect(Collectors.toSet());
 
+        if (roles.isEmpty()) {
+            throw new BadRequestException("One or more invalid role IDs provided");
+        }
+
         User user = new User();
 
         user.setFirstName(request.getFirstName());
@@ -105,6 +109,10 @@ public class UserServiceImpl implements UserService {
                                 request.getRoleIds())
                         .stream()
                         .collect(Collectors.toSet());
+
+        if (roles.isEmpty()) {
+            throw new BadRequestException("One or more invalid role IDs provided");
+        }
 
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());

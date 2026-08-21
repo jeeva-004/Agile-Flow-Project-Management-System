@@ -88,7 +88,7 @@ export class ProjectListComponent implements OnInit {
             }
           },
           error: (err) => {
-            alert('Failed to delete project.');
+            alert(err.error?.message || 'Failed to delete project.');
           }
         });
       }

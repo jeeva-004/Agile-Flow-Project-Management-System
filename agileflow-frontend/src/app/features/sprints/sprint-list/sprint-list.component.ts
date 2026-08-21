@@ -87,8 +87,8 @@ export class SprintListComponent implements OnInit {
               this.loadSprints();
             }
           },
-          error: () => {
-            alert('Failed to delete sprint.');
+          error: (err) => {
+            alert(err.error?.message || 'Failed to delete sprint.');
           }
         });
       }

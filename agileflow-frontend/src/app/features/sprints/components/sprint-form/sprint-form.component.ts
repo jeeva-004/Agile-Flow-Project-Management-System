@@ -77,8 +77,18 @@ export class SprintFormComponent implements OnInit {
   onSubmit(): void {
     if (this.sprintForm.invalid) return;
 
-    this.isLoading = true;
     const formValue = this.sprintForm.value;
+
+    if (formValue.startDate && formValue.endDate) {
+      const start = new Date(formValue.startDate);
+      const end = new Date(formValue.endDate);
+      if (end < start) {
+        this.error = 'End date cannot be before start date';
+        return;
+      }
+    }
+
+    this.isLoading = true;
     
     // Add projectId to the payload
     const payload = { ...formValue, projectId: this.projectId };
@@ -97,7 +107,11 @@ export class SprintFormComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = err.error?.message || 'Operation failed';
+        if (err.error?.errors && Array.isArray(err.error.errors) && err.error.errors.length > 0) {
+          this.error = err.error.errors.join(', ');
+        } else {
+          this.error = err.error?.message || 'Operation failed';
+        }
         this.isLoading = false;
       }
     });

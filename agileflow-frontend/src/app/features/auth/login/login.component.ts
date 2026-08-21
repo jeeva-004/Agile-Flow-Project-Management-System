@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -15,6 +15,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -36,14 +37,19 @@ export class LoginComponent {
       next: (response) => {
         this.isLoading = false;
         if (response.success) {
-          this.router.navigate(['/dashboard']);
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+          this.router.navigateByUrl(returnUrl);
         } else {
           this.errorMessage = response.message || 'Login failed';
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'An error occurred during login. Please try again.';
+        if (err.error?.errors && Array.isArray(err.error.errors) && err.error.errors.length > 0) {
+          this.errorMessage = err.error.errors.join(', ');
+        } else {
+          this.errorMessage = err.error?.message || 'An error occurred during login. Please try again.';
+        }
       }
     });
   }

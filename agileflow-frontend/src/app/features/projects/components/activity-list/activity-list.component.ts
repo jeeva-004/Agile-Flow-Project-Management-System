@@ -40,8 +40,8 @@ export class ActivityListComponent implements OnInit {
         }
         this.isLoading = false;
       },
-      error: () => {
-        this.error = 'Failed to load activities.';
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to load activities.';
         this.isLoading = false;
       }
     });

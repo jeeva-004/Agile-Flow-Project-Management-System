@@ -1,5 +1,6 @@
 package com.agileflow.agileflow_backend.sprint.service.impl;
 
+import com.agileflow.agileflow_backend.common.exception.BadRequestException;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
@@ -63,6 +64,10 @@ public class SprintServiceImpl implements SprintService {
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Project not found"));
+
+        if (request.getEndDate() != null && request.getStartDate() != null && request.getEndDate().isBefore(request.getStartDate())) {
+            throw new BadRequestException("End date cannot be before start date");
+        }
 
         Sprint sprint = new Sprint();
 
@@ -178,6 +183,10 @@ public class SprintServiceImpl implements SprintService {
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Sprint not found"));
+
+        if (request.getEndDate() != null && request.getStartDate() != null && request.getEndDate().isBefore(request.getStartDate())) {
+            throw new BadRequestException("End date cannot be before start date");
+        }
 
         sprint.setName(
                 request.getName());

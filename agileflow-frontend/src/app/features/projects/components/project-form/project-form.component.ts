@@ -92,8 +92,18 @@ export class ProjectFormComponent implements OnInit {
   onSubmit(): void {
     if (this.projectForm.invalid) return;
 
-    this.isLoading = true;
     const formValue = this.projectForm.value;
+
+    if (formValue.startDate && formValue.endDate) {
+      const start = new Date(formValue.startDate);
+      const end = new Date(formValue.endDate);
+      if (end < start) {
+        this.error = 'End date cannot be before start date';
+        return;
+      }
+    }
+
+    this.isLoading = true;
 
     const request = this.isEditMode ? 
       this.projectService.updateProject(this.projectId!, formValue) : 
@@ -109,7 +119,11 @@ export class ProjectFormComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = err.error?.message || 'Operation failed';
+        if (err.error?.errors && Array.isArray(err.error.errors) && err.error.errors.length > 0) {
+          this.error = err.error.errors.join(', ');
+        } else {
+          this.error = err.error?.message || 'Operation failed';
+        }
         this.isLoading = false;
       }
     });

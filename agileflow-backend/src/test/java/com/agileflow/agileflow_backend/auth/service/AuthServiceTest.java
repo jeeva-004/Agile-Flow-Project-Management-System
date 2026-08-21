@@ -6,6 +6,7 @@ import com.agileflow.agileflow_backend.auth.entity.Role;
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
 import com.agileflow.agileflow_backend.common.enums.RoleName;
+import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.security.JwtService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +18,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.Collections;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,7 +79,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(NoSuchElementException.class, () -> authService.login(request));
+        assertThrows(ResourceNotFoundException.class, () -> authService.login(request));
 
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(userRepository).findByEmail("unknown@example.com");

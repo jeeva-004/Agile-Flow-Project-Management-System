@@ -54,7 +54,7 @@ export class UserFormComponent implements OnInit {
     });
 
     if (!this.isEditMode) {
-      this.userForm.get('password')?.setValidators(Validators.required);
+      this.userForm.get('password')?.setValidators([Validators.required, Validators.minLength(8)]);
     }
   }
 
@@ -64,14 +64,16 @@ export class UserFormComponent implements OnInit {
     this.userService.getUser(this.userId).subscribe({
       next: (res) => {
         if (res.success && res.data) {
+          const matchedRoleId = res.data.roles
+            ?.map(r => this.availableRoles.find(ar => ar.name === r || ar.name === r.replace('ROLE_', ''))?.id)
+            .find(id => id);
+
           this.userForm.patchValue({
             firstName: res.data.firstName,
             lastName: res.data.lastName,
             email: res.data.email,
             status: res.data.status,
-            // Simple mapping since backend returns strings, we'd need IDs.
-            // In a real app we'd map role names to role IDs properly.
-            roleIds: res.data.roles.map(r => this.availableRoles.find(ar => ar.name === r)?.id).find(id => id) || null
+            roleIds: matchedRoleId || null
           });
         }
         this.isLoading = false;
@@ -87,10 +89,17 @@ export class UserFormComponent implements OnInit {
     if (this.userForm.invalid) return;
 
     this.isLoading = true;
-    const formValue = this.userForm.value;
+    const formValue = { ...this.userForm.value };
     
-    // Ensure roleIds are numbers
-    formValue.roleIds = [Number(formValue.roleIds)]; // Simplification for select single/multiple
+    // Ensure roleIds is an array of numbers
+    const rawRoleIds = formValue.roleIds;
+    if (Array.isArray(rawRoleIds)) {
+      formValue.roleIds = rawRoleIds.map(Number);
+    } else if (rawRoleIds != null) {
+      formValue.roleIds = [Number(rawRoleIds)];
+    } else {
+      formValue.roleIds = [];
+    }
 
     const request = this.isEditMode ? 
       this.userService.updateUser(this.userId!, formValue) : 
@@ -106,7 +115,11 @@ export class UserFormComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = err.error?.message || 'Operation failed';
+        if (err.error?.errors && Array.isArray(err.error.errors) && err.error.errors.length > 0) {
+          this.error = err.error.errors.join(', ');
+        } else {
+          this.error = err.error?.message || 'Operation failed';
+        }
         this.isLoading = false;
       }
     });

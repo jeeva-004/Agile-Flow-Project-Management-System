@@ -77,7 +77,7 @@ export class UserListComponent implements OnInit {
             }
           },
           error: (err) => {
-            alert('Failed to delete user.');
+            alert(err.error?.message || 'Failed to delete user.');
           }
         });
       }

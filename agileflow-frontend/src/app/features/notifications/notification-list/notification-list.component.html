@@ -23,7 +23,7 @@
     </div>
     
     <div class="notif-actions">
-      <button class="btn-icon text-danger" title="Delete" (click)="deleteNotification(notif.id)">
+      <button class="btn-icon text-danger" title="Delete" (click)="$event.stopPropagation(); deleteNotification(notif.id)">
         &times;
       </button>
     </div>

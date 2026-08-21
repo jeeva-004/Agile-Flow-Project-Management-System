@@ -59,11 +59,15 @@ public class SecurityConfig {
         );
 
         configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
         );
 
         configuration.setAllowedHeaders(
                 List.of("*")
+        );
+
+        configuration.setExposedHeaders(
+                List.of("Authorization", "Link", "X-Total-Count")
         );
 
         configuration.setAllowCredentials(true);
@@ -99,12 +103,27 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/test-users"
-                        ).permitAll().requestMatchers("/api/v1/users/**")
+                        ).permitAll()
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/api/v1/users",
+                                "/api/v1/users/**"
+                        )
+                        .hasAnyRole(
+                                "ADMIN",
+                                "PROJECT_MANAGER",
+                                "DEVELOPER"
+                        )
+                        .requestMatchers(
+                                "/api/v1/users",
+                                "/api/v1/users/**"
+                        )
                         .hasRole("ADMIN")
                         // Specific sub-paths of /api/v1/projects/** MUST be declared
                         // before the broader /api/v1/projects/** matchers below,
                         // since Spring Security authorizes on a first-match-wins basis.
                         .requestMatchers(
+                                "/api/v1/projects/*/analytics",
                                 "/api/v1/projects/*/analytics/**"
                         )
                         .hasAnyRole(
@@ -112,6 +131,7 @@ public class SecurityConfig {
                                 "PROJECT_MANAGER"
                         )
                         .requestMatchers(
+                                "/api/v1/projects/*/report",
                                 "/api/v1/projects/*/report/**"
                         )
                         .hasAnyRole(
@@ -120,6 +140,7 @@ public class SecurityConfig {
                         )
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
+                                "/api/v1/projects",
                                 "/api/v1/projects/**"
                         )
                         .hasAnyRole(
@@ -128,6 +149,7 @@ public class SecurityConfig {
                                 "DEVELOPER"
                         )
                         .requestMatchers(
+                                "/api/v1/projects",
                                 "/api/v1/projects/**"
                         )
                         .hasAnyRole(
@@ -136,8 +158,10 @@ public class SecurityConfig {
                         )
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
+                                "/api/v1/project-members",
                                 "/api/v1/project-members/**",
-                                "/api/v1/projects/*/members"
+                                "/api/v1/projects/*/members",
+                                "/api/v1/projects/*/members/**"
                         )
                         .hasAnyRole(
                                 "ADMIN",
@@ -145,8 +169,10 @@ public class SecurityConfig {
                                 "DEVELOPER"
                         )
                         .requestMatchers(
+                                "/api/v1/project-members",
                                 "/api/v1/project-members/**",
-                                "/api/v1/projects/*/members"
+                                "/api/v1/projects/*/members",
+                                "/api/v1/projects/*/members/**"
                         )
                         .hasAnyRole(
                                 "ADMIN",
@@ -154,8 +180,10 @@ public class SecurityConfig {
                         )
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
+                                "/api/v1/sprints",
                                 "/api/v1/sprints/**",
-                                "/api/v1/projects/*/sprints"
+                                "/api/v1/projects/*/sprints",
+                                "/api/v1/projects/*/sprints/**"
                         )
                         .hasAnyRole(
                                 "ADMIN",
@@ -163,167 +191,119 @@ public class SecurityConfig {
                                 "DEVELOPER"
                         )
                         .requestMatchers(
+                                "/api/v1/sprints",
                                 "/api/v1/sprints/**",
-                                "/api/v1/projects/*/sprints"
+                                "/api/v1/projects/*/sprints",
+                                "/api/v1/projects/*/sprints/**"
                         )
                         .hasAnyRole(
                                 "ADMIN",
                                 "PROJECT_MANAGER"
                         )
                         .requestMatchers(
-
+                                "/api/v1/issues",
                                 "/api/v1/issues/**",
-
                                 "/api/v1/projects/*/issues",
-
+                                "/api/v1/projects/*/issues/**",
                                 "/api/v1/sprints/*/issues",
-
-                                "/api/v1/users/*/issues"
-
+                                "/api/v1/sprints/*/issues/**",
+                                "/api/v1/users/*/issues",
+                                "/api/v1/users/*/issues/**"
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
                                 "PROJECT_MANAGER",
-
                                 "DEVELOPER"
-
                         )
                         .requestMatchers(
-
+                                "/api/v1/comments",
                                 "/api/v1/comments/**",
-
-                                "/api/v1/issues/*/comments"
-
+                                "/api/v1/issues/*/comments",
+                                "/api/v1/issues/*/comments/**"
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
                                 "PROJECT_MANAGER",
-
                                 "DEVELOPER"
-
                         )
                         .requestMatchers(
-
+                                "/api/v1/worklogs",
                                 "/api/v1/worklogs/**",
-
                                 "/api/v1/issues/*/worklogs",
-
-                                "/api/v1/users/*/worklogs"
-
+                                "/api/v1/issues/*/worklogs/**",
+                                "/api/v1/users/*/worklogs",
+                                "/api/v1/users/*/worklogs/**"
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
                                 "PROJECT_MANAGER",
-
                                 "DEVELOPER"
-
                         )
                         .requestMatchers(
-
+                                "/api/v1/notifications",
                                 "/api/v1/notifications/**"
-
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
                                 "PROJECT_MANAGER",
-
                                 "DEVELOPER"
-
                         )
                         .requestMatchers(
-
+                                "/api/v1/attachments",
                                 "/api/v1/attachments/**"
-
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
                                 "PROJECT_MANAGER",
-
                                 "DEVELOPER"
-
                         )
                         .requestMatchers(
-
+                                "/api/v1/history",
                                 "/api/v1/history/**"
-
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
                                 "PROJECT_MANAGER",
-
                                 "DEVELOPER"
-
+                        )
+                        .requestMatchers(
+                                "/api/v1/activities",
+                                "/api/v1/activities/**"
+                        )
+                        .hasAnyRole(
+                                "ADMIN",
+                                "PROJECT_MANAGER",
+                                "DEVELOPER"
                         )
                         // Specific /api/v1/dashboard/{role} matchers MUST be declared
                         // before the broader /api/v1/dashboard/** matcher below, for the
                         // same first-match-wins reason as the /api/v1/projects/** rules.
                         .requestMatchers(
-
                                 "/api/v1/dashboard/admin"
-
                         )
-
                         .hasRole(
-
                                 "ADMIN"
-
                         )
-
                         .requestMatchers(
-
                                 "/api/v1/dashboard/pm"
-
                         )
-
                         .hasRole(
-
                                 "PROJECT_MANAGER"
-
                         )
-
                         .requestMatchers(
-
                                 "/api/v1/dashboard/developer"
-
                         )
-
                         .hasRole(
-
                                 "DEVELOPER"
-
                         )
                         .requestMatchers(
-
+                                "/api/v1/dashboard",
                                 "/api/v1/dashboard/**"
-
                         )
-
                         .hasAnyRole(
-
                                 "ADMIN",
-
                                 "PROJECT_MANAGER",
-
                                 "DEVELOPER"
-
                         )
                         .anyRequest()
                         .authenticated()

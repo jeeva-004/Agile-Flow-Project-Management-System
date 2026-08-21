@@ -154,7 +154,11 @@ export class IssueFormComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = err.error?.message || 'Operation failed';
+        if (err.error?.errors && Array.isArray(err.error.errors) && err.error.errors.length > 0) {
+          this.error = err.error.errors.join(', ');
+        } else {
+          this.error = err.error?.message || 'Operation failed';
+        }
         this.isLoading = false;
       }
     });

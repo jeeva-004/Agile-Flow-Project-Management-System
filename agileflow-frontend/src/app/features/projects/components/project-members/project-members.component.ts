@@ -27,6 +27,7 @@ export class ProjectMembersComponent implements OnInit {
   projectId!: number;
   members: ProjectMemberResponse[] = [];
   availableUsers: UserResponse[] = [];
+  private rawAvailableUsers: UserResponse[] = [];
   
   addMemberForm!: FormGroup;
   
@@ -71,6 +72,7 @@ export class ProjectMembersComponent implements OnInit {
         if (res.success && res.data) {
           this.members = res.data.content;
           this.totalElements = res.data.totalElements;
+          this.filterAvailableUsers();
         }
         this.isLoading = false;
       },
@@ -82,14 +84,20 @@ export class ProjectMembersComponent implements OnInit {
   }
 
   loadAvailableUsers(): void {
-    // Basic implementation: fetch users (would usually filter out existing members or search)
     this.userService.getUsers(0, 100).subscribe({
       next: (res) => {
         if (res.success && res.data) {
-          this.availableUsers = res.data.content;
+          this.rawAvailableUsers = res.data.content;
+          this.filterAvailableUsers();
         }
       }
     });
+  }
+
+  private filterAvailableUsers(): void {
+    if (!this.rawAvailableUsers) return;
+    const memberUserIds = new Set(this.members.map(m => m.userId));
+    this.availableUsers = this.rawAvailableUsers.filter(u => !memberUserIds.has(u.id));
   }
 
   changePage(newPage: number): void {
@@ -103,6 +111,7 @@ export class ProjectMembersComponent implements OnInit {
     if (this.addMemberForm.invalid) return;
 
     this.isLoading = true;
+    this.error = '';
     const userId = Number(this.addMemberForm.value.userId);
     
     this.projectMemberService.addMember({ projectId: this.projectId, userId }).subscribe({
@@ -116,7 +125,11 @@ export class ProjectMembersComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.error = err.error?.message || 'Failed to add member';
+        if (err.error?.errors && Array.isArray(err.error.errors) && err.error.errors.length > 0) {
+          this.error = err.error.errors.join(', ');
+        } else {
+          this.error = err.error?.message || 'Failed to add member';
+        }
         this.isLoading = false;
       }
     });
@@ -130,8 +143,8 @@ export class ProjectMembersComponent implements OnInit {
             this.loadMembers();
           }
         },
-        error: () => {
-          alert('Failed to remove member');
+        error: (err) => {
+          alert(err.error?.message || 'Failed to remove member');
         }
       });
     }

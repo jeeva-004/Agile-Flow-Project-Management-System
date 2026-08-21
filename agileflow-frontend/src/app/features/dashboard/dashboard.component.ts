@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.authService.currentUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(user => {
       if (user) {
+        this.role = user.role;
         this.loadDashboardData(user.role);
       }
     });
@@ -36,7 +37,10 @@ export class DashboardComponent implements OnInit {
 
   private loadDashboardData(role: string): void {
     this.isLoading = true;
-    const roleUpper = role.toUpperCase();
+    let roleUpper = role ? role.toUpperCase() : '';
+    if (roleUpper.startsWith('ROLE_')) {
+      roleUpper = roleUpper.substring(5);
+    }
     
     if (roleUpper === 'ADMIN') {
       this.dashboardService.getAdminDashboard().subscribe({
@@ -45,7 +49,7 @@ export class DashboardComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.error = 'Failed to load admin dashboard';
+          this.error = err.error?.message || 'Failed to load admin dashboard';
           this.isLoading = false;
         }
       });
@@ -56,7 +60,7 @@ export class DashboardComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.error = 'Failed to load PM dashboard';
+          this.error = err.error?.message || 'Failed to load PM dashboard';
           this.isLoading = false;
         }
       });
@@ -67,7 +71,7 @@ export class DashboardComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.error = 'Failed to load developer dashboard';
+          this.error = err.error?.message || 'Failed to load developer dashboard';
           this.isLoading = false;
         }
       });

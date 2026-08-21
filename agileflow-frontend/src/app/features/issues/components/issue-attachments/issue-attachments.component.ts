@@ -49,6 +49,7 @@ export class IssueAttachmentsComponent implements OnInit {
     if (file) {
       this.uploadFile(file);
     }
+    event.target.value = '';
   }
 
   uploadFile(file: File): void {
@@ -60,8 +61,8 @@ export class IssueAttachmentsComponent implements OnInit {
         }
         this.isUploading = false;
       },
-      error: () => {
-        alert('Failed to upload file.');
+      error: (err) => {
+        alert(err.error?.message || 'Failed to upload file.');
         this.isUploading = false;
       }
     });
@@ -77,8 +78,8 @@ export class IssueAttachmentsComponent implements OnInit {
         a.click();
         window.URL.revokeObjectURL(url);
       },
-      error: () => {
-        alert('Failed to download file.');
+      error: (err) => {
+        alert(err.error?.message || 'Failed to download file.');
       }
     });
   }
@@ -97,8 +98,8 @@ export class IssueAttachmentsComponent implements OnInit {
               this.loadAttachments();
             }
           },
-          error: () => {
-            alert('Failed to delete attachment.');
+          error: (err) => {
+            alert(err.error?.message || 'Failed to delete attachment.');
           }
         });
       }

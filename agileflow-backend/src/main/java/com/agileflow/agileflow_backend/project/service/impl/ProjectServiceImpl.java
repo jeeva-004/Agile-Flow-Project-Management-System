@@ -4,6 +4,7 @@ import com.agileflow.agileflow_backend.activity.service.ActivityService;
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.auth.repository.UserRepository;
 import com.agileflow.agileflow_backend.common.enums.NotificationType;
+import com.agileflow.agileflow_backend.common.exception.BadRequestException;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.issue.repository.IssueRepository;
 import com.agileflow.agileflow_backend.notification.service.NotificationService;
@@ -62,6 +63,10 @@ public class ProjectServiceImpl
         User currentUser = currentUserService.getCurrentUser();
         User owner = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found"));
+
+        if (request.getEndDate() != null && request.getStartDate() != null && request.getEndDate().isBefore(request.getStartDate())) {
+            throw new BadRequestException("End date cannot be before start date");
+        }
 
         Project project =
                 new Project();
@@ -178,6 +183,10 @@ public class ProjectServiceImpl
                                 new ResourceNotFoundException(
 
                                         "Owner not found"));
+
+        if (request.getEndDate() != null && request.getStartDate() != null && request.getEndDate().isBefore(request.getStartDate())) {
+            throw new BadRequestException("End date cannot be before start date");
+        }
 
         project.setName(
 

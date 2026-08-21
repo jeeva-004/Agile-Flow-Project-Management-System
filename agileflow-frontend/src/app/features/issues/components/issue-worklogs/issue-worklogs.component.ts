@@ -82,7 +82,7 @@ export class IssueWorklogsComponent implements OnInit {
     const request = { 
       hoursSpent: this.workLogForm.value.hoursSpent,
       workDate: this.workLogForm.value.workDate,
-      description: this.workLogForm.value.description
+      description: this.workLogForm.value.description?.trim()
     };
     
     this.workLogService.createWorkLog(this.issueId, request).subscribe({
@@ -93,8 +93,8 @@ export class IssueWorklogsComponent implements OnInit {
         }
         this.isSubmitting = false;
       },
-      error: () => {
-        alert('Failed to log work.');
+      error: (err) => {
+        alert(err.error?.message || 'Failed to log work.');
         this.isSubmitting = false;
       }
     });
@@ -120,7 +120,7 @@ export class IssueWorklogsComponent implements OnInit {
     const request = {
       hoursSpent: this.editForm.value.hoursSpent,
       workDate: this.editForm.value.workDate,
-      description: this.editForm.value.description
+      description: this.editForm.value.description?.trim()
     };
     
     this.workLogService.updateWorkLog(id, request).subscribe({
@@ -130,8 +130,8 @@ export class IssueWorklogsComponent implements OnInit {
           this.loadWorkLogs();
         }
       },
-      error: () => {
-        alert('Failed to update work log.');
+      error: (err) => {
+        alert(err.error?.message || 'Failed to update work log.');
       }
     });
   }
@@ -150,8 +150,8 @@ export class IssueWorklogsComponent implements OnInit {
               this.loadWorkLogs();
             }
           },
-          error: () => {
-            alert('Failed to delete work log.');
+          error: (err) => {
+            alert(err.error?.message || 'Failed to delete work log.');
           }
         });
       }

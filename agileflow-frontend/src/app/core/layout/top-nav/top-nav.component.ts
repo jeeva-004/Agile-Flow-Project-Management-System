@@ -39,7 +39,7 @@ export class TopNavComponent implements OnInit, OnDestroy {
 
   loadNotifications(): void {
     this.notificationService.getUnreadCount().subscribe(res => {
-      if (res.success && res.data) {
+      if (res.success && res.data !== undefined && res.data !== null) {
         this.unreadCount = res.data;
       }
     });

@@ -70,7 +70,7 @@
             <label for="userId">Select User</label>
             <select id="userId" class="form-control" formControlName="userId">
               <option [ngValue]="null" disabled>Select user...</option>
-              <option *ngFor="let user of availableUsers" [value]="user.id">
+              <option *ngFor="let user of availableUsers" [ngValue]="user.id">
                 {{ user.firstName }} {{ user.lastName }}
               </option>
             </select>

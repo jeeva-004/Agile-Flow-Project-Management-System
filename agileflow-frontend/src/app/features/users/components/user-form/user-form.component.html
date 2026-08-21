@@ -41,9 +41,10 @@
 
     <div class="form-group" *ngIf="!isEditMode">
       <label for="password">Password</label>
-      <input type="password" id="password" class="form-control" formControlName="password" placeholder="Min 6 characters">
+      <input type="password" id="password" class="form-control" formControlName="password" placeholder="Min 8 characters">
       <div class="error-text" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
-        Password is required.
+        <span *ngIf="userForm.get('password')?.errors?.['required']">Password is required.</span>
+        <span *ngIf="userForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</span>
       </div>
     </div>
 
@@ -51,7 +52,7 @@
       <div class="form-group">
         <label for="roleIds">Role</label>
         <select id="roleIds" class="form-control" formControlName="roleIds">
-          <option *ngFor="let role of availableRoles" [value]="role.id">{{ role.name }}</option>
+          <option *ngFor="let role of availableRoles" [ngValue]="role.id">{{ role.name }}</option>
         </select>
         <div class="error-text" *ngIf="userForm.get('roleIds')?.invalid && userForm.get('roleIds')?.touched">
           Role is required.
