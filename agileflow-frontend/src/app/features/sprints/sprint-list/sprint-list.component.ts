@@ -74,9 +74,11 @@ export class SprintListComponent implements OnInit {
   }
 
   deleteSprint(id: number): void {
+    const sprint = this.sprints.find(s => s.id === id);
+    const sprintName = sprint ? sprint.name : 'this sprint';
     this.confirmationService.confirm({
       title: 'Delete Sprint',
-      message: 'Are you sure you want to delete this sprint?',
+      message: `Are you sure you want to delete "${sprintName}"?`,
       confirmText: 'Delete',
       cancelText: 'Cancel'
     }).subscribe(confirmed => {
@@ -84,11 +86,12 @@ export class SprintListComponent implements OnInit {
         this.sprintService.deleteSprint(id).subscribe({
           next: (res) => {
             if (res.success) {
+              this.confirmationService.success('Success', 'Sprint deleted successfully.');
               this.loadSprints();
             }
           },
           error: (err) => {
-            alert(err.error?.message || 'Failed to delete sprint.');
+            this.confirmationService.error('Action Failed', err.error?.message || 'Failed to delete sprint.');
           }
         });
       }

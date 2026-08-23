@@ -1,15 +1,21 @@
 <div class="sidebar-wrapper">
-  <div class="sidebar-header">
+  <div class="sidebar-header d-flex justify-content-between align-items-center">
     <div class="brand">
       <span class="brand-icon">AF</span>
       <span class="brand-text">AgileFlow</span>
     </div>
+    <button type="button" class="btn btn-icon sidebar-close-btn" (click)="closeSidebar.emit()" aria-label="Close Sidebar">
+      <i class="bi bi-x-lg"></i>
+    </button>
   </div>
 
   <nav class="sidebar-nav">
     <ul class="nav-list">
       <li *ngFor="let item of navItems" class="nav-item">
-        <a *ngIf="item.path !== '/users' || (authService.currentUser$ | async)?.role === 'ADMIN'" [routerLink]="item.path" routerLinkActive="active" class="nav-link">
+        <a *ngIf="item.path !== '/users' || (authService.currentUser$ | async)?.role === 'ADMIN'" 
+           [routerLink]="item.path" 
+           [class.active]="isNavActive(item.path)" 
+           class="nav-link">
           <span class="nav-text">{{ item.label }}</span>
         </a>
       </li>

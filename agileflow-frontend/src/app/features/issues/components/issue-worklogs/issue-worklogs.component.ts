@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { WorkLogService } from '../../services/worklog.service';
 import { WorkLogResponse } from '../../models/worklog.model';
 import { ConfirmationService } from '../../../../core/services/confirmation.service';
+
 @Component({
   selector: 'app-issue-worklogs',
   standalone: true,
@@ -22,7 +23,6 @@ export class IssueWorklogsComponent implements OnInit {
   workLogForm!: FormGroup;
   editForm!: FormGroup;
   editingWorkLogId: number | null = null;
-  
   
   totalElements = 0;
   pageSize = 10;
@@ -70,9 +70,6 @@ export class IssueWorklogsComponent implements OnInit {
   
   private calculateTotalHours(): void {
     this.totalHours = this.worklogs.reduce((sum, log) => sum + log.hoursSpent, 0);
-    // Ideally we should calculate total hours across all pages, 
-    // but without an aggregate endpoint, we'll just sum the current page for now
-    // or assume the backend sends it. The backend doesn't send total hours right now.
   }
 
   onSubmit(): void {
@@ -89,12 +86,15 @@ export class IssueWorklogsComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.initForm();
+          this.confirmationService.success('Success', 'Work log saved successfully.');
           this.loadWorkLogs();
+        } else {
+          this.confirmationService.error('Action Failed', res.message || 'Failed to log work.');
         }
         this.isSubmitting = false;
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to log work.');
+        this.confirmationService.error('Action Failed', err.error?.message || 'Failed to log work.');
         this.isSubmitting = false;
       }
     });
@@ -104,7 +104,7 @@ export class IssueWorklogsComponent implements OnInit {
     this.editingWorkLogId = log.id;
     this.editForm.patchValue({
       hoursSpent: log.hoursSpent,
-      workDate: log.workDate.split('T')[0], // Extract just the date part if necessary
+      workDate: log.workDate.split('T')[0],
       description: log.description
     });
   }
@@ -127,11 +127,14 @@ export class IssueWorklogsComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.editingWorkLogId = null;
+          this.confirmationService.success('Success', 'Work log updated successfully.');
           this.loadWorkLogs();
+        } else {
+          this.confirmationService.error('Action Failed', res.message || 'Failed to update work log.');
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to update work log.');
+        this.confirmationService.error('Action Failed', err.error?.message || 'Failed to update work log.');
       }
     });
   }
@@ -139,7 +142,7 @@ export class IssueWorklogsComponent implements OnInit {
   deleteWorkLog(id: number): void {
     this.confirmationService.confirm({
       title: 'Delete Work Log',
-      message: 'Delete this work log?',
+      message: 'Are you sure you want to delete this work log?',
       confirmText: 'Delete',
       cancelText: 'Cancel'
     }).subscribe(confirmed => {
@@ -147,11 +150,12 @@ export class IssueWorklogsComponent implements OnInit {
         this.workLogService.deleteWorkLog(id).subscribe({
           next: (res) => {
             if (res.success) {
+              this.confirmationService.success('Success', 'Work log deleted successfully.');
               this.loadWorkLogs();
             }
           },
           error: (err) => {
-            alert(err.error?.message || 'Failed to delete work log.');
+            this.confirmationService.error('Action Failed', err.error?.message || 'Failed to delete work log.');
           }
         });
       }

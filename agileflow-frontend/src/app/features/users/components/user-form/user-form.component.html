@@ -1,6 +1,8 @@
 <div class="page-header d-flex justify-content-between align-items-center mb-4">
   <h2>{{ isEditMode ? 'Edit' : 'Create' }} User</h2>
-  <button class="btn btn-outline" routerLink="/users">Back to Users</button>
+  <button class="btn btn-outline" routerLink="/users">
+    <i class="bi bi-arrow-left me-1"></i> Back to Users
+  </button>
 </div>
 
 <div *ngIf="error" class="alert alert-danger mb-4">
@@ -71,7 +73,7 @@
 
     <div class="form-actions mt-4">
       <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || isLoading">
-        {{ isLoading ? 'Saving...' : (isEditMode ? 'Update User' : 'Create User') }}
+        <i class="bi bi-check-lg me-1"></i> {{ isLoading ? 'Saving...' : (isEditMode ? 'Update User' : 'Create User') }}
       </button>
     </div>
   </form>

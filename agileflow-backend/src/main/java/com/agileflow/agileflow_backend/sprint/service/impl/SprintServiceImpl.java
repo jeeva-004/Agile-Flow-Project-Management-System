@@ -4,6 +4,7 @@ import com.agileflow.agileflow_backend.common.exception.BadRequestException;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
 import com.agileflow.agileflow_backend.project.entity.Project;
 import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
+import com.agileflow.agileflow_backend.projectmember.repository.ProjectMemberRepository;
 import com.agileflow.agileflow_backend.sprint.dto.CreateSprintRequest;
 import com.agileflow.agileflow_backend.sprint.dto.SprintResponse;
 import com.agileflow.agileflow_backend.sprint.dto.UpdateSprintRequest;
@@ -22,7 +23,6 @@ import com.agileflow.agileflow_backend.activity.service.ActivityService;
 import com.agileflow.agileflow_backend.auth.entity.User;
 import com.agileflow.agileflow_backend.security.CurrentUserService;
 
-
 @Service
 public class SprintServiceImpl implements SprintService {
 
@@ -32,6 +32,7 @@ public class SprintServiceImpl implements SprintService {
     private final IssueRepository issueRepository;
     private final ActivityService activityService;
     private final CurrentUserService currentUserService;
+    private final ProjectMemberRepository projectMemberRepository;
 
     public SprintServiceImpl(
             SprintRepository sprintRepository,
@@ -39,19 +40,39 @@ public class SprintServiceImpl implements SprintService {
             NotificationService notificationService,
             IssueRepository issueRepository,
             ActivityService activityService,
-
-            CurrentUserService currentUserService
+            CurrentUserService currentUserService,
+            ProjectMemberRepository projectMemberRepository
             ) {
 
         this.sprintRepository = sprintRepository;
         this.projectRepository = projectRepository;
         this.notificationService = notificationService;
         this.issueRepository = issueRepository;
-        this.activityService =
-                activityService;
+        this.activityService = activityService;
+        this.currentUserService = currentUserService;
+        this.projectMemberRepository = projectMemberRepository;
+    }
 
-        this.currentUserService =
-                currentUserService;
+    private void validateProjectAccess(Long projectId) {
+        if (projectId == null) return;
+        User user = currentUserService.getCurrentUser();
+        boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName() == com.agileflow.agileflow_backend.common.enums.RoleName.ADMIN);
+        if (isAdmin) return;
+
+        boolean isPm = user.getRoles().stream().anyMatch(r -> r.getName() == com.agileflow.agileflow_backend.common.enums.RoleName.PROJECT_MANAGER);
+        if (isPm) {
+            boolean isOwner = projectRepository.findById(projectId).map(p -> p.getOwner() != null && p.getOwner().getId().equals(user.getId())).orElse(false);
+            boolean isMember = projectMemberRepository.existsByProjectIdAndUserId(projectId, user.getId());
+            if (!isOwner && !isMember) {
+                throw new ResourceNotFoundException("Project not found");
+            }
+        } else {
+            boolean isMember = projectMemberRepository.existsByProjectIdAndUserId(projectId, user.getId());
+            boolean hasAssignedIssue = issueRepository.existsByProjectIdAndAssigneeId(projectId, user.getId());
+            if (!isMember && !hasAssignedIssue) {
+                throw new ResourceNotFoundException("Project not found");
+            }
+        }
     }
 
     @Override
@@ -135,6 +156,8 @@ public class SprintServiceImpl implements SprintService {
             Long projectId,
             Pageable pageable) {
 
+        validateProjectAccess(projectId);
+
         return sprintRepository
                 .findByProjectId(
                         projectId,
@@ -146,6 +169,8 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public List<SprintResponse> findByProject(
             Long projectId) {
+
+        validateProjectAccess(projectId);
 
         return sprintRepository
                 .findByProjectId(
@@ -166,6 +191,10 @@ public class SprintServiceImpl implements SprintService {
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Sprint not found"));
+
+        if (sprint.getProject() != null) {
+            validateProjectAccess(sprint.getProject().getId());
+        }
 
         return map(
                 sprint);

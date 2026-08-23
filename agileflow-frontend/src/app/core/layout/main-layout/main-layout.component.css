@@ -4,6 +4,7 @@
   width: 100vw;
   overflow: hidden;
   background-color: var(--bg-main);
+  position: relative;
 }
 
 .layout-sidebar {
@@ -11,7 +12,8 @@
   flex-shrink: 0;
   border-right: 1px solid var(--border-color);
   background-color: var(--bg-surface);
-  z-index: 10;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
 }
 
 .layout-content {
@@ -19,6 +21,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  width: 100%;
 }
 
 .layout-topnav {
@@ -35,8 +38,37 @@
   padding: var(--spacing-6);
 }
 
-@media (max-width: 768px) {
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
   .layout-sidebar {
-    display: none; /* In a real app, we'd add a mobile toggle */
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    transform: translateX(-100%);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  }
+
+  .layout-sidebar.show-mobile {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .layout-main {
+    padding: var(--spacing-3);
   }
 }

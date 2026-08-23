@@ -1,9 +1,10 @@
-import { Component, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 import { NotificationResponse } from '../../models/notification.model';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
   selector: 'app-top-nav',
@@ -13,9 +14,13 @@ import { NotificationResponse } from '../../models/notification.model';
   styleUrl: './top-nav.component.css'
 })
 export class TopNavComponent implements OnInit, OnDestroy {
+  @Output() toggleSidebar = new EventEmitter<void>();
+
   authService = inject(AuthService);
   notificationService = inject(NotificationService);
   router = inject(Router);
+  confirmationService = inject(ConfirmationService);
+  private elementRef = inject(ElementRef);
 
   unreadCount = 0;
   notifications: NotificationResponse[] = [];
@@ -23,10 +28,20 @@ export class TopNavComponent implements OnInit, OnDestroy {
   
   private intervalId: any;
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.showDropdown) {
+      const target = event.target as HTMLElement;
+      const clickedInside = this.elementRef.nativeElement.querySelector('.notification-wrapper')?.contains(target);
+      if (!clickedInside) {
+        this.showDropdown = false;
+      }
+    }
+  }
+
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
       this.loadNotifications();
-      // Poll every 1 minute
       this.intervalId = setInterval(() => this.loadNotifications(), 60000);
     }
   }
@@ -77,6 +92,16 @@ export class TopNavComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.authService.logout();
+    this.confirmationService.confirm({
+      title: 'Confirm Logout',
+      message: 'Are you sure you want to log out of AgileFlow?',
+      confirmText: 'Logout',
+      cancelText: 'Cancel'
+    }).subscribe(confirmed => {
+      if (confirmed) {
+        this.authService.logout();
+        this.confirmationService.success('Logged Out', 'You have been successfully logged out.');
+      }
+    });
   }
 }

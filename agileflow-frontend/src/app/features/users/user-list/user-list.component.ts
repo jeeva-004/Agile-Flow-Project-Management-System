@@ -48,7 +48,7 @@ export class UserListComponent implements OnInit {
         }
         this.isLoading = false;
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Failed to load users';
         this.isLoading = false;
       }
@@ -63,9 +63,11 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(id: number): void {
+    const user = this.users.find(u => u.id === id);
+    const userName = user ? `${user.firstName} ${user.lastName}` : 'this user';
     this.confirmationService.confirm({
       title: 'Delete User',
-      message: 'Are you sure you want to delete this user? This action cannot be undone.',
+      message: `Are you sure you want to delete user "${userName}"? This action cannot be undone.`,
       confirmText: 'Delete',
       cancelText: 'Cancel'
     }).subscribe(confirmed => {
@@ -73,11 +75,12 @@ export class UserListComponent implements OnInit {
         this.userService.deleteUser(id).subscribe({
           next: (res) => {
             if (res.success) {
+              this.confirmationService.success('Success', 'User deleted successfully.');
               this.loadUsers();
             }
           },
           error: (err) => {
-            alert(err.error?.message || 'Failed to delete user.');
+            this.confirmationService.error('Action Failed', err.error?.message || 'Failed to delete user.');
           }
         });
       }

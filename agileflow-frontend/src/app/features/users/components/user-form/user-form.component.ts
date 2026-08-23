@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 @Component({
   selector: 'app-user-form',
@@ -16,12 +17,14 @@ export class UserFormComponent implements OnInit {
   private userService = inject(UserService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private confirmationService = inject(ConfirmationService);
 
   userForm!: FormGroup;
   isEditMode = false;
   userId?: number;
   isLoading = false;
   error = '';
+  originalStatus = 'ACTIVE';
 
   availableRoles = [
     { id: 1, name: 'ADMIN' },
@@ -68,11 +71,13 @@ export class UserFormComponent implements OnInit {
             ?.map(r => this.availableRoles.find(ar => ar.name === r || ar.name === r.replace('ROLE_', ''))?.id)
             .find(id => id);
 
+          this.originalStatus = res.data.status || 'ACTIVE';
+
           this.userForm.patchValue({
             firstName: res.data.firstName,
             lastName: res.data.lastName,
             email: res.data.email,
-            status: res.data.status,
+            status: this.originalStatus,
             roleIds: matchedRoleId || null
           });
         }
@@ -91,7 +96,6 @@ export class UserFormComponent implements OnInit {
     this.isLoading = true;
     const formValue = { ...this.userForm.value };
     
-    // Ensure roleIds is an array of numbers
     const rawRoleIds = formValue.roleIds;
     if (Array.isArray(rawRoleIds)) {
       formValue.roleIds = rawRoleIds.map(Number);
@@ -108,17 +112,29 @@ export class UserFormComponent implements OnInit {
     request.subscribe({
       next: (res) => {
         if (res.success) {
-          this.router.navigate(['/users']);
+          const msg = this.isEditMode ? 'User updated successfully.' : 'User created successfully.';
+          this.confirmationService.success('Success', msg).subscribe(() => {
+            this.router.navigate(['/users']);
+          });
         } else {
           this.error = res.message || 'Operation failed';
+          this.confirmationService.error('Action Failed', this.error);
         }
         this.isLoading = false;
       },
       error: (err) => {
-        if (err.error?.errors && Array.isArray(err.error.errors) && err.error.errors.length > 0) {
-          this.error = err.error.errors.join(', ');
+        const errorMsg = err.error?.message || (Array.isArray(err.error?.errors) ? err.error.errors.join(', ') : 'Operation failed');
+        
+        if (errorMsg.includes('belongs to a project')) {
+          this.userForm.get('status')?.setValue(this.originalStatus);
+          this.confirmationService.info(
+            'Cannot Change User Status',
+            'Cannot change user status because the user belongs to a project. Please remove the user from all projects before changing status.'
+          );
+          this.error = '';
         } else {
-          this.error = err.error?.message || 'Operation failed';
+          this.error = errorMsg;
+          this.confirmationService.error('Action Failed', this.error);
         }
         this.isLoading = false;
       }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AttachmentService } from '../../services/attachment.service';
 import { AttachmentResponse } from '../../models/attachment.model';
 import { ConfirmationService } from '../../../../core/services/confirmation.service';
+
 @Component({
   selector: 'app-issue-attachments',
   standalone: true,
@@ -57,12 +58,15 @@ export class IssueAttachmentsComponent implements OnInit {
     this.attachmentService.uploadAttachment(this.issueId, file).subscribe({
       next: (res) => {
         if (res.success) {
+          this.confirmationService.success('Success', 'File uploaded successfully.');
           this.loadAttachments();
+        } else {
+          this.confirmationService.error('Action Failed', res.message || 'Failed to upload file.');
         }
         this.isUploading = false;
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to upload file.');
+        this.confirmationService.error('Action Failed', err.error?.message || 'Failed to upload file.');
         this.isUploading = false;
       }
     });
@@ -79,15 +83,17 @@ export class IssueAttachmentsComponent implements OnInit {
         window.URL.revokeObjectURL(url);
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to download file.');
+        this.confirmationService.error('Action Failed', err.error?.message || 'Failed to download file.');
       }
     });
   }
 
   deleteAttachment(id: number): void {
+    const attachment = this.attachments.find(a => a.id === id);
+    const fileName = attachment ? `"${attachment.fileName}"` : 'this attachment';
     this.confirmationService.confirm({
       title: 'Delete Attachment',
-      message: 'Delete this attachment?',
+      message: `Are you sure you want to delete ${fileName}?`,
       confirmText: 'Delete',
       cancelText: 'Cancel'
     }).subscribe(confirmed => {
@@ -95,11 +101,12 @@ export class IssueAttachmentsComponent implements OnInit {
         this.attachmentService.deleteAttachment(id).subscribe({
           next: (res) => {
             if (res.success) {
+              this.confirmationService.success('Success', 'Attachment deleted successfully.');
               this.loadAttachments();
             }
           },
           error: (err) => {
-            alert(err.error?.message || 'Failed to delete attachment.');
+            this.confirmationService.error('Action Failed', err.error?.message || 'Failed to delete attachment.');
           }
         });
       }

@@ -7,6 +7,7 @@ import { ProjectMemberResponse } from '../../models/project-member.model';
 import { UserService } from '../../../users/services/user.service';
 import { UserResponse } from '../../../users/models/user.model';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -23,6 +24,7 @@ export class ProjectMembersComponent implements OnInit {
   private fb = inject(FormBuilder);
   public authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  private confirmationService = inject(ConfirmationService);
 
   projectId!: number;
   members: ProjectMemberResponse[] = [];
@@ -118,9 +120,11 @@ export class ProjectMembersComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.addMemberForm.reset();
+          this.confirmationService.success('Success', 'Member added to project successfully.');
           this.loadMembers();
         } else {
           this.error = res.message || 'Failed to add member';
+          this.confirmationService.error('Action Failed', this.error);
           this.isLoading = false;
         }
       },
@@ -130,24 +134,43 @@ export class ProjectMembersComponent implements OnInit {
         } else {
           this.error = err.error?.message || 'Failed to add member';
         }
+        this.confirmationService.error('Action Failed', this.error);
         this.isLoading = false;
       }
     });
   }
 
   removeMember(memberId: number): void {
-    if (confirm('Are you sure you want to remove this member from the project?')) {
-      this.projectMemberService.removeMember(memberId).subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.loadMembers();
+    const member = this.members.find(m => m.id === memberId);
+    const memberName = member ? member.userName : 'this member';
+    this.confirmationService.confirm({
+      title: 'Remove Member',
+      message: `Are you sure you want to remove "${memberName}" from the project?`,
+      confirmText: 'Remove',
+      cancelText: 'Cancel'
+    }).subscribe(confirmed => {
+      if (confirmed) {
+        this.projectMemberService.removeMember(memberId).subscribe({
+          next: (res) => {
+            if (res.success) {
+              this.confirmationService.success('Success', 'Member removed successfully.');
+              this.loadMembers();
+            }
+          },
+          error: (err) => {
+            const message = err.error?.message || 'Failed to remove member';
+            if (message.includes('owner') || message.includes('Owner') || message.includes('Transfer ownership')) {
+              this.confirmationService.info(
+                'Cannot Remove Project Owner',
+                'Cannot remove project owner while other members exist in the project. Please transfer ownership to another member before removing the owner.'
+              );
+            } else {
+              this.confirmationService.error('Action Failed', message);
+            }
           }
-        },
-        error: (err) => {
-          alert(err.error?.message || 'Failed to remove member');
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   min(a: number, b: number): number {

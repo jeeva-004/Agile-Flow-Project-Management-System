@@ -1,6 +1,8 @@
 <div class="page-header d-flex justify-content-between align-items-center mb-4">
   <h2>{{ isEditMode ? 'Edit' : 'Create' }} Project</h2>
-  <button class="btn btn-outline" routerLink="/projects">Back to Projects</button>
+  <button class="btn btn-outline" routerLink="/projects">
+    <i class="bi bi-arrow-left me-1"></i> Back to Projects
+  </button>
 </div>
 
 <div *ngIf="error" class="alert alert-danger mb-4">
@@ -57,7 +59,7 @@
 
     <div class="form-actions mt-4">
       <button type="submit" class="btn btn-primary" [disabled]="projectForm.invalid || isLoading">
-        {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Project' : 'Create Project') }}
+        <i class="bi bi-check-lg me-1"></i> {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Project' : 'Create Project') }}
       </button>
     </div>
   </form>

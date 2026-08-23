@@ -85,6 +85,14 @@ public class ProjectServiceImpl
 
         project.setOwner(owner);
         project = projectRepository.save(project);
+
+        if (!projectMemberRepository.existsByProjectIdAndUserId(project.getId(), owner.getId())) {
+            com.agileflow.agileflow_backend.projectmember.entity.ProjectMember ownerMember =
+                    new com.agileflow.agileflow_backend.projectmember.entity.ProjectMember();
+            ownerMember.setProject(project);
+            ownerMember.setUser(owner);
+            projectMemberRepository.save(ownerMember);
+        }
         notificationService.create(
 
                 owner,
@@ -122,10 +130,18 @@ public class ProjectServiceImpl
 
     @Override
     public Page<ProjectResponse> findAll(Pageable pageable) {
+        User currentUser = currentUserService.getCurrentUser();
+        java.util.Set<Long> allowedProjectIds = getAccessibleProjectIdsForUser(currentUser);
 
-        return projectRepository.findAll(pageable)
-                .map(this::map);
+        if (allowedProjectIds == null) {
+            return projectRepository.findAll(pageable).map(this::map);
+        }
 
+        if (allowedProjectIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return projectRepository.findByIdIn(allowedProjectIds, pageable).map(this::map);
     }
 
     @Override
@@ -133,13 +149,26 @@ public class ProjectServiceImpl
             String keyword,
             Long ownerId,
             Pageable pageable) {
-        Specification<Project> spec = ProjectSpecification.filterProjects(keyword, ownerId);
+        User currentUser = currentUserService.getCurrentUser();
+        java.util.Set<Long> allowedProjectIds = getAccessibleProjectIdsForUser(currentUser);
+
+        if (allowedProjectIds != null && allowedProjectIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        Specification<Project> spec = ProjectSpecification.filterProjects(keyword, ownerId, allowedProjectIds);
         return projectRepository.findAll(spec, pageable).map(this::map);
     }
 
     @Override
     public ProjectResponse findById(
             Long id) {
+        User currentUser = currentUserService.getCurrentUser();
+        java.util.Set<Long> allowedProjectIds = getAccessibleProjectIdsForUser(currentUser);
+
+        if (allowedProjectIds != null && !allowedProjectIds.contains(id)) {
+            throw new ResourceNotFoundException("Project not found");
+        }
 
         return map(
 
@@ -153,6 +182,46 @@ public class ProjectServiceImpl
 
         );
 
+    }
+
+    private java.util.Set<Long> getAccessibleProjectIdsForUser(User user) {
+        boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName() == com.agileflow.agileflow_backend.common.enums.RoleName.ADMIN);
+        if (isAdmin) {
+            return null; // Unrestricted super power access for ADMIN
+        }
+
+        java.util.Set<Long> projectIds = new java.util.LinkedHashSet<>();
+        boolean isPm = user.getRoles().stream().anyMatch(r -> r.getName() == com.agileflow.agileflow_backend.common.enums.RoleName.PROJECT_MANAGER);
+
+        if (isPm) {
+            // PM: managed (owned) projects + assigned (member) projects
+            List<Project> owned = projectRepository.findByOwnerId(user.getId());
+            for (Project p : owned) {
+                projectIds.add(p.getId());
+            }
+            List<com.agileflow.agileflow_backend.projectmember.entity.ProjectMember> memberships = projectMemberRepository.findByUserId(user.getId());
+            for (com.agileflow.agileflow_backend.projectmember.entity.ProjectMember pm : memberships) {
+                if (pm.getProject() != null) {
+                    projectIds.add(pm.getProject().getId());
+                }
+            }
+        } else {
+            // Developer: assigned (member) projects + projects with assigned issues
+            List<com.agileflow.agileflow_backend.projectmember.entity.ProjectMember> memberships = projectMemberRepository.findByUserId(user.getId());
+            for (com.agileflow.agileflow_backend.projectmember.entity.ProjectMember pm : memberships) {
+                if (pm.getProject() != null) {
+                    projectIds.add(pm.getProject().getId());
+                }
+            }
+            List<com.agileflow.agileflow_backend.issue.entity.Issue> assignedIssues = issueRepository.findByAssigneeId(user.getId());
+            for (com.agileflow.agileflow_backend.issue.entity.Issue issue : assignedIssues) {
+                if (issue.getProject() != null) {
+                    projectIds.add(issue.getProject().getId());
+                }
+            }
+        }
+
+        return projectIds;
     }
 
     @Override
@@ -205,6 +274,14 @@ public class ProjectServiceImpl
                 request.getEndDate());
 
         project.setOwner(owner);
+
+        if (!projectMemberRepository.existsByProjectIdAndUserId(project.getId(), owner.getId())) {
+            com.agileflow.agileflow_backend.projectmember.entity.ProjectMember ownerMember =
+                    new com.agileflow.agileflow_backend.projectmember.entity.ProjectMember();
+            ownerMember.setProject(project);
+            ownerMember.setUser(owner);
+            projectMemberRepository.save(ownerMember);
+        }
 
         notificationService.create(
 

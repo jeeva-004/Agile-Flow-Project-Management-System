@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService } from './services/dashboard.service';
-import { AdminDashboardResponse, ProjectManagerDashboardResponse, DeveloperDashboardResponse } from './models/dashboard.model';
+import { AdminDashboardResponse, ProjectManagerDashboardResponse, DeveloperDashboardResponse, ProjectCard } from './models/dashboard.model';
+import { ActivityResponse } from '../projects/models/activity.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -33,6 +34,30 @@ export class DashboardComponent implements OnInit {
         this.loadDashboardData(user.role);
       }
     });
+  }
+
+  get activeProjects(): ProjectCard[] {
+    if (this.adminData) return this.adminData.activeProjects || [];
+    if (this.pmData) return this.pmData.activeProjects || [];
+    if (this.devData) return this.devData.activeProjects || [];
+    return [];
+  }
+
+  get recentActivities(): ActivityResponse[] {
+    if (this.adminData) return this.adminData.recentActivities || [];
+    if (this.pmData) return this.pmData.recentActivities || [];
+    if (this.devData) return this.devData.recentActivities || [];
+    return [];
+  }
+
+  getIssueCompletionPercentage(completed: number, total: number): number {
+    if (!total || total === 0) return 0;
+    return Math.min(100, Math.round((completed / total) * 100));
+  }
+
+  getSprintCompletionPercentage(completed: number, total: number): number {
+    if (!total || total === 0) return 0;
+    return Math.min(100, Math.round((completed / total) * 100));
   }
 
   private loadDashboardData(role: string): void {

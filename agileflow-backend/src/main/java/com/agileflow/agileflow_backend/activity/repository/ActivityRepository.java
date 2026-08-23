@@ -14,4 +14,11 @@ public interface ActivityRepository
     findByProjectIdOrderByCreatedAtDesc(
             Long projectId);
 
-}
+    List<Activity>
+    findTop20ByOrderByCreatedAtDesc();
+
+    List<Activity>
+    findTop20ByProjectIdInOrderByCreatedAtDesc(
+            List<Long> projectIds);
+
+}

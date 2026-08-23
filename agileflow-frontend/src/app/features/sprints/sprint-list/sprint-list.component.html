@@ -1,8 +1,12 @@
 <div class="page-header d-flex justify-content-between align-items-center mb-4">
   <h2>Sprints</h2>
   <div class="d-flex gap-2">
-    <button class="btn btn-outline" routerLink="/projects">Back to Projects</button>
-    <button *ngIf="isAdminOrPM" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'new']">Create Sprint</button>
+    <button class="btn btn-outline" routerLink="/projects">
+      <i class="bi bi-arrow-left me-1"></i> Back to Projects
+    </button>
+    <button *ngIf="isAdminOrPM" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'new']">
+      <i class="bi bi-plus-lg me-1"></i> Create Sprint
+    </button>
   </div>
 </div>
 
@@ -33,8 +37,12 @@
           <td>{{ sprint.startDate | date }}</td>
           <td>{{ sprint.endDate | date }}</td>
           <td *ngIf="isAdminOrPM" class="text-right">
-            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', projectId, 'sprints', sprint.id, 'edit']">Edit</button>
-            <button class="btn btn-outline btn-sm text-danger" (click)="deleteSprint(sprint.id)">Delete</button>
+            <button class="btn btn-outline btn-sm me-2 text-primary" title="Edit Sprint" [routerLink]="['/projects', projectId, 'sprints', sprint.id, 'edit']">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="btn btn-outline btn-sm text-danger" title="Delete Sprint" (click)="deleteSprint(sprint.id)">
+              <i class="bi bi-trash3"></i>
+            </button>
           </td>
         </tr>
         <tr *ngIf="sprints.length === 0">
@@ -49,8 +57,12 @@
       Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} sprints
     </div>
     <div class="pagination gap-2 d-flex">
-      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">Previous</button>
-      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">Next</button>
+      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+        <i class="bi bi-chevron-left me-1"></i> Previous
+      </button>
+      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+        Next <i class="bi bi-chevron-right ms-1"></i>
+      </button>
     </div>
   </div>
 </div>

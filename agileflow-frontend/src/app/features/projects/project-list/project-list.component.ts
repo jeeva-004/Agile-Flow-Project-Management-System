@@ -74,9 +74,11 @@ export class ProjectListComponent implements OnInit {
   }
 
   deleteProject(id: number): void {
+    const project = this.projects.find(p => p.id === id);
+    const projectName = project ? project.name : 'this project';
     this.confirmationService.confirm({
       title: 'Delete Project',
-      message: 'Are you sure you want to delete this project?',
+      message: `Are you sure you want to delete "${projectName}"?`,
       confirmText: 'Delete',
       cancelText: 'Cancel'
     }).subscribe(confirmed => {
@@ -84,11 +86,12 @@ export class ProjectListComponent implements OnInit {
         this.projectService.deleteProject(id).subscribe({
           next: (res) => {
             if (res.success) {
+              this.confirmationService.success('Success', 'Project deleted successfully.');
               this.loadProjects();
             }
           },
           error: (err) => {
-            alert(err.error?.message || 'Failed to delete project.');
+            this.confirmationService.error('Action Failed', err.error?.message || 'Failed to delete project.');
           }
         });
       }

@@ -27,204 +27,143 @@ import com.agileflow.agileflow_backend.security.CurrentUserService;
 @Getter
 @Setter
 @Service
-public class ProjectMemberServiceImpl
-        implements ProjectMemberService {
+public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     private final ProjectMemberRepository repository;
-
     private final ProjectRepository projectRepository;
-
     private final UserRepository userRepository;
-
     private final NotificationService notificationService;
-
     private final IssueRepository issueRepository;
     private final CommentRepository commentRepository;
     private final WorkLogRepository workLogRepository;
     private final ActivityService activityService;
-
     private final CurrentUserService currentUserService;
+
     public ProjectMemberServiceImpl(
-
             ProjectMemberRepository repository,
-
             ProjectRepository projectRepository,
-
             UserRepository userRepository,
             NotificationService notificationService,
             IssueRepository issueRepository,
             CommentRepository commentRepository,
             WorkLogRepository workLogRepository,
             ActivityService activityService,
-
             CurrentUserService currentUserService) {
 
         this.repository = repository;
-
         this.projectRepository = projectRepository;
-
         this.userRepository = userRepository;
-
         this.notificationService = notificationService;
         this.issueRepository = issueRepository;
         this.commentRepository = commentRepository;
         this.workLogRepository = workLogRepository;
         this.activityService = activityService;
-
         this.currentUserService = currentUserService;
     }
 
+    private void validateProjectAccess(Long projectId) {
+        if (projectId == null) return;
+        User user = currentUserService.getCurrentUser();
+        boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName() == com.agileflow.agileflow_backend.common.enums.RoleName.ADMIN);
+        if (isAdmin) return;
+
+        boolean isPm = user.getRoles().stream().anyMatch(r -> r.getName() == com.agileflow.agileflow_backend.common.enums.RoleName.PROJECT_MANAGER);
+        if (isPm) {
+            boolean isOwner = projectRepository.findById(projectId).map(p -> p.getOwner() != null && p.getOwner().getId().equals(user.getId())).orElse(false);
+            boolean isMember = repository.existsByProjectIdAndUserId(projectId, user.getId());
+            if (!isOwner && !isMember) {
+                throw new ResourceNotFoundException("Project not found");
+            }
+        } else {
+            boolean isMember = repository.existsByProjectIdAndUserId(projectId, user.getId());
+            boolean hasAssignedIssue = issueRepository.existsByProjectIdAndAssigneeId(projectId, user.getId());
+            if (!isMember && !hasAssignedIssue) {
+                throw new ResourceNotFoundException("Project not found");
+            }
+        }
+    }
+
     @Override
-    public ProjectMemberResponse add(
+    public ProjectMemberResponse add(AddProjectMemberRequest request) {
 
-            AddProjectMemberRequest request) {
-
-        if (repository.existsByProjectIdAndUserId(
-
-                request.getProjectId(),
-
-                request.getUserId())) {
-
-            throw new IllegalArgumentException(
-
-                    "User already assigned");
-
+        if (repository.existsByProjectIdAndUserId(request.getProjectId(), request.getUserId())) {
+            throw new IllegalArgumentException("User already assigned");
         }
 
-        Project project =
+        Project project = projectRepository.findById(request.getProjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-                projectRepository.findById(
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-                                request.getProjectId())
-
-                        .orElseThrow(() ->
-
-                                new ResourceNotFoundException(
-
-                                        "Project not found"));
-
-        User user =
-
-                userRepository.findById(
-
-                                request.getUserId())
-
-                        .orElseThrow(() ->
-
-                                new ResourceNotFoundException(
-
-                                        "User not found"));
-
-        ProjectMember member =
-
-                new ProjectMember();
-
+        ProjectMember member = new ProjectMember();
         member.setProject(project);
-
         member.setUser(user);
-
         member = repository.save(member);
 
         User actor = currentUserService.getCurrentUser();
 
         activityService.create(
-
                 actor,
-
                 project,
-
                 "ADD_MEMBER",
-
-                actor.getFirstName()
-
-                        + " added "
-
-                        + user.getFirstName()
-
-                        + " to project "
-
-                        + project.getName(),
-
+                actor.getFirstName() + " added " + user.getFirstName() + " to project " + project.getName(),
                 "PROJECT_MEMBER",
-
                 member.getId()
-
         );
 
         notificationService.create(
-
                 user,
-
                 "Added to Project",
-
                 "You were added to " + project.getName(),
-
                 NotificationType.PROJECT_MEMBER_ADDED,
-
                 "/projects/" + project.getId()
-
         );
+
         return map(member);
-
     }
 
     @Override
-    public Page<ProjectMemberResponse>
-
-    findByProject(
-
-            Long projectId,
-            Pageable pageable) {
-
-        return repository
-
-                .findByProjectId(
-
-                        projectId,
-                        pageable)
-
-                .map(this::map);
-
+    public Page<ProjectMemberResponse> findByProject(Long projectId, Pageable pageable) {
+        validateProjectAccess(projectId);
+        ensureOwnerIsMember(projectId);
+        return repository.findByProjectId(projectId, pageable).map(this::map);
     }
 
     @Override
-    public List<ProjectMemberResponse>
+    public List<ProjectMemberResponse> findByProject(Long projectId) {
+        validateProjectAccess(projectId);
+        ensureOwnerIsMember(projectId);
+        return repository.findByProjectId(projectId).stream().map(this::map).toList();
+    }
 
-    findByProject(
-
-            Long projectId) {
-
-        return repository
-
-                .findByProjectId(
-
-                        projectId)
-
-                .stream()
-
-                .map(this::map)
-
-                .toList();
-
+    private void ensureOwnerIsMember(Long projectId) {
+        projectRepository.findById(projectId).ifPresent(project -> {
+            if (project.getOwner() != null && !repository.existsByProjectIdAndUserId(projectId, project.getOwner().getId())) {
+                ProjectMember ownerMember = new ProjectMember();
+                ownerMember.setProject(project);
+                ownerMember.setUser(project.getOwner());
+                repository.save(ownerMember);
+            }
+        });
     }
 
     @Override
-    public void remove(
+    public void remove(Long id) {
 
-            Long id) {
-
-        ProjectMember member =
-
-                repository.findById(id)
-
-                        .orElseThrow(() ->
-
-                                new ResourceNotFoundException(
-
-                                        "Member not found"));
+        ProjectMember member = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found"));
 
         Long projectId = member.getProject().getId();
         Long userId = member.getUser().getId();
+        Project project = member.getProject();
+
+        if (project.getOwner() != null && userId.equals(project.getOwner().getId())) {
+            long totalMembers = repository.findByProjectId(projectId).size();
+            if (totalMembers > 1) {
+                throw new IllegalArgumentException("Cannot remove project owner while other members exist in the project. Transfer ownership to another member before removing.");
+            }
+        }
 
         if (issueRepository.existsByProjectIdAndAssigneeId(projectId, userId)) {
             throw new IllegalArgumentException("Member has assigned issues in this project");
@@ -240,96 +179,34 @@ public class ProjectMemberServiceImpl
         }
 
         notificationService.create(
-
                 member.getUser(),
-
                 "Removed from Project",
-
-                "You were removed from "
-                        + member.getProject().getName(),
-
+                "You were removed from " + member.getProject().getName(),
                 NotificationType.PROJECT_MEMBER_REMOVED,
-
                 "/projects"
-
         );
 
         User actor = currentUserService.getCurrentUser();
 
         activityService.create(
-
                 actor,
-
                 member.getProject(),
-
                 "REMOVE_MEMBER",
-
-                actor.getFirstName()
-
-                        + " removed "
-
-                        + member.getUser().getFirstName()
-
-                        + " from project "
-
-                        + member.getProject().getName(),
-
+                actor.getFirstName() + " removed " + member.getUser().getFirstName() + " from project " + member.getProject().getName(),
                 "PROJECT_MEMBER",
-
                 member.getId()
-
         );
 
         repository.delete(member);
-
     }
 
-    private ProjectMemberResponse map(
-
-            ProjectMember member) {
-
-        ProjectMemberResponse response =
-
-                new ProjectMemberResponse();
-
-        response.setId(
-
-                member.getId());
-
-        response.setProjectId(
-
-                member.getProject()
-
-                        .getId());
-
-        response.setUserId(
-
-                member.getUser()
-
-                        .getId());
-
-        response.setUserName(
-
-                member.getUser()
-
-                        .getFirstName()
-
-                        + " "
-
-                        +
-
-                        member.getUser()
-
-                                .getLastName());
-
-        response.setEmail(
-
-                member.getUser()
-
-                        .getEmail());
-
+    private ProjectMemberResponse map(ProjectMember member) {
+        ProjectMemberResponse response = new ProjectMemberResponse();
+        response.setId(member.getId());
+        response.setProjectId(member.getProject().getId());
+        response.setUserId(member.getUser().getId());
+        response.setUserName(member.getUser().getFirstName() + " " + member.getUser().getLastName());
+        response.setEmail(member.getUser().getEmail());
         return response;
-
     }
-
 }

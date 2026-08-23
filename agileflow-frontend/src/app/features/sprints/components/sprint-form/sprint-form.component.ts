@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SprintService } from '../../services/sprint.service';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 @Component({
   selector: 'app-sprint-form',
@@ -16,6 +17,7 @@ export class SprintFormComponent implements OnInit {
   private sprintService = inject(SprintService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private confirmationService = inject(ConfirmationService);
 
   sprintForm!: FormGroup;
   isEditMode = false;
@@ -84,13 +86,13 @@ export class SprintFormComponent implements OnInit {
       const end = new Date(formValue.endDate);
       if (end < start) {
         this.error = 'End date cannot be before start date';
+        this.confirmationService.error('Validation Error', 'End date cannot be before start date.');
         return;
       }
     }
 
     this.isLoading = true;
     
-    // Add projectId to the payload
     const payload = { ...formValue, projectId: this.projectId };
 
     const request = this.isEditMode ? 
@@ -100,9 +102,13 @@ export class SprintFormComponent implements OnInit {
     request.subscribe({
       next: (res) => {
         if (res.success) {
-          this.router.navigate(['/projects', this.projectId, 'sprints']);
+          const msg = this.isEditMode ? 'Sprint updated successfully.' : 'Sprint created successfully.';
+          this.confirmationService.success('Success', msg).subscribe(() => {
+            this.router.navigate(['/projects', this.projectId, 'sprints']);
+          });
         } else {
           this.error = res.message || 'Operation failed';
+          this.confirmationService.error('Action Failed', this.error);
         }
         this.isLoading = false;
       },
@@ -112,6 +118,7 @@ export class SprintFormComponent implements OnInit {
         } else {
           this.error = err.error?.message || 'Operation failed';
         }
+        this.confirmationService.error('Action Failed', this.error);
         this.isLoading = false;
       }
     });

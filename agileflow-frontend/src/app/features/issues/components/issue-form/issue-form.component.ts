@@ -8,6 +8,7 @@ import { ProjectMemberService } from '../../../projects/services/project-member.
 import { ProjectMemberResponse } from '../../../projects/models/project-member.model';
 import { SprintService } from '../../../sprints/services/sprint.service';
 import { SprintResponse } from '../../../sprints/models/sprint.model';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 @Component({
   selector: 'app-issue-form',
@@ -23,6 +24,7 @@ export class IssueFormComponent implements OnInit {
   private sprintService = inject(SprintService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private confirmationService = inject(ConfirmationService);
 
   issueForm!: FormGroup;
   isEditMode = false;
@@ -67,7 +69,7 @@ export class IssueFormComponent implements OnInit {
       description: [''],
       type: [IssueType.TASK, Validators.required],
       priority: [IssuePriority.MEDIUM, Validators.required],
-      status: [IssueStatus.TODO], // Only relevant on edit typically, or defaults to TODO
+      status: [IssueStatus.TODO],
       assigneeId: [null],
       sprintId: [null],
       estimateHours: [null, [Validators.min(0)]],
@@ -75,12 +77,11 @@ export class IssueFormComponent implements OnInit {
     });
 
     if (!this.isEditMode) {
-      this.issueForm.get('status')?.disable(); // Can't change status on creation usually, or we just default it
+      this.issueForm.get('status')?.disable();
     }
   }
 
   private loadDependencies(): void {
-    // Load members for assignee dropdown
     this.projectMemberService.getMembersByProject(this.projectId, 0, 100).subscribe({
       next: (res) => {
         if (res.success && res.data) {
@@ -89,7 +90,6 @@ export class IssueFormComponent implements OnInit {
       }
     });
 
-    // Load sprints for sprint dropdown
     this.sprintService.getSprintsByProject(this.projectId, 0, 100).subscribe({
       next: (res) => {
         if (res.success && res.data) {
@@ -130,13 +130,12 @@ export class IssueFormComponent implements OnInit {
     if (this.issueForm.invalid) return;
 
     this.isLoading = true;
-    const formValue = this.issueForm.getRawValue(); // use getRawValue to include disabled fields if any
+    const formValue = this.issueForm.getRawValue();
     
     const payload = { ...formValue, projectId: this.projectId };
     
-    // Ensure status is handled correctly on create
     if (!this.isEditMode) {
-      delete payload.status; // backend handles default
+      delete payload.status;
     }
 
     const request = this.isEditMode ? 
@@ -146,10 +145,13 @@ export class IssueFormComponent implements OnInit {
     request.subscribe({
       next: (res) => {
         if (res.success) {
-          // Go back to the issue details or the list
-          this.router.navigate(['/projects', this.projectId, 'issues', res.data?.id || '']);
+          const msg = this.isEditMode ? 'Issue updated successfully.' : 'Issue created successfully.';
+          this.confirmationService.success('Success', msg).subscribe(() => {
+            this.router.navigate(['/projects', this.projectId, 'issues', res.data?.id || '']);
+          });
         } else {
           this.error = res.message || 'Operation failed';
+          this.confirmationService.error('Action Failed', this.error);
         }
         this.isLoading = false;
       },
@@ -159,6 +161,7 @@ export class IssueFormComponent implements OnInit {
         } else {
           this.error = err.error?.message || 'Operation failed';
         }
+        this.confirmationService.error('Action Failed', this.error);
         this.isLoading = false;
       }
     });

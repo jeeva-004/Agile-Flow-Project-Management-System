@@ -29,4 +29,9 @@ public interface ProjectMemberRepository
     boolean existsByProjectId(
             Long projectId
     );
+
+    List<ProjectMember> findByUserId(Long userId);
+
+    boolean existsByUserId(Long userId);
 }
+

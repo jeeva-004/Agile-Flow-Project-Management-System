@@ -7,6 +7,8 @@ import com.agileflow.agileflow_backend.auth.repository.UserRepository;
 import com.agileflow.agileflow_backend.common.enums.UserStatus;
 import com.agileflow.agileflow_backend.common.exception.BadRequestException;
 import com.agileflow.agileflow_backend.common.exception.ResourceNotFoundException;
+import com.agileflow.agileflow_backend.project.repository.ProjectRepository;
+import com.agileflow.agileflow_backend.projectmember.repository.ProjectMemberRepository;
 import com.agileflow.agileflow_backend.user.dto.CreateUserRequest;
 import com.agileflow.agileflow_backend.user.dto.UpdateUserRequest;
 import com.agileflow.agileflow_backend.user.dto.UserResponse;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,15 +27,21 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProjectMemberRepository projectMemberRepository;
+    private final ProjectRepository projectRepository;
 
     public UserServiceImpl(
             UserRepository userRepository,
             RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            ProjectMemberRepository projectMemberRepository,
+            ProjectRepository projectRepository) {
 
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.projectMemberRepository = projectMemberRepository;
+        this.projectRepository = projectRepository;
     }
 
     @Override
@@ -112,6 +119,14 @@ public class UserServiceImpl implements UserService {
 
         if (roles.isEmpty()) {
             throw new BadRequestException("One or more invalid role IDs provided");
+        }
+
+        if (request.getStatus() != null && request.getStatus() != UserStatus.ACTIVE) {
+            boolean isMember = projectMemberRepository.existsByUserId(id);
+            boolean isOwner = projectRepository.countByOwnerId(id) > 0;
+            if (isMember || isOwner) {
+                throw new BadRequestException("Cannot change user status because the user belongs to a project. Please remove the user from all projects before changing status.");
+            }
         }
 
         user.setFirstName(request.getFirstName());

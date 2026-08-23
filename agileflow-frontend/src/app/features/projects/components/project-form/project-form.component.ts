@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
 import { UserService } from '../../../users/services/user.service';
 import { UserResponse } from '../../../users/models/user.model';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 @Component({
   selector: 'app-project-form',
@@ -19,6 +20,7 @@ export class ProjectFormComponent implements OnInit {
   private userService = inject(UserService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private confirmationService = inject(ConfirmationService);
 
   projectForm!: FormGroup;
   isEditMode = false;
@@ -36,7 +38,7 @@ export class ProjectFormComponent implements OnInit {
     }
 
     this.initForm();
-    this.loadUsers(); // For owner selection dropdown
+    this.loadUsers();
 
     if (this.isEditMode) {
       this.loadProject();
@@ -54,12 +56,9 @@ export class ProjectFormComponent implements OnInit {
   }
 
   private loadUsers(): void {
-    // Fetch users to populate the owner dropdown. Usually we'd want only admins/PMs,
-    // but for now we fetch the first page of users or an endpoint that returns potential owners.
     this.userService.getUsers(0, 100).subscribe({
       next: (res) => {
         if (res.success && res.data) {
-          // Filter out users who are not PMs or Admins if necessary
           this.users = res.data.content;
         }
       }
@@ -99,6 +98,7 @@ export class ProjectFormComponent implements OnInit {
       const end = new Date(formValue.endDate);
       if (end < start) {
         this.error = 'End date cannot be before start date';
+        this.confirmationService.error('Validation Error', 'End date cannot be before start date.');
         return;
       }
     }
@@ -112,9 +112,13 @@ export class ProjectFormComponent implements OnInit {
     request.subscribe({
       next: (res) => {
         if (res.success) {
-          this.router.navigate(['/projects']);
+          const msg = this.isEditMode ? 'Project updated successfully.' : 'Project created successfully.';
+          this.confirmationService.success('Success', msg).subscribe(() => {
+            this.router.navigate(['/projects']);
+          });
         } else {
           this.error = res.message || 'Operation failed';
+          this.confirmationService.error('Action Failed', this.error);
         }
         this.isLoading = false;
       },
@@ -124,6 +128,7 @@ export class ProjectFormComponent implements OnInit {
         } else {
           this.error = err.error?.message || 'Operation failed';
         }
+        this.confirmationService.error('Action Failed', this.error);
         this.isLoading = false;
       }
     });

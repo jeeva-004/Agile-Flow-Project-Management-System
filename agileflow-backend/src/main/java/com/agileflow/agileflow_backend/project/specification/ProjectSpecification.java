@@ -6,14 +6,30 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ProjectSpecification {
 
     public static Specification<Project> filterProjects(
             String keyword,
             Long ownerId) {
+        return filterProjects(keyword, ownerId, null);
+    }
+
+    public static Specification<Project> filterProjects(
+            String keyword,
+            Long ownerId,
+            Set<Long> allowedProjectIds) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            if (allowedProjectIds != null) {
+                if (allowedProjectIds.isEmpty()) {
+                    predicates.add(criteriaBuilder.disjunction());
+                } else {
+                    predicates.add(root.get("id").in(allowedProjectIds));
+                }
+            }
 
             // Optional keyword search in name or description (case-insensitive)
             if (keyword != null && !keyword.trim().isEmpty()) {

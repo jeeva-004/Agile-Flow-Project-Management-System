@@ -60,9 +60,10 @@ export class IssueDetailComponent implements OnInit {
   }
 
   deleteIssue(): void {
+    const title = this.issue?.title ? `"${this.issue.title}"` : 'this issue';
     this.confirmationService.confirm({
       title: 'Delete Issue',
-      message: 'Are you sure you want to delete this issue?',
+      message: `Are you sure you want to delete ${title}?`,
       confirmText: 'Delete',
       cancelText: 'Cancel'
     }).subscribe(confirmed => {
@@ -70,11 +71,13 @@ export class IssueDetailComponent implements OnInit {
         this.issueService.deleteIssue(this.issueId).subscribe({
           next: (res) => {
             if (res.success) {
-              this.router.navigate(['/projects', this.projectId, 'issues']);
+              this.confirmationService.success('Success', 'Issue deleted successfully.').subscribe(() => {
+                this.router.navigate(['/projects', this.projectId, 'issues']);
+              });
             }
           },
           error: (err) => {
-            alert(err.error?.message || 'Failed to delete issue.');
+            this.confirmationService.error('Action Failed', err.error?.message || 'Failed to delete issue.');
           }
         });
       }

@@ -30,6 +30,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Objects;
 import com.agileflow.agileflow_backend.activity.service.ActivityService;
+import com.agileflow.agileflow_backend.projectmember.repository.ProjectMemberRepository;
+
 @Service
 public class IssueServiceImpl
         implements IssueService {
@@ -50,6 +52,7 @@ public class IssueServiceImpl
     private final ActivityService activityService;
     private final IssueHistoryService issueHistoryService;
     private final AttachmentRepository attachmentRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     public IssueServiceImpl(
 
@@ -68,7 +71,8 @@ public class IssueServiceImpl
             WorkLogRepository workLogRepository,
             ActivityService activityService,
             IssueHistoryService issueHistoryService,
-            AttachmentRepository attachmentRepository
+            AttachmentRepository attachmentRepository,
+            ProjectMemberRepository projectMemberRepository
     ) {
 
         this.issueRepository =
@@ -91,6 +95,29 @@ public class IssueServiceImpl
         this.activityService =  activityService;
         this.issueHistoryService = issueHistoryService;
         this.attachmentRepository = attachmentRepository;
+        this.projectMemberRepository = projectMemberRepository;
+    }
+
+    private void validateProjectAccess(Long projectId) {
+        if (projectId == null) return;
+        User user = currentUserService.getCurrentUser();
+        boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName() == com.agileflow.agileflow_backend.common.enums.RoleName.ADMIN);
+        if (isAdmin) return;
+
+        boolean isPm = user.getRoles().stream().anyMatch(r -> r.getName() == com.agileflow.agileflow_backend.common.enums.RoleName.PROJECT_MANAGER);
+        if (isPm) {
+            boolean isOwner = projectRepository.findById(projectId).map(p -> p.getOwner() != null && p.getOwner().getId().equals(user.getId())).orElse(false);
+            boolean isMember = projectMemberRepository.existsByProjectIdAndUserId(projectId, user.getId());
+            if (!isOwner && !isMember) {
+                throw new ResourceNotFoundException("Project not found");
+            }
+        } else {
+            boolean isMember = projectMemberRepository.existsByProjectIdAndUserId(projectId, user.getId());
+            boolean hasAssignedIssue = issueRepository.existsByProjectIdAndAssigneeId(projectId, user.getId());
+            if (!isMember && !hasAssignedIssue) {
+                throw new ResourceNotFoundException("Project not found");
+            }
+        }
     }
 
 
@@ -315,6 +342,8 @@ public class IssueServiceImpl
 
             Pageable pageable) {
 
+        validateProjectAccess(projectId);
+
         return issueRepository
 
                 .findByProjectId(
@@ -335,6 +364,7 @@ public class IssueServiceImpl
             IssuePriority priority,
             Long assigneeId,
             Pageable pageable) {
+        validateProjectAccess(projectId);
         Specification<Issue> spec = IssueSpecification.filterIssues(
                 projectId, keyword, status, priority, assigneeId);
         return issueRepository.findAll(spec, pageable).map(this::map);
@@ -400,6 +430,10 @@ public class IssueServiceImpl
                                 new ResourceNotFoundException(
 
                                         "Issue not found"));
+
+        if (issue.getProject() != null) {
+            validateProjectAccess(issue.getProject().getId());
+        }
 
         return map(
 

@@ -119,3 +119,19 @@
 .font-weight-semibold {
   font-weight: 600;
 }
+
+@media (max-width: 991.98px) {
+  .row {
+    flex-direction: column;
+  }
+  .col-main, .col-side {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+}
+

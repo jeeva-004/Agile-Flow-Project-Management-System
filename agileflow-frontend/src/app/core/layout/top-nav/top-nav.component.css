@@ -9,6 +9,24 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
+.mobile-menu-btn {
+  display: none !important;
+  background: none;
+  border: none;
+  color: var(--gray-700);
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+@media (max-width: 991.98px) {
+  .mobile-menu-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
 .notification-wrapper {
   position: relative;
 }
@@ -55,7 +73,20 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   z-index: 50;
   overflow: hidden;
+  animation: dropdownSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@keyframes dropdownSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 .dropdown-header {
   display: flex;

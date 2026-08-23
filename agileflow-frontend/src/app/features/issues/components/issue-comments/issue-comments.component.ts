@@ -37,11 +37,6 @@ export class IssueCommentsComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.loadComments();
-    
-    // We get role from auth, but user id might be needed for edit/delete permissions
-    // Our token doesn't have ID according to previous knowledge, but maybe the backend allows author to delete?
-    // Actually, backend might enforce it via security. 
-    // We will just show delete button and let backend reject if not authorized, or we can just show it for ADMIN/PM.
   }
 
   private initForm(): void {
@@ -58,8 +53,6 @@ export class IssueCommentsComponent implements OnInit {
     this.commentService.getCommentsByIssue(this.issueId, this.pageIndex, this.pageSize).subscribe({
       next: (res) => {
         if (res.success && res.data) {
-          // Typically we want older comments first, but let's just reverse the desc sort from backend, 
-          // or just display as is (newest first). Let's display as is.
           this.comments = res.data.content;
           this.totalElements = res.data.totalElements;
         }
@@ -82,14 +75,16 @@ export class IssueCommentsComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.commentForm.reset();
-          // Reload to get the new comment
+          this.confirmationService.success('Success', 'Comment posted successfully.');
           this.pageIndex = 0;
           this.loadComments();
+        } else {
+          this.confirmationService.error('Action Failed', res.message || 'Failed to post comment.');
         }
         this.isSubmitting = false;
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to post comment.');
+        this.confirmationService.error('Action Failed', err.error?.message || 'Failed to post comment.');
         this.isSubmitting = false;
       }
     });
@@ -114,11 +109,14 @@ export class IssueCommentsComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.editingCommentId = null;
+          this.confirmationService.success('Success', 'Comment updated successfully.');
           this.loadComments();
+        } else {
+          this.confirmationService.error('Action Failed', res.message || 'Failed to update comment.');
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Failed to update comment.');
+        this.confirmationService.error('Action Failed', err.error?.message || 'Failed to update comment.');
       }
     });
   }
@@ -126,7 +124,7 @@ export class IssueCommentsComponent implements OnInit {
   deleteComment(id: number): void {
     this.confirmationService.confirm({
       title: 'Delete Comment',
-      message: 'Delete this comment?',
+      message: 'Are you sure you want to delete this comment?',
       confirmText: 'Delete',
       cancelText: 'Cancel'
     }).subscribe(confirmed => {
@@ -134,11 +132,12 @@ export class IssueCommentsComponent implements OnInit {
         this.commentService.deleteComment(id).subscribe({
           next: (res) => {
             if (res.success) {
+              this.confirmationService.success('Success', 'Comment deleted successfully.');
               this.loadComments();
             }
           },
           error: (err) => {
-            alert(err.error?.message || 'Failed to delete comment.');
+            this.confirmationService.error('Action Failed', err.error?.message || 'Failed to delete comment.');
           }
         });
       }

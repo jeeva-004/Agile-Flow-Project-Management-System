@@ -198,3 +198,19 @@
 .mt-3 { margin-top: var(--spacing-3); }
 .mt-4 { margin-top: var(--spacing-4); }
 .mb-4 { margin-bottom: var(--spacing-4); }
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--spacing-3);
+  }
+  .metric-value {
+    font-size: 1.5rem;
+  }
+}
+

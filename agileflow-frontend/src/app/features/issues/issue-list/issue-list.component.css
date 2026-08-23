@@ -77,3 +77,32 @@
 .badge-status-todo { background-color: var(--gray-100); color: var(--gray-700); border-color: var(--gray-300); }
 .badge-status-in_progress { background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE; }
 .badge-status-done { background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0; }
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+  .page-header > div {
+    width: 100%;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  .search-container {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  .search-container input {
+    flex: 1;
+  }
+  .card-footer {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+  }
+}
+

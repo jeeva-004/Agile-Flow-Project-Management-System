@@ -95,3 +95,19 @@
 .badge-status-todo { background-color: var(--gray-100); color: var(--gray-700); border-color: var(--gray-300); }
 .badge-status-in_progress { background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE; }
 .badge-status-done { background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0; }
+
+@media (max-width: 991.98px) {
+  .issue-layout {
+    flex-direction: column;
+  }
+  .issue-main, .issue-sidebar {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+}
+
