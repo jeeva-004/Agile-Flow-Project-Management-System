@@ -1,73 +1,111 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>Users</h2>
-  <button *ngIf="isAdmin" class="btn btn-primary" routerLink="new">
-    <i class="bi bi-person-plus me-1"></i> Add User
-  </button>
-</div>
-
-<div *ngIf="isLoading" class="loading-state">
-  <div class="spinner"></div>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">
-  {{ error }}
-</div>
-
-<div class="card" *ngIf="!isLoading && !error">
-  <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Roles</th>
-          <th *ngIf="isAdmin" class="text-right">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of users">
-          <td>#{{ user.id }}</td>
-          <td>{{ user.firstName }} {{ user.lastName }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-            <span class="badge" [ngClass]="'badge-' + user.status.toLowerCase()">
-              {{ user.status }}
-            </span>
-          </td>
-          <td>
-            <span class="role-tags">
-              <span *ngFor="let role of user.roles" class="role-tag">{{ role.replace('ROLE_', '') }}</span>
-            </span>
-          </td>
-          <td *ngIf="isAdmin" class="text-right">
-            <button class="btn btn-outline btn-sm me-2 text-primary" title="Edit User" [routerLink]="[user.id, 'edit']">
-              <i class="bi bi-pencil-square"></i>
-            </button>
-            <button class="btn btn-outline btn-sm text-danger" title="Delete User" (click)="deleteUser(user.id)">
-              <i class="bi bi-trash3"></i>
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="users.length === 0">
-          <td [attr.colspan]="isAdmin ? 6 : 5" class="text-center py-4">No users found.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="totalElements > 0">
-    <div class="text-muted text-sm">
-      Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} users
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="d-flex align-items-center gap-2">
+        <h1 class="page-title">Users</h1>
+        <span class="badge badge-primary" *ngIf="totalElements > 0">{{ totalElements }} Total</span>
+      </div>
+      <p class="page-subtitle">Manage administrative user accounts, roles, and status permissions</p>
     </div>
-    <div class="pagination gap-2 d-flex">
-      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
-        <i class="bi bi-chevron-left me-1"></i> Previous
-      </button>
-      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
-        Next <i class="bi bi-chevron-right ms-1"></i>
+    
+    <div class="page-actions" *ngIf="isAdmin">
+      <button class="btn btn-primary" routerLink="new">
+        <i class="bi bi-person-plus"></i> Add User
       </button>
     </div>
   </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state-card">
+    <div class="spinner"></div>
+    <p class="m-0 font-weight-bold">Loading user directory...</p>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Users Card Table -->
+  <div class="card" *ngIf="!isLoading && !error">
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th style="width: 80px;">ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Roles</th>
+            <th *ngIf="isAdmin" class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>
+              <span class="user-id-badge">#{{ user.id }}</span>
+            </td>
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <div class="avatar-sm">{{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}</div>
+                <strong class="user-fullname">{{ user.firstName }} {{ user.lastName }}</strong>
+              </div>
+            </td>
+            <td>
+              <span class="text-secondary">{{ user.email }}</span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="'status-' + user.status.toLowerCase()">
+                {{ user.status }}
+              </span>
+            </td>
+            <td>
+              <div class="role-tags">
+                <span *ngFor="let role of user.roles" class="role-chip" [ngClass]="'role-' + role.replace('ROLE_', '').toLowerCase()">
+                  {{ role.replace('ROLE_', '') }}
+                </span>
+              </div>
+            </td>
+            <td *ngIf="isAdmin" class="text-right">
+              <div class="action-buttons-group">
+                <button class="btn btn-icon btn-sm text-primary edit-btn" title="Edit User" [routerLink]="[user.id, 'edit']">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-icon btn-sm text-danger delete-btn" title="Delete User" (click)="deleteUser(user.id)">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="users.length === 0">
+            <td [attr.colspan]="isAdmin ? 6 : 5" class="text-center py-5">
+              <div class="empty-table-state">
+                <i class="bi bi-people empty-icon"></i>
+                <h4 class="empty-title">No Users Found</h4>
+                <p class="empty-text">No user accounts exist in the workspace directory.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Table Footer / Pagination -->
+    <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-3" *ngIf="totalElements > 0">
+      <div class="text-muted text-sm">
+        Showing <strong>{{ pageIndex * pageSize + 1 }}</strong> to <strong>{{ min((pageIndex + 1) * pageSize, totalElements) }}</strong> of <strong>{{ totalElements }}</strong> users
+      </div>
+      <div class="pagination gap-2 d-flex">
+        <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+          <i class="bi bi-chevron-left me-1"></i> Previous
+        </button>
+        <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+          Next <i class="bi bi-chevron-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+

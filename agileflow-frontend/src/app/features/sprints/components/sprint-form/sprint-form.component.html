@@ -1,50 +1,85 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>{{ isEditMode ? 'Edit' : 'Create' }} Sprint</h2>
-  <button class="btn btn-outline" [routerLink]="['/projects', projectId, 'sprints']">
-    <i class="bi bi-arrow-left me-1"></i> Back to Sprints
-  </button>
-</div>
-
-<div *ngIf="error" class="alert alert-danger mb-4">
-  {{ error }}
-</div>
-
-<div class="card form-card">
-  <div *ngIf="isLoading" class="loading-overlay">
-    <div class="spinner"></div>
-  </div>
-
-  <form [formGroup]="sprintForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="name">Sprint Name</label>
-      <input type="text" id="name" class="form-control" formControlName="name" placeholder="E.g., Sprint 1">
-      <div class="error-text" *ngIf="sprintForm.get('name')?.invalid && sprintForm.get('name')?.touched">
-        Sprint name is required.
-      </div>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h1 class="page-title">{{ isEditMode ? 'Edit Sprint' : 'Create Sprint' }}</h1>
+      <p class="page-subtitle">{{ isEditMode ? 'Update sprint iteration dates and target objectives' : 'Add a new sprint iteration cycle to this project' }}</p>
     </div>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="startDate">Start Date</label>
-        <input type="date" id="startDate" class="form-control" formControlName="startDate">
-        <div class="error-text" *ngIf="sprintForm.get('startDate')?.invalid && sprintForm.get('startDate')?.touched">
-          Start date is required.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="endDate">End Date</label>
-        <input type="date" id="endDate" class="form-control" formControlName="endDate">
-        <div class="error-text" *ngIf="sprintForm.get('endDate')?.invalid && sprintForm.get('endDate')?.touched">
-          End date is required.
-        </div>
-      </div>
-    </div>
-
-    <div class="form-actions mt-4">
-      <button type="submit" class="btn btn-primary" [disabled]="sprintForm.invalid || isLoading">
-        <i class="bi bi-check-lg me-1"></i> {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Sprint' : 'Create Sprint') }}
+    <div class="page-actions">
+      <button class="btn btn-outline" [routerLink]="['/projects', projectId, 'sprints']">
+        <i class="bi bi-arrow-left me-1"></i> Back to Sprints
       </button>
     </div>
-  </form>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card form-card-container">
+    <div *ngIf="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p class="m-0 font-weight-bold mt-2">Saving sprint iteration...</p>
+    </div>
+
+    <div class="card-header">
+      <h3 class="card-title m-0 font-weight-bold d-flex align-items-center">
+        <i class="bi bi-lightning-fill me-2 text-warning"></i>Sprint Details
+      </h3>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="sprintForm" (ngSubmit)="onSubmit()">
+        <div class="form-group mb-4">
+          <label for="name" class="form-label">Sprint Name <span class="text-danger">*</span></label>
+          <input type="text" 
+                 id="name" 
+                 class="form-control" 
+                 formControlName="name" 
+                 placeholder="E.g., Sprint 1 (Q3 Deliverables)"
+                 [class.is-invalid]="sprintForm.get('name')?.invalid && sprintForm.get('name')?.touched">
+          <div class="invalid-feedback" *ngIf="sprintForm.get('name')?.invalid && sprintForm.get('name')?.touched">
+            Sprint name is required.
+          </div>
+        </div>
+
+        <div class="form-grid mb-4">
+          <div class="form-group mb-0">
+            <label for="startDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+            <input type="date" 
+                   id="startDate" 
+                   class="form-control" 
+                   formControlName="startDate"
+                   [class.is-invalid]="sprintForm.get('startDate')?.invalid && sprintForm.get('startDate')?.touched">
+            <div class="invalid-feedback" *ngIf="sprintForm.get('startDate')?.invalid && sprintForm.get('startDate')?.touched">
+              Start date is required.
+            </div>
+          </div>
+
+          <div class="form-group mb-0">
+            <label for="endDate" class="form-label">End Date <span class="text-danger">*</span></label>
+            <input type="date" 
+                   id="endDate" 
+                   class="form-control" 
+                   formControlName="endDate"
+                   [class.is-invalid]="sprintForm.get('endDate')?.invalid && sprintForm.get('endDate')?.touched">
+            <div class="invalid-feedback" *ngIf="sprintForm.get('endDate')?.invalid && sprintForm.get('endDate')?.touched">
+              End date is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions d-flex justify-content-end gap-3 pt-3 border-top">
+          <button type="button" class="btn btn-outline" [routerLink]="['/projects', projectId, 'sprints']">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="sprintForm.invalid || isLoading">
+            <i class="bi bi-check-lg me-1"></i> {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Sprint' : 'Create Sprint') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+

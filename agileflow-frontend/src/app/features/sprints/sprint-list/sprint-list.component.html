@@ -1,68 +1,110 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>Sprints</h2>
-  <div class="d-flex gap-2">
-    <button class="btn btn-outline" routerLink="/projects">
-      <i class="bi bi-arrow-left me-1"></i> Back to Projects
-    </button>
-    <button *ngIf="isAdminOrPM" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'new']">
-      <i class="bi bi-plus-lg me-1"></i> Create Sprint
-    </button>
-  </div>
-</div>
-
-<div *ngIf="isLoading" class="loading-state">
-  <div class="spinner"></div>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">
-  {{ error }}
-</div>
-
-<div class="card" *ngIf="!isLoading && !error">
-  <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th *ngIf="isAdminOrPM" class="text-right">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let sprint of sprints">
-          <td>#{{ sprint.id }}</td>
-          <td><strong>{{ sprint.name }}</strong></td>
-          <td>{{ sprint.startDate | date }}</td>
-          <td>{{ sprint.endDate | date }}</td>
-          <td *ngIf="isAdminOrPM" class="text-right">
-            <button class="btn btn-outline btn-sm me-2 text-primary" title="Edit Sprint" [routerLink]="['/projects', projectId, 'sprints', sprint.id, 'edit']">
-              <i class="bi bi-pencil-square"></i>
-            </button>
-            <button class="btn btn-outline btn-sm text-danger" title="Delete Sprint" (click)="deleteSprint(sprint.id)">
-              <i class="bi bi-trash3"></i>
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="sprints.length === 0">
-          <td [attr.colspan]="isAdminOrPM ? 5 : 4" class="text-center py-4">No sprints found for this project.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="totalElements > 0">
-    <div class="text-muted text-sm">
-      Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} sprints
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="d-flex align-items-center gap-2">
+        <h1 class="page-title">Sprints</h1>
+        <span class="badge badge-primary" *ngIf="totalElements > 0">{{ totalElements }} Total</span>
+      </div>
+      <p class="page-subtitle">Manage project sprint iterations, timelines, and goal milestones</p>
     </div>
-    <div class="pagination gap-2 d-flex">
-      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
-        <i class="bi bi-chevron-left me-1"></i> Previous
+    
+    <div class="page-actions">
+      <button class="btn btn-outline" routerLink="/projects">
+        <i class="bi bi-arrow-left me-1"></i> Back to Projects
       </button>
-      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
-        Next <i class="bi bi-chevron-right ms-1"></i>
+      <button *ngIf="isAdminOrPM" class="btn btn-primary" [routerLink]="['/projects', projectId, 'sprints', 'new']">
+        <i class="bi bi-plus-lg me-1"></i> Create Sprint
       </button>
     </div>
   </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state-card">
+    <div class="spinner"></div>
+    <p class="m-0 font-weight-bold">Loading project sprints...</p>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Sprints Card Table -->
+  <div class="card" *ngIf="!isLoading && !error">
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th style="width: 80px;">ID</th>
+            <th>Sprint Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th *ngIf="isAdminOrPM" class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sprint of sprints">
+            <td>
+              <span class="sprint-id-badge">#{{ sprint.id }}</span>
+            </td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <span class="sprint-icon-badge"><i class="bi bi-lightning-charge-fill"></i></span>
+                <strong class="sprint-name-text">{{ sprint.name }}</strong>
+              </div>
+            </td>
+            <td>
+              <span class="date-chip">
+                <i class="bi bi-calendar-event me-1 text-primary"></i>
+                {{ sprint.startDate | date:'mediumDate' }}
+              </span>
+            </td>
+            <td>
+              <span class="date-chip">
+                <i class="bi bi-calendar-check me-1 text-success"></i>
+                {{ sprint.endDate | date:'mediumDate' }}
+              </span>
+            </td>
+            <td *ngIf="isAdminOrPM" class="text-right">
+              <div class="action-buttons-group">
+                <button class="btn btn-icon btn-sm text-primary edit-btn" title="Edit Sprint" [routerLink]="['/projects', projectId, 'sprints', sprint.id, 'edit']">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-icon btn-sm text-danger delete-btn" title="Delete Sprint" (click)="deleteSprint(sprint.id)">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="sprints.length === 0">
+            <td [attr.colspan]="isAdminOrPM ? 5 : 4" class="text-center py-5">
+              <div class="empty-table-state">
+                <i class="bi bi-lightning-charge empty-icon"></i>
+                <h4 class="empty-title">No Sprints Found</h4>
+                <p class="empty-text">No sprint iterations have been created for this project yet.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Table Footer / Pagination -->
+    <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-3" *ngIf="totalElements > 0">
+      <div class="text-muted text-sm">
+        Showing <strong>{{ pageIndex * pageSize + 1 }}</strong> to <strong>{{ min((pageIndex + 1) * pageSize, totalElements) }}</strong> of <strong>{{ totalElements }}</strong> sprints
+      </div>
+      <div class="pagination gap-2 d-flex">
+        <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+          <i class="bi bi-chevron-left me-1"></i> Previous
+        </button>
+        <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+          Next <i class="bi bi-chevron-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+

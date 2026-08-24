@@ -1,91 +1,148 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2 class="m-0">Projects</h2>
-  <div class="d-flex gap-3 align-items-center">
-    <div class="search-container d-flex">
-      <input type="text" class="form-control" placeholder="Search projects..." [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()">
-      <button class="btn btn-outline ms-2" (click)="onSearch()">
-        <i class="bi bi-search me-1"></i> Search
-      </button>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="d-flex align-items-center gap-2">
+        <h1 class="page-title">Projects</h1>
+        <span class="badge badge-primary" *ngIf="totalElements > 0">{{ totalElements }} Total</span>
+      </div>
+      <p class="page-subtitle">Manage, monitor, and track progress across all workspace projects</p>
     </div>
-    <button class="btn btn-primary" *ngIf="isAdminOrPM" [routerLink]="['new']">
-      <i class="bi bi-plus-lg me-1"></i> Create Project
-    </button>
-  </div>
-</div>
+    
+    <div class="page-actions flex-wrap">
+      <!-- Search Input Group -->
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" 
+               class="form-control search-input" 
+               placeholder="Search projects..." 
+               [(ngModel)]="searchKeyword" 
+               (keyup.enter)="onSearch()">
+        <button class="btn btn-outline btn-sm" (click)="onSearch()">Search</button>
+      </div>
 
-<div *ngIf="isLoading" class="loading-state">
-  <div class="spinner"></div>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">
-  {{ error }}
-</div>
-
-<div class="card" *ngIf="!isLoading && !error">
-  <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Owner</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th class="text-right">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let project of projects">
-          <td>#{{ project.id }}</td>
-          <td>
-            <strong>{{ project.name }}</strong>
-            <div class="text-muted text-sm" *ngIf="project.description">{{ project.description.substring(0, 50) }}{{ project.description.length > 50 ? '...' : '' }}</div>
-          </td>
-          <td>{{ project.ownerName }}</td>
-          <td>{{ project.startDate | date }}</td>
-          <td>{{ project.endDate | date }}</td>
-          <td class="text-right">
-            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'sprints']">
-              <i class="bi bi-layers me-1"></i> Sprints
-            </button>
-            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'issues']">
-              <i class="bi bi-bug me-1"></i> Issues
-            </button>
-            <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'members']">
-              <i class="bi bi-people me-1"></i> Members
-            </button>
-            <button class="btn btn-outline btn-sm me-2" *ngIf="isAdminOrPM" [routerLink]="['/projects', project.id, 'analytics']">
-              <i class="bi bi-graph-up me-1"></i> Analytics
-            </button>
-            
-            <ng-container *ngIf="isAdminOrPM">
-              <button class="btn btn-outline btn-sm me-2 text-primary" title="Edit Project" [routerLink]="['/projects', project.id, 'edit']">
-                <i class="bi bi-pencil-square"></i>
-              </button>
-              <button class="btn btn-outline btn-sm text-danger" title="Delete Project" (click)="deleteProject(project.id)">
-                <i class="bi bi-trash3"></i>
-              </button>
-            </ng-container>
-          </td>
-        </tr>
-        <tr *ngIf="projects.length === 0">
-          <td colspan="6" class="text-center py-4">No projects found.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="totalElements > 0">
-    <div class="text-muted text-sm">
-      Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} projects
-    </div>
-    <div class="pagination gap-2 d-flex">
-      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
-        <i class="bi bi-chevron-left me-1"></i> Previous
-      </button>
-      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
-        Next <i class="bi bi-chevron-right ms-1"></i>
+      <!-- Create Project Button -->
+      <button class="btn btn-primary" *ngIf="isAdminOrPM" [routerLink]="['new']">
+        <i class="bi bi-plus-lg"></i> Create Project
       </button>
     </div>
   </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state-card">
+    <div class="spinner"></div>
+    <p class="m-0 font-weight-bold">Loading projects...</p>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Projects Card Table -->
+  <div class="card" *ngIf="!isLoading && !error">
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th style="width: 80px;">ID</th>
+            <th>Project Name</th>
+            <th>Owner</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let project of projects">
+            <td>
+              <span class="project-id-badge">#{{ project.id }}</span>
+            </td>
+            <td>
+              <div class="project-name-cell">
+                <span class="project-name">{{ project.name }}</span>
+                <span class="project-desc text-muted" *ngIf="project.description" [title]="project.description">
+                  {{ project.description.length > 60 ? (project.description.substring(0, 60) + '...') : project.description }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <div class="owner-chip" *ngIf="project.ownerName">
+                <i class="bi bi-person-circle owner-icon"></i>
+                <span class="owner-name">{{ project.ownerName }}</span>
+              </div>
+              <span class="text-muted text-xs" *ngIf="!project.ownerName">Unassigned</span>
+            </td>
+            <td>
+              <span class="date-badge">
+                <i class="bi bi-calendar-event me-1 text-muted"></i>
+                {{ (project.startDate | date:'mediumDate') || 'N/A' }}
+              </span>
+            </td>
+            <td>
+              <span class="date-badge">
+                <i class="bi bi-calendar-check me-1 text-muted"></i>
+                {{ (project.endDate | date:'mediumDate') || 'N/A' }}
+              </span>
+            </td>
+            <td class="text-right">
+              <div class="action-buttons-group">
+                <button class="btn btn-outline btn-sm action-btn" title="View Sprints" [routerLink]="['/projects', project.id, 'sprints']">
+                  <i class="bi bi-lightning-charge"></i>
+                  <span class="action-label">Sprints</span>
+                </button>
+                <button class="btn btn-outline btn-sm action-btn" title="View Issues" [routerLink]="['/projects', project.id, 'issues']">
+                  <i class="bi bi-ticket-detailed"></i>
+                  <span class="action-label">Issues</span>
+                </button>
+                <button class="btn btn-outline btn-sm action-btn" title="View Members" [routerLink]="['/projects', project.id, 'members']">
+                  <i class="bi bi-people"></i>
+                  <span class="action-label">Members</span>
+                </button>
+                <button class="btn btn-outline btn-sm action-btn" title="View Analytics" *ngIf="isAdminOrPM" [routerLink]="['/projects', project.id, 'analytics']">
+                  <i class="bi bi-graph-up"></i>
+                  <span class="action-label">Analytics</span>
+                </button>
+                
+                <ng-container *ngIf="isAdminOrPM">
+                  <button class="btn btn-icon btn-sm text-primary edit-btn" title="Edit Project" [routerLink]="['/projects', project.id, 'edit']">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn btn-icon btn-sm text-danger delete-btn" title="Delete Project" (click)="deleteProject(project.id)">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="projects.length === 0">
+            <td colspan="6" class="text-center py-5">
+              <div class="empty-table-state">
+                <i class="bi bi-folder-x empty-icon"></i>
+                <h4 class="empty-title">No Projects Found</h4>
+                <p class="empty-text">No project records match your current search criteria or workspace scope.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Table Footer / Pagination -->
+    <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-3" *ngIf="totalElements > 0">
+      <div class="text-muted text-sm">
+        Showing <strong>{{ pageIndex * pageSize + 1 }}</strong> to <strong>{{ min((pageIndex + 1) * pageSize, totalElements) }}</strong> of <strong>{{ totalElements }}</strong> projects
+      </div>
+      <div class="pagination gap-2 d-flex">
+        <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+          <i class="bi bi-chevron-left me-1"></i> Previous
+        </button>
+        <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+          Next <i class="bi bi-chevron-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+

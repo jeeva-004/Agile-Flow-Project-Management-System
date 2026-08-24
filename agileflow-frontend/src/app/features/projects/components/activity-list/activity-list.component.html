@@ -1,38 +1,67 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>Activity Stream</h2>
-  <div class="d-flex gap-2">
-    <button class="btn btn-outline" routerLink="/projects">Back to Projects</button>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h1 class="page-title">Activity Stream</h1>
+      <p class="page-subtitle">Real-time audit log of changes, updates, and activities for this project</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" routerLink="/projects">
+        <i class="bi bi-arrow-left me-1"></i> Back to Projects
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state-card">
+    <div class="spinner"></div>
+    <p class="m-0 font-weight-bold">Loading activity stream...</p>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Feed Timeline Card -->
+  <div class="card" *ngIf="!isLoading && !error">
+    <div class="card-header">
+      <h3 class="card-title m-0 font-weight-bold d-flex align-items-center">
+        <i class="bi bi-clock-history me-2 text-primary"></i>Audit Trail
+      </h3>
+    </div>
+    <div class="card-body">
+      <div class="timeline" *ngIf="activities.length > 0">
+        <div class="timeline-item" *ngFor="let activity of activities">
+          <div class="timeline-icon">
+            <span class="action-icon-badge" 
+                  [class.badge-create]="activity.action === 'CREATE'" 
+                  [class.badge-update]="activity.action === 'UPDATE'"
+                  [class.badge-delete]="activity.action === 'DELETE'">
+              {{ getIcon(activity.action) }}
+            </span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <strong class="user-name">{{ activity.userName }}</strong> {{ activity.message }}
+            </div>
+            <div class="timeline-meta">
+              <span class="meta-item"><i class="bi bi-clock me-1"></i>{{ activity.createdAt | date:'medium' }}</span>
+              <span class="dot-separator" *ngIf="activity.entityType">&middot;</span>
+              <span class="badge badge-neutral" *ngIf="activity.entityType">{{ activity.entityType }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Empty State -->
+      <div class="empty-state-card" *ngIf="activities.length === 0">
+        <i class="bi bi-calendar-x empty-icon"></i>
+        <h4 class="empty-state-title">No Activity Recorded</h4>
+        <p class="empty-state-text">No actions or changes have been logged for this project yet.</p>
+      </div>
+    </div>
   </div>
 </div>
 
-<div *ngIf="isLoading" class="loading-state">
-  <div class="spinner"></div>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">
-  {{ error }}
-</div>
-
-<div class="activity-feed" *ngIf="!isLoading && !error">
-  <div class="timeline">
-    <div class="timeline-item" *ngFor="let activity of activities">
-      <div class="timeline-icon">
-        {{ getIcon(activity.action) }}
-      </div>
-      <div class="timeline-content">
-        <div class="timeline-header">
-          <strong>{{ activity.userName }}</strong> {{ activity.message }}
-        </div>
-        <div class="timeline-meta text-muted text-sm">
-          <span>{{ activity.createdAt | date:'medium' }}</span>
-          <span class="dot-separator">&middot;</span>
-          <span class="badge badge-outline text-xs">{{ activity.entityType }}</span>
-        </div>
-      </div>
-    </div>
-    
-    <div class="timeline-empty" *ngIf="activities.length === 0">
-      No activity recorded for this project yet.
-    </div>
-  </div>
-</div>

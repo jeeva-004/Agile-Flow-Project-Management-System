@@ -1,23 +1,31 @@
 <div class="top-nav">
-  <div class="nav-left d-flex align-items-center gap-2">
+  <div class="nav-left d-flex align-items-center gap-3">
     <button type="button" class="btn btn-icon d-lg-none mobile-menu-btn" (click)="toggleSidebar.emit()" aria-label="Toggle Navigation">
-      <i class="bi bi-list fs-3"></i>
+      <i class="bi bi-list fs-4"></i>
     </button>
+    <div class="top-nav-title d-none d-sm-flex align-items-center gap-2">
+      <span class="app-brand-crumb">AgileFlow</span>
+      <i class="bi bi-chevron-right crumb-divider"></i>
+      <span class="workspace-crumb">Workspace</span>
+    </div>
   </div>
   
   <div class="nav-right d-flex align-items-center gap-3">
     
     <!-- Notification Bell -->
     <div class="notification-wrapper">
-      <button class="btn-icon bell-btn" (click)="toggleDropdown()">
-        <span class="bell-icon">🔔</span>
-        <span class="badge badge-danger unread-badge" *ngIf="unreadCount > 0">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+      <button class="btn-icon bell-btn" (click)="toggleDropdown()" aria-label="Notifications">
+        <i class="bi bi-bell-fill bell-icon"></i>
+        <span class="badge unread-badge" *ngIf="unreadCount > 0">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
       </button>
 
       <!-- Dropdown -->
       <div class="notification-dropdown" *ngIf="showDropdown">
         <div class="dropdown-header">
-          <h4 class="m-0 text-sm font-weight-bold">Notifications</h4>
+          <div class="d-flex align-items-center gap-2">
+            <h4 class="m-0 text-sm font-weight-bold">Notifications</h4>
+            <span class="badge badge-primary" *ngIf="unreadCount > 0">{{ unreadCount }} new</span>
+          </div>
           <button class="btn-link text-xs" *ngIf="unreadCount > 0" (click)="markAllAsRead()">Mark all read</button>
         </div>
         
@@ -26,25 +34,34 @@
                *ngFor="let notif of notifications" 
                [class.unread]="!notif.read"
                (click)="markAsRead(notif)">
-            <div class="notif-title">{{ notif.title }}</div>
-            <div class="notif-message">{{ notif.message }}</div>
-            <div class="notif-time">{{ notif.createdAt | date:'short' }}</div>
+            <div class="notif-indicator" *ngIf="!notif.read"></div>
+            <div class="notif-content">
+              <div class="notif-title">{{ notif.title }}</div>
+              <div class="notif-message">{{ notif.message }}</div>
+              <div class="notif-time">
+                <i class="bi bi-clock me-1"></i>
+                {{ notif.createdAt | date:'short' }}
+              </div>
+            </div>
           </div>
           
           <div class="notification-empty" *ngIf="notifications.length === 0">
-            No notifications right now.
+            <i class="bi bi-bell-slash empty-icon"></i>
+            <p class="m-0">No notifications right now.</p>
           </div>
         </div>
         
         <div class="dropdown-footer text-center">
-          <a class="btn-link text-xs" routerLink="/notifications" (click)="showDropdown = false">View All</a>
+          <a class="btn-link text-xs font-weight-bold" routerLink="/notifications" (click)="showDropdown = false">View All Notifications</a>
         </div>
       </div>
     </div>
 
-    <!-- User & Logout -->
-    <button class="btn btn-outline btn-sm logout-btn text-danger" (click)="logout()">
-      <i class="bi bi-box-arrow-right me-1"></i> Logout
+    <!-- User Logout -->
+    <button class="btn btn-outline btn-sm logout-btn" (click)="logout()" title="Logout of AgileFlow">
+      <i class="bi bi-box-arrow-right"></i>
+      <span class="d-none d-sm-inline">Logout</span>
     </button>
   </div>
 </div>
+

@@ -86,4 +86,9 @@ export class NotificationListComponent implements OnInit {
       this.loadNotifications();
     }
   }
+
+  min(a: number, b: number): number {
+    return Math.min(a, b);
+  }
 }
+

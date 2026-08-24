@@ -17,10 +17,10 @@ export class SidebarComponent {
   private router = inject(Router);
 
   navItems = [
-    { label: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
-    { label: 'Projects', icon: 'folder', path: '/projects' },
-    { label: 'Issues', icon: 'bug_report', path: '/issues' },
-    { label: 'Users', icon: 'group', path: '/users' }
+    { label: 'Dashboard', icon: 'bi-grid-1x2-fill', path: '/dashboard' },
+    { label: 'Projects', icon: 'bi-folder2-open', path: '/projects' },
+    { label: 'Issues', icon: 'bi-ticket-detailed-fill', path: '/issues' },
+    { label: 'Users', icon: 'bi-people-fill', path: '/users' }
   ];
 
   isNavActive(path: string): boolean {

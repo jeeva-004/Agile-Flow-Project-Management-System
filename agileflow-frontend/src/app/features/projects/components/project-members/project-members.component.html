@@ -1,93 +1,123 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>Project Members</h2>
-  <button class="btn btn-outline" routerLink="/projects">
-    <i class="bi bi-arrow-left me-1"></i> Back to Projects
-  </button>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">
-  {{ error }}
-</div>
-
-<div class="row">
-  <div class="col-main">
-    <div class="card">
-      <div class="card-header border-bottom p-4">
-        <h3 class="card-title m-0 font-weight-semibold">Team Members</h3>
-      </div>
-      
-      <div *ngIf="isLoading" class="loading-state">
-        <div class="spinner"></div>
-      </div>
-
-      <div class="table-responsive" *ngIf="!isLoading">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th *ngIf="isAdminOrPM" class="text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let member of members">
-              <td>
-                <div class="d-flex align-items-center gap-3">
-                  <div class="avatar-sm">{{ member.userName.charAt(0) }}</div>
-                  <strong>{{ member.userName }}</strong>
-                </div>
-              </td>
-              <td>{{ member.email }}</td>
-              <td *ngIf="isAdminOrPM" class="text-right">
-                <button class="btn btn-outline btn-sm text-danger" title="Remove Member" (click)="removeMember(member.id)">
-                  <i class="bi bi-person-x me-1"></i> Remove
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="members.length === 0">
-              <td [attr.colspan]="isAdminOrPM ? 3 : 2" class="text-center py-4">No members assigned to this project yet.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="totalElements > 0 && !isLoading">
-        <div class="text-muted text-sm">
-          Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} members
-        </div>
-        <div class="pagination gap-2 d-flex">
-          <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
-            <i class="bi bi-chevron-left me-1"></i> Previous
-          </button>
-          <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
-            Next <i class="bi bi-chevron-right ms-1"></i>
-          </button>
-        </div>
-      </div>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h1 class="page-title">Project Members</h1>
+      <p class="page-subtitle">Manage team members and access permissions for this project</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" routerLink="/projects">
+        <i class="bi bi-arrow-left me-1"></i> Back to Projects
+      </button>
     </div>
   </div>
-  
-  <div class="col-side" *ngIf="isAdminOrPM">
-    <div class="card">
-      <div class="card-header border-bottom p-4">
-        <h3 class="card-title m-0 font-weight-semibold">Add Member</h3>
-      </div>
-      <div class="card-body p-4">
-        <form [formGroup]="addMemberForm" (ngSubmit)="addMember()">
-          <div class="form-group">
-            <label for="userId">Select User</label>
-            <select id="userId" class="form-control" formControlName="userId">
-              <option [ngValue]="null" disabled>Select user...</option>
-              <option *ngFor="let user of availableUsers" [ngValue]="user.id">
-                {{ user.firstName }} {{ user.lastName }}
-              </option>
-            </select>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Members & Add Form Grid -->
+  <div class="members-layout-grid">
+    <!-- Main Members List Card -->
+    <div class="col-main">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3 class="card-title m-0 font-weight-bold d-flex align-items-center">
+            <i class="bi bi-people-fill me-2 text-primary"></i>Team Members
+          </h3>
+          <span class="badge badge-neutral" *ngIf="totalElements > 0">{{ totalElements }} Members</span>
+        </div>
+        
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state-card">
+          <div class="spinner"></div>
+          <p class="m-0 font-weight-bold">Loading team members...</p>
+        </div>
+
+        <div class="table-responsive" *ngIf="!isLoading">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Member Name</th>
+                <th>Email Address</th>
+                <th *ngIf="isAdminOrPM" class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let member of members">
+                <td>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-sm">{{ member.userName.charAt(0) }}</div>
+                    <span class="font-weight-bold text-gray-900">{{ member.userName }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="text-secondary">{{ member.email }}</span>
+                </td>
+                <td *ngIf="isAdminOrPM" class="text-right">
+                  <button class="btn btn-outline btn-sm text-danger remove-btn" title="Remove Member" (click)="removeMember(member.id)">
+                    <i class="bi bi-person-x me-1"></i> Remove
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="members.length === 0">
+                <td [attr.colspan]="isAdminOrPM ? 3 : 2" class="text-center py-5">
+                  <div class="empty-table-state">
+                    <i class="bi bi-person-x empty-icon"></i>
+                    <h4 class="empty-title">No Team Members</h4>
+                    <p class="empty-text">No team members have been assigned to this project yet.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Card Footer / Pagination -->
+        <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-3" *ngIf="totalElements > 0 && !isLoading">
+          <div class="text-muted text-sm">
+            Showing <strong>{{ pageIndex * pageSize + 1 }}</strong> to <strong>{{ min((pageIndex + 1) * pageSize, totalElements) }}</strong> of <strong>{{ totalElements }}</strong> members
           </div>
-          <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="addMemberForm.invalid || isLoading">
-            <i class="bi bi-person-plus me-1"></i> Add to Project
-          </button>
-        </form>
+          <div class="pagination gap-2 d-flex">
+            <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+              <i class="bi bi-chevron-left me-1"></i> Previous
+            </button>
+            <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+              Next <i class="bi bi-chevron-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Side Add Member Card (Admin/PM Only) -->
+    <div class="col-side" *ngIf="isAdminOrPM">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title m-0 font-weight-bold d-flex align-items-center">
+            <i class="bi bi-person-plus-fill me-2 text-primary"></i>Add Member
+          </h3>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="addMemberForm" (ngSubmit)="addMember()">
+            <div class="form-group mb-3">
+              <label for="userId" class="form-label">Select User</label>
+              <select id="userId" class="form-control" formControlName="userId">
+                <option [ngValue]="null" disabled>Select user to assign...</option>
+                <option *ngFor="let user of availableUsers" [ngValue]="user.id">
+                  {{ user.firstName }} {{ user.lastName }}
+                </option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-2" [disabled]="addMemberForm.invalid || isLoading">
+              <i class="bi bi-person-plus me-1"></i> Add to Project
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
+

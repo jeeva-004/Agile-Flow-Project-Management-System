@@ -1,71 +1,81 @@
-<div class="comments-section">
-  <h4 class="section-title">Comments ({{ totalElements }})</h4>
-
-  <div *ngIf="isLoading" class="loading-state">
-    <div class="spinner"></div>
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h4 class="card-title m-0 d-flex align-items-center gap-2">
+      <i class="bi bi-chat-left-text text-primary"></i>
+      <span>Discussion & Comments ({{ totalElements }})</span>
+    </h4>
   </div>
 
-  <div class="comments-list" *ngIf="!isLoading">
-    <div class="comment-card" *ngFor="let comment of comments">
-      <div class="comment-header">
-        <div class="comment-author">
-          <div class="avatar-sm">{{ comment.authorName.charAt(0) }}</div>
-          <strong>{{ comment.authorName }}</strong>
-        </div>
-        <div class="comment-meta d-flex align-items-center gap-2">
-          <span class="comment-time">{{ comment.createdAt | date:'medium' }}</span>
-          <button *ngIf="editingCommentId !== comment.id" class="btn-icon text-primary" title="Edit Comment" (click)="startEdit(comment)">
-            <i class="bi bi-pencil-square"></i>
-          </button>
-          <button class="btn-icon text-danger" title="Delete Comment" (click)="deleteComment(comment.id)">
-            <i class="bi bi-trash3"></i>
-          </button>
-        </div>
-      </div>
-      <div class="comment-body" *ngIf="editingCommentId !== comment.id">
-        {{ comment.message }}
-      </div>
-      <div class="comment-edit-body mt-2" *ngIf="editingCommentId === comment.id">
-        <form [formGroup]="editForm" (ngSubmit)="submitEdit(comment.id)">
-          <div class="form-group mb-2">
-            <textarea class="form-control" formControlName="message" rows="2"></textarea>
+  <div class="card-body">
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="comments-list" *ngIf="!isLoading">
+      <div class="comment-card" *ngFor="let comment of comments">
+        <div class="comment-header">
+          <div class="comment-author">
+            <div class="avatar-sm">{{ comment.authorName.charAt(0) }}</div>
+            <strong>{{ comment.authorName }}</strong>
           </div>
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-sm" [disabled]="editForm.invalid">
-              <i class="bi bi-check-lg me-1"></i> Save
+          <div class="comment-meta d-flex align-items-center gap-2">
+            <span class="comment-time">
+              <i class="bi bi-clock me-1"></i>{{ comment.createdAt | date:'medium' }}
+            </span>
+            <button *ngIf="editingCommentId !== comment.id" class="btn-icon btn-sm text-primary" title="Edit Comment" (click)="startEdit(comment)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="btn-icon btn-sm text-danger" title="Delete Comment" (click)="deleteComment(comment.id)">
+              <i class="bi bi-trash3"></i>
             </button>
           </div>
-        </form>
+        </div>
+        <div class="comment-body" *ngIf="editingCommentId !== comment.id">
+          {{ comment.message }}
+        </div>
+        <div class="comment-edit-body mt-2" *ngIf="editingCommentId === comment.id">
+          <form [formGroup]="editForm" (ngSubmit)="submitEdit(comment.id)">
+            <div class="form-group mb-2">
+              <textarea class="form-control" formControlName="message" rows="2"></textarea>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm" [disabled]="editForm.invalid">
+                <i class="bi bi-check-lg me-1"></i> Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div *ngIf="comments.length === 0" class="no-comments">
+        No comments yet. Be the first to start the discussion!
       </div>
     </div>
-    
-    <div *ngIf="comments.length === 0" class="no-comments">
-      No comments yet. Be the first to start the discussion!
+
+    <!-- Pagination -->
+    <div class="pagination d-flex justify-content-end gap-2 mt-3" *ngIf="totalElements > pageSize">
+      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+        <i class="bi bi-chevron-left me-1"></i> Newer
+      </button>
+      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+        Older <i class="bi bi-chevron-right ms-1"></i>
+      </button>
     </div>
-  </div>
 
-  <!-- Pagination if needed -->
-  <div class="pagination d-flex justify-content-end gap-2 mt-3" *ngIf="totalElements > pageSize">
-    <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
-      <i class="bi bi-chevron-left me-1"></i> Newer
-    </button>
-    <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
-      Older <i class="bi bi-chevron-right ms-1"></i>
-    </button>
-  </div>
-
-  <!-- Add Comment Form -->
-  <div class="add-comment-box mt-4">
-    <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
-      <div class="form-group mb-2">
-        <textarea class="form-control" formControlName="message" rows="3" placeholder="Add a comment..."></textarea>
-      </div>
-      <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary btn-sm" [disabled]="commentForm.invalid || isSubmitting">
-          <i class="bi bi-send me-1"></i> {{ isSubmitting ? 'Posting...' : 'Post Comment' }}
-        </button>
-      </div>
-    </form>
+    <!-- Add Comment Form -->
+    <div class="add-comment-box mt-4">
+      <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+        <div class="form-group mb-2">
+          <textarea class="form-control" formControlName="message" rows="3" placeholder="Add a comment..."></textarea>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary btn-sm" [disabled]="commentForm.invalid || isSubmitting">
+            <i class="bi bi-send me-1"></i> {{ isSubmitting ? 'Posting...' : 'Post Comment' }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
+

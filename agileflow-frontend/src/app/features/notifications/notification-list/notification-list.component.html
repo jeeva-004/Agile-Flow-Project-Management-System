@@ -1,44 +1,78 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>Your Notifications</h2>
-  <button class="btn btn-outline btn-sm" (click)="markAllAsRead()">Mark all as read</button>
-</div>
-
-<div *ngIf="isLoading" class="loading-state">
-  <div class="spinner"></div>
-</div>
-
-<div class="notification-list" *ngIf="!isLoading">
-  <div class="notification-card" 
-       *ngFor="let notif of notifications" 
-       [class.unread]="!notif.read">
-    
-    <div class="notif-content" (click)="navigateToItem(notif)">
-      <div class="notif-header">
-        <h4 class="notif-title">{{ notif.title }}</h4>
-        <span class="notif-time">{{ notif.createdAt | date:'medium' }}</span>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="d-flex align-items-center gap-2">
+        <h1 class="page-title">Notifications</h1>
+        <span class="badge badge-primary" *ngIf="totalElements > 0">{{ totalElements }} Total</span>
       </div>
-      <div class="notif-body">
-        {{ notif.message }}
-      </div>
+      <p class="page-subtitle">Stay updated on recent project activity, issue updates, and team mentions</p>
     </div>
     
-    <div class="notif-actions">
-      <button class="btn-icon text-danger" title="Delete" (click)="$event.stopPropagation(); deleteNotification(notif.id)">
-        &times;
+    <div class="page-actions" *ngIf="notifications.length > 0">
+      <button class="btn btn-outline" (click)="markAllAsRead()">
+        <i class="bi bi-check2-all me-1"></i> Mark all as read
       </button>
     </div>
   </div>
-  
-  <div class="no-notifications" *ngIf="notifications.length === 0">
-    You have no notifications.
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state-card">
+    <div class="spinner"></div>
+    <p class="m-0 font-weight-bold">Loading notification feed...</p>
+  </div>
+
+  <!-- Notifications Feed -->
+  <div class="notification-feed" *ngIf="!isLoading">
+    <div class="notification-card" 
+         *ngFor="let notif of notifications" 
+         [class.unread]="!notif.read">
+      
+      <div class="notif-icon-badge" [class.unread-badge]="!notif.read">
+        <i class="bi" [ngClass]="!notif.read ? 'bi-bell-fill' : 'bi-bell'"></i>
+      </div>
+
+      <div class="notif-content" (click)="navigateToItem(notif)">
+        <div class="notif-header">
+          <h4 class="notif-title">{{ notif.title }}</h4>
+          <span class="notif-time">
+            <i class="bi bi-clock me-1"></i>
+            {{ notif.createdAt | date:'medium' }}
+          </span>
+        </div>
+        <div class="notif-body">
+          {{ notif.message }}
+        </div>
+      </div>
+      
+      <div class="notif-actions">
+        <button class="btn-icon btn-sm text-danger delete-btn" title="Delete Notification" (click)="$event.stopPropagation(); deleteNotification(notif.id)">
+          <i class="bi bi-trash3"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Empty State -->
+    <div class="empty-table-state card py-5" *ngIf="notifications.length === 0">
+      <i class="bi bi-bell-slash empty-icon"></i>
+      <h4 class="empty-title">No Notifications Found</h4>
+      <p class="empty-text">You are all caught up! No unread activity notifications in your workspace.</p>
+    </div>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-3 mt-2" *ngIf="totalElements > pageSize">
+    <div class="text-muted text-sm">
+      Showing <strong>{{ pageIndex * pageSize + 1 }}</strong> to <strong>{{ min((pageIndex + 1) * pageSize, totalElements) }}</strong> of <strong>{{ totalElements }}</strong> notifications
+    </div>
+    <div class="pagination gap-2 d-flex">
+      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+        <i class="bi bi-chevron-left me-1"></i> Previous
+      </button>
+      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+        Next <i class="bi bi-chevron-right ms-1"></i>
+      </button>
+    </div>
   </div>
 </div>
 
-<!-- Pagination if needed -->
-<div class="pagination d-flex justify-content-between align-items-center mt-4" *ngIf="totalElements > pageSize">
-  <span class="text-muted text-sm">Showing page {{ pageIndex + 1 }}</span>
-  <div class="gap-2 d-flex">
-    <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">Previous</button>
-    <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">Next</button>
-  </div>
-</div>

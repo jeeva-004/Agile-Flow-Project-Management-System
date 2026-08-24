@@ -1,66 +1,108 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>{{ isEditMode ? 'Edit' : 'Create' }} Project</h2>
-  <button class="btn btn-outline" routerLink="/projects">
-    <i class="bi bi-arrow-left me-1"></i> Back to Projects
-  </button>
-</div>
-
-<div *ngIf="error" class="alert alert-danger mb-4">
-  {{ error }}
-</div>
-
-<div class="card form-card">
-  <div *ngIf="isLoading" class="loading-overlay">
-    <div class="spinner"></div>
-  </div>
-
-  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="name">Project Name</label>
-      <input type="text" id="name" class="form-control" formControlName="name" placeholder="E.g., Alpha Release">
-      <div class="error-text" *ngIf="projectForm.get('name')?.invalid && projectForm.get('name')?.touched">
-        Project name is required.
-      </div>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h1 class="page-title">{{ isEditMode ? 'Edit Project' : 'Create Project' }}</h1>
+      <p class="page-subtitle">{{ isEditMode ? 'Update existing project details and ownership' : 'Set up a new project in your workspace' }}</p>
     </div>
-
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" class="form-control" formControlName="description" rows="3" placeholder="Project details..."></textarea>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="startDate">Start Date</label>
-        <input type="date" id="startDate" class="form-control" formControlName="startDate">
-        <div class="error-text" *ngIf="projectForm.get('startDate')?.invalid && projectForm.get('startDate')?.touched">
-          Start date is required.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="endDate">End Date</label>
-        <input type="date" id="endDate" class="form-control" formControlName="endDate">
-        <div class="error-text" *ngIf="projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched">
-          End date is required.
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="ownerId">Project Owner</label>
-      <select id="ownerId" class="form-control" formControlName="ownerId">
-        <option [ngValue]="null" disabled>Select Owner</option>
-        <option *ngFor="let user of users" [ngValue]="user.id">{{ user.firstName }} {{ user.lastName }}</option>
-      </select>
-      <div class="error-text" *ngIf="projectForm.get('ownerId')?.invalid && projectForm.get('ownerId')?.touched">
-        Owner is required.
-      </div>
-    </div>
-
-    <div class="form-actions mt-4">
-      <button type="submit" class="btn btn-primary" [disabled]="projectForm.invalid || isLoading">
-        <i class="bi bi-check-lg me-1"></i> {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Project' : 'Create Project') }}
+    <div class="page-actions">
+      <button class="btn btn-outline" routerLink="/projects">
+        <i class="bi bi-arrow-left me-1"></i> Back to Projects
       </button>
     </div>
-  </form>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card form-card-container">
+    <div *ngIf="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p class="m-0 font-weight-bold mt-2">Processing...</p>
+    </div>
+
+    <div class="card-header">
+      <h3 class="card-title m-0 font-weight-bold d-flex align-items-center">
+        <i class="bi bi-folder2-open me-2 text-primary"></i>Project Information
+      </h3>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+        <div class="form-group mb-4">
+          <label for="name" class="form-label">Project Name <span class="text-danger">*</span></label>
+          <input type="text" 
+                 id="name" 
+                 class="form-control" 
+                 formControlName="name" 
+                 placeholder="E.g., Alpha Release Platform"
+                 [class.is-invalid]="projectForm.get('name')?.invalid && projectForm.get('name')?.touched">
+          <div class="invalid-feedback" *ngIf="projectForm.get('name')?.invalid && projectForm.get('name')?.touched">
+            Project name is required.
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="description" class="form-label">Description</label>
+          <textarea id="description" 
+                    class="form-control" 
+                    formControlName="description" 
+                    rows="3" 
+                    placeholder="Provide details about objectives, deliverables, and scope..."></textarea>
+        </div>
+
+        <div class="form-grid mb-4">
+          <div class="form-group mb-0">
+            <label for="startDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+            <input type="date" 
+                   id="startDate" 
+                   class="form-control" 
+                   formControlName="startDate"
+                   [class.is-invalid]="projectForm.get('startDate')?.invalid && projectForm.get('startDate')?.touched">
+            <div class="invalid-feedback" *ngIf="projectForm.get('startDate')?.invalid && projectForm.get('startDate')?.touched">
+              Start date is required.
+            </div>
+          </div>
+
+          <div class="form-group mb-0">
+            <label for="endDate" class="form-label">End Date <span class="text-danger">*</span></label>
+            <input type="date" 
+                   id="endDate" 
+                   class="form-control" 
+                   formControlName="endDate"
+                   [class.is-invalid]="projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched">
+            <div class="invalid-feedback" *ngIf="projectForm.get('endDate')?.invalid && projectForm.get('endDate')?.touched">
+              End date is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="ownerId" class="form-label">Project Owner <span class="text-danger">*</span></label>
+          <select id="ownerId" 
+                  class="form-control" 
+                  formControlName="ownerId"
+                  [class.is-invalid]="projectForm.get('ownerId')?.invalid && projectForm.get('ownerId')?.touched">
+            <option [ngValue]="null" disabled>Select Owner...</option>
+            <option *ngFor="let user of users" [ngValue]="user.id">{{ user.firstName }} {{ user.lastName }}</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="projectForm.get('ownerId')?.invalid && projectForm.get('ownerId')?.touched">
+            Project owner is required.
+          </div>
+        </div>
+
+        <div class="form-actions d-flex justify-content-end gap-3 pt-3 border-top">
+          <button type="button" class="btn btn-outline" routerLink="/projects">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="projectForm.invalid || isLoading">
+            <i class="bi bi-check-lg me-1"></i> {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Project' : 'Create Project') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+

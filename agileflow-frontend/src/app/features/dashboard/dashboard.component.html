@@ -1,182 +1,320 @@
-<div class="dashboard-header">
-  <h2>Dashboard</h2>
-</div>
-
-<div *ngIf="isLoading" class="loading-state">
-  <div class="spinner"></div>
-  <p>Loading dashboard...</p>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">
-  {{ error }}
-</div>
-
-<div *ngIf="!isLoading && !error" class="dashboard-content">
-  <!-- SECTION ONE: Existing Overview Metrics -->
-  <section class="dashboard-section">
-    <h3 class="section-title">Overview</h3>
-    <!-- Admin Metrics -->
-    <div *ngIf="adminData" class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-title">Total Users</div>
-        <div class="metric-value">{{ adminData.totalUsers }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Total Projects</div>
-        <div class="metric-value">{{ adminData.totalProjects }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Total Issues</div>
-        <div class="metric-value">{{ adminData.totalIssues }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Open Issues</div>
-        <div class="metric-value">{{ adminData.openIssues }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Completed Issues</div>
-        <div class="metric-value">{{ adminData.completedIssues }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Total Worklogs</div>
-        <div class="metric-value">{{ adminData.totalWorkLogs }}</div>
-      </div>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Overview of your projects, issues, and team activity</p>
     </div>
-
-    <!-- PM Metrics -->
-    <div *ngIf="pmData" class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-title">Managed Projects</div>
-        <div class="metric-value">{{ pmData.managedProjects }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Team Members</div>
-        <div class="metric-value">{{ pmData.teamMembers }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Active Sprints</div>
-        <div class="metric-value">{{ pmData.activeSprints }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Open Issues</div>
-        <div class="metric-value">{{ pmData.openIssues }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Completed Issues</div>
-        <div class="metric-value">{{ pmData.completedIssues }}</div>
-      </div>
+    <div class="page-actions" *ngIf="role">
+      <span class="badge badge-primary" [class.badge-info]="role === 'PROJECT_MANAGER'" [class.badge-success]="role === 'DEVELOPER'">
+        <i class="bi bi-shield-lock me-1"></i> {{ role }}
+      </span>
     </div>
+  </div>
 
-    <!-- Developer Metrics -->
-    <div *ngIf="devData" class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-title">Assigned Issues</div>
-        <div class="metric-value">{{ devData.assignedIssues }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Completed Issues</div>
-        <div class="metric-value">{{ devData.completedIssues }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">My Comments</div>
-        <div class="metric-value">{{ devData.myComments }}</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">My Worklogs</div>
-        <div class="metric-value">{{ devData.myWorkLogs }}</div>
-      </div>
-    </div>
-  </section>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state-card">
+    <div class="spinner"></div>
+    <p class="m-0 font-weight-bold">Loading dashboard overview...</p>
+  </div>
 
-  <!-- SECTION TWO: Active Projects Completions -->
-  <section class="dashboard-section mt-4">
-    <h3 class="section-title">Active Projects</h3>
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="dashboard-content d-flex flex-column gap-6">
     
-    <div *ngIf="activeProjects.length > 0" class="projects-cards-grid">
-      <div *ngFor="let project of activeProjects" class="project-card">
-        <div class="project-card-header">
-          <div class="project-title-container">
-            <h4 class="project-title">{{ project.name }}</h4>
-            <span class="project-owner" *ngIf="project.ownerName">Owner: {{ project.ownerName }}</span>
+    <!-- SECTION ONE: Overview Metrics -->
+    <section class="dashboard-section">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="bi bi-bar-chart-line-fill me-2 text-primary"></i>Overview Metrics
+        </h3>
+      </div>
+
+      <!-- Admin Metrics -->
+      <div *ngIf="adminData" class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon-badge primary">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Total Users</span>
+            <span class="metric-value">{{ adminData.totalUsers }}</span>
           </div>
         </div>
 
-        <p class="project-description" *ngIf="project.description">
-          {{ project.description.length > 100 ? (project.description.substring(0, 100) + '...') : project.description }}
-        </p>
-
-        <div class="project-stats-grid">
-          <!-- Issues Progress -->
-          <div class="stat-item">
-            <div class="stat-header">
-              <span class="stat-label">Issues</span>
-              <span class="stat-value">{{ project.completedIssues }} / {{ project.totalIssues }} completed</span>
-            </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" [style.width.%]="getIssueCompletionPercentage(project.completedIssues, project.totalIssues)"></div>
-            </div>
+        <div class="metric-card">
+          <div class="metric-icon-badge accent">
+            <i class="bi bi-folder2-open"></i>
           </div>
-
-          <!-- Sprints Progress -->
-          <div class="stat-item">
-            <div class="stat-header">
-              <span class="stat-label">Sprints</span>
-              <span class="stat-value">{{ project.completedSprints }} / {{ project.totalSprints }} completed</span>
-            </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill sprint-fill" [style.width.%]="getSprintCompletionPercentage(project.completedSprints, project.totalSprints)"></div>
-            </div>
-          </div>
-
-          <!-- Worklogs & Members -->
-          <div class="stat-row">
-            <div class="mini-stat">
-              <span class="mini-label">Work Log:</span>
-              <strong class="mini-value">{{ project.totalWorkLogHours }} hrs</strong>
-            </div>
-            <div class="mini-stat">
-              <span class="mini-label">Members:</span>
-              <strong class="mini-value">{{ project.totalMembers }}</strong>
-            </div>
+          <div class="metric-info">
+            <span class="metric-title">Total Projects</span>
+            <span class="metric-value">{{ adminData.totalProjects }}</span>
           </div>
         </div>
 
-        <div class="project-card-actions">
-          <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'sprints']">Sprints</button>
-          <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'issues']">Issues</button>
-          <button class="btn btn-outline btn-sm me-2" [routerLink]="['/projects', project.id, 'members']">Members</button>
-          <button class="btn btn-outline btn-sm" [routerLink]="['/projects', project.id, 'analytics']">Analytics</button>
+        <div class="metric-card">
+          <div class="metric-icon-badge info">
+            <i class="bi bi-ticket-detailed-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Total Issues</span>
+            <span class="metric-value">{{ adminData.totalIssues }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge warning">
+            <i class="bi bi-exclamation-circle-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Open Issues</span>
+            <span class="metric-value">{{ adminData.openIssues }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge success">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Completed Issues</span>
+            <span class="metric-value">{{ adminData.completedIssues }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge secondary">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Total Worklogs</span>
+            <span class="metric-value">{{ adminData.totalWorkLogs }}</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Empty State for Active Projects -->
-    <div *ngIf="activeProjects.length === 0" class="empty-state-card">
-      <p class="empty-state-text">No active projects available.</p>
-    </div>
-  </section>
-
-  <!-- SECTION THREE: Recent Activities -->
-  <section class="dashboard-section mt-4">
-    <h3 class="section-title">Recent Activities</h3>
-
-    <div *ngIf="recentActivities.length > 0" class="activities-card">
-      <ul class="activity-timeline">
-        <li *ngFor="let activity of recentActivities" class="activity-item">
-          <div class="activity-badge">{{ activity.action || 'ACTIVITY' }}</div>
-          <div class="activity-details">
-            <p class="activity-message">
-              <strong>{{ activity.userName }}</strong>: {{ activity.message }}
-            </p>
-            <span class="activity-date">{{ activity.createdAt | date:'medium' }}</span>
+      <!-- PM Metrics -->
+      <div *ngIf="pmData" class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon-badge primary">
+            <i class="bi bi-briefcase-fill"></i>
           </div>
-        </li>
-      </ul>
-    </div>
+          <div class="metric-info">
+            <span class="metric-title">Managed Projects</span>
+            <span class="metric-value">{{ pmData.managedProjects }}</span>
+          </div>
+        </div>
 
-    <!-- Empty State for Recent Activities -->
-    <div *ngIf="recentActivities.length === 0" class="empty-state-card">
-      <p class="empty-state-text">No recent activity recorded.</p>
-    </div>
-  </section>
+        <div class="metric-card">
+          <div class="metric-icon-badge accent">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Team Members</span>
+            <span class="metric-value">{{ pmData.teamMembers }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge info">
+            <i class="bi bi-lightning-charge-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Active Sprints</span>
+            <span class="metric-value">{{ pmData.activeSprints }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge warning">
+            <i class="bi bi-exclamation-circle-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Open Issues</span>
+            <span class="metric-value">{{ pmData.openIssues }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge success">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Completed Issues</span>
+            <span class="metric-value">{{ pmData.completedIssues }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Developer Metrics -->
+      <div *ngIf="devData" class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon-badge primary">
+            <i class="bi bi-person-workspace"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Assigned Issues</span>
+            <span class="metric-value">{{ devData.assignedIssues }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge success">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">Completed Issues</span>
+            <span class="metric-value">{{ devData.completedIssues }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge info">
+            <i class="bi bi-chat-left-text-fill"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">My Comments</span>
+            <span class="metric-value">{{ devData.myComments }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-badge secondary">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-title">My Worklogs</span>
+            <span class="metric-value">{{ devData.myWorkLogs }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION TWO: Active Projects -->
+    <section class="dashboard-section">
+      <div class="section-header d-flex justify-content-between align-items-center">
+        <h3 class="section-title">
+          <i class="bi bi-kanban me-2 text-primary"></i>Active Projects
+        </h3>
+        <span class="badge badge-neutral" *ngIf="activeProjects.length > 0">{{ activeProjects.length }} Active</span>
+      </div>
+      
+      <div *ngIf="activeProjects.length > 0" class="projects-cards-grid">
+        <div *ngFor="let project of activeProjects" class="project-card">
+          <div class="project-card-header">
+            <div class="project-title-container">
+              <h4 class="project-title">{{ project.name }}</h4>
+              <span class="project-owner" *ngIf="project.ownerName">
+                <i class="bi bi-person me-1"></i>{{ project.ownerName }}
+              </span>
+            </div>
+          </div>
+
+          <p class="project-description" *ngIf="project.description">
+            {{ project.description.length > 100 ? (project.description.substring(0, 100) + '...') : project.description }}
+          </p>
+
+          <div class="project-stats-grid">
+            <!-- Issues Progress -->
+            <div class="stat-item">
+              <div class="stat-header">
+                <span class="stat-label"><i class="bi bi-ticket-detailed me-1"></i>Issues</span>
+                <span class="stat-value">{{ project.completedIssues }} / {{ project.totalIssues }} completed</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" [style.width.%]="getIssueCompletionPercentage(project.completedIssues, project.totalIssues)"></div>
+              </div>
+            </div>
+
+            <!-- Sprints Progress -->
+            <div class="stat-item">
+              <div class="stat-header">
+                <span class="stat-label"><i class="bi bi-lightning-charge me-1"></i>Sprints</span>
+                <span class="stat-value">{{ project.completedSprints }} / {{ project.totalSprints }} completed</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill sprint-fill" [style.width.%]="getSprintCompletionPercentage(project.completedSprints, project.totalSprints)"></div>
+              </div>
+            </div>
+
+            <!-- Worklogs & Members -->
+            <div class="stat-row">
+              <div class="mini-stat">
+                <span class="mini-label"><i class="bi bi-clock me-1"></i>Log:</span>
+                <strong class="mini-value">{{ project.totalWorkLogHours }} hrs</strong>
+              </div>
+              <div class="mini-stat">
+                <span class="mini-label"><i class="bi bi-people me-1"></i>Members:</span>
+                <strong class="mini-value">{{ project.totalMembers }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card-actions">
+            <button class="btn btn-outline btn-sm" [routerLink]="['/projects', project.id, 'sprints']">
+              <i class="bi bi-lightning-charge me-1"></i>Sprints
+            </button>
+            <button class="btn btn-outline btn-sm" [routerLink]="['/projects', project.id, 'issues']">
+              <i class="bi bi-ticket-detailed me-1"></i>Issues
+            </button>
+            <button class="btn btn-outline btn-sm" [routerLink]="['/projects', project.id, 'members']">
+              <i class="bi bi-people me-1"></i>Members
+            </button>
+            <button class="btn btn-outline btn-sm" [routerLink]="['/projects', project.id, 'analytics']">
+              <i class="bi bi-graph-up me-1"></i>Analytics
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State for Active Projects -->
+      <div *ngIf="activeProjects.length === 0" class="empty-state-card">
+        <i class="bi bi-folder-x empty-icon"></i>
+        <h4 class="empty-state-title">No Active Projects</h4>
+        <p class="empty-state-text">There are currently no active projects associated with your account.</p>
+      </div>
+    </section>
+
+    <!-- SECTION THREE: Recent Activities -->
+    <section class="dashboard-section">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="bi bi-activity me-2 text-primary"></i>Recent Activities
+        </h3>
+      </div>
+
+      <div *ngIf="recentActivities.length > 0" class="activities-card">
+        <ul class="activity-timeline">
+          <li *ngFor="let activity of recentActivities" class="activity-item">
+            <div class="activity-badge" 
+                 [class.badge-create]="activity.action === 'CREATE'" 
+                 [class.badge-update]="activity.action === 'UPDATE'"
+                 [class.badge-delete]="activity.action === 'DELETE'">
+              {{ activity.action || 'ACTIVITY' }}
+            </div>
+            <div class="activity-details">
+              <p class="activity-message">
+                <strong class="user-name">{{ activity.userName }}</strong> {{ activity.message }}
+              </p>
+              <span class="activity-date">
+                <i class="bi bi-clock me-1"></i>{{ activity.createdAt | date:'medium' }}
+              </span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Empty State for Recent Activities -->
+      <div *ngIf="recentActivities.length === 0" class="empty-state-card">
+        <i class="bi bi-calendar-x empty-icon"></i>
+        <h4 class="empty-state-title">No Recent Activity</h4>
+        <p class="empty-state-text">Activity updates and logs will appear here once actions are performed.</p>
+      </div>
+    </section>
+  </div>
 </div>
+

@@ -1,80 +1,125 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>{{ isEditMode ? 'Edit' : 'Create' }} User</h2>
-  <button class="btn btn-outline" routerLink="/users">
-    <i class="bi bi-arrow-left me-1"></i> Back to Users
-  </button>
-</div>
-
-<div *ngIf="error" class="alert alert-danger mb-4">
-  {{ error }}
-</div>
-
-<div class="card form-card">
-  <div *ngIf="isLoading" class="loading-overlay">
-    <div class="spinner"></div>
-  </div>
-
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstName" class="form-control" formControlName="firstName" placeholder="John">
-        <div class="error-text" *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
-          First name is required.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" class="form-control" formControlName="lastName" placeholder="Doe">
-        <div class="error-text" *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
-          Last name is required.
-        </div>
-      </div>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h1 class="page-title">{{ isEditMode ? 'Edit User' : 'Create User' }}</h1>
+      <p class="page-subtitle">{{ isEditMode ? 'Update user account profile, role assignment, and status' : 'Add a new administrative user to the workspace' }}</p>
     </div>
-
-    <div class="form-group">
-      <label for="email">Email Address</label>
-      <input type="email" id="email" class="form-control" formControlName="email" placeholder="john.doe@example.com">
-      <div class="error-text" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
-        Valid email is required.
-      </div>
-    </div>
-
-    <div class="form-group" *ngIf="!isEditMode">
-      <label for="password">Password</label>
-      <input type="password" id="password" class="form-control" formControlName="password" placeholder="Min 8 characters">
-      <div class="error-text" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
-        <span *ngIf="userForm.get('password')?.errors?.['required']">Password is required.</span>
-        <span *ngIf="userForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</span>
-      </div>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="roleIds">Role</label>
-        <select id="roleIds" class="form-control" formControlName="roleIds">
-          <option *ngFor="let role of availableRoles" [ngValue]="role.id">{{ role.name }}</option>
-        </select>
-        <div class="error-text" *ngIf="userForm.get('roleIds')?.invalid && userForm.get('roleIds')?.touched">
-          Role is required.
-        </div>
-      </div>
-
-      <div class="form-group" *ngIf="isEditMode">
-        <label for="status">Status</label>
-        <select id="status" class="form-control" formControlName="status">
-          <option value="ACTIVE">ACTIVE</option>
-          <option value="INACTIVE">INACTIVE</option>
-          <option value="SUSPENDED">SUSPENDED</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-actions mt-4">
-      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || isLoading">
-        <i class="bi bi-check-lg me-1"></i> {{ isLoading ? 'Saving...' : (isEditMode ? 'Update User' : 'Create User') }}
+    <div class="page-actions">
+      <button class="btn btn-outline" routerLink="/users">
+        <i class="bi bi-arrow-left me-1"></i> Back to Users
       </button>
     </div>
-  </form>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card form-card-container">
+    <div *ngIf="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p class="m-0 font-weight-bold mt-2">Saving user details...</p>
+    </div>
+
+    <div class="card-header">
+      <h3 class="card-title m-0 font-weight-bold d-flex align-items-center">
+        <i class="bi bi-person-badge me-2 text-primary"></i>User Account Details
+      </h3>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid mb-4">
+          <div class="form-group mb-0">
+            <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+            <input type="text" 
+                   id="firstName" 
+                   class="form-control" 
+                   formControlName="firstName" 
+                   placeholder="John"
+                   [class.is-invalid]="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+            <div class="invalid-feedback" *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+              First name is required.
+            </div>
+          </div>
+
+          <div class="form-group mb-0">
+            <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+            <input type="text" 
+                   id="lastName" 
+                   class="form-control" 
+                   formControlName="lastName" 
+                   placeholder="Doe"
+                   [class.is-invalid]="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+            <div class="invalid-feedback" *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+              Last name is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+          <input type="email" 
+                 id="email" 
+                 class="form-control" 
+                 formControlName="email" 
+                 placeholder="john.doe@example.com"
+                 [class.is-invalid]="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+          <div class="invalid-feedback" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+            Valid email is required.
+          </div>
+        </div>
+
+        <div class="form-group mb-4" *ngIf="!isEditMode">
+          <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+          <input type="password" 
+                 id="password" 
+                 class="form-control" 
+                 formControlName="password" 
+                 placeholder="Min 8 characters"
+                 [class.is-invalid]="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+          <div class="invalid-feedback" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+            <span *ngIf="userForm.get('password')?.errors?.['required']">Password is required.</span>
+            <span *ngIf="userForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</span>
+          </div>
+        </div>
+
+        <div class="form-grid mb-4">
+          <div class="form-group mb-0">
+            <label for="roleIds" class="form-label">Role <span class="text-danger">*</span></label>
+            <select id="roleIds" 
+                    class="form-control" 
+                    formControlName="roleIds"
+                    [class.is-invalid]="userForm.get('roleIds')?.invalid && userForm.get('roleIds')?.touched">
+              <option *ngFor="let role of availableRoles" [ngValue]="role.id">{{ role.name }}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="userForm.get('roleIds')?.invalid && userForm.get('roleIds')?.touched">
+              Role assignment is required.
+            </div>
+          </div>
+
+          <div class="form-group mb-0" *ngIf="isEditMode">
+            <label for="status" class="form-label">Account Status</label>
+            <select id="status" class="form-control" formControlName="status">
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+              <option value="SUSPENDED">SUSPENDED</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions d-flex justify-content-end gap-3 pt-3 border-top">
+          <button type="button" class="btn btn-outline" routerLink="/users">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || isLoading">
+            <i class="bi bi-check-lg me-1"></i> {{ isLoading ? 'Saving...' : (isEditMode ? 'Update User' : 'Create User') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+

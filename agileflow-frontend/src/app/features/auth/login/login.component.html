@@ -1,57 +1,205 @@
 <div class="auth-container">
   <div class="auth-card">
+    <!-- Brand Header -->
     <div class="auth-header">
-      <h1>AgileFlow</h1>
-      <p>Sign in to your account to continue</p>
+      <div class="brand-logo-badge">
+        <i class="bi bi-layers-fill"></i>
+      </div>
+      <h1 class="brand-title">AgileFlow</h1>
+      <p class="brand-subtitle">Sign in to your workspace to continue</p>
     </div>
 
-    <div *ngIf="errorMessage" class="alert alert-danger">
-      {{ errorMessage }}
+    <!-- Error Alert -->
+    <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center gap-2">
+      <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+      <span>{{ errorMessage }}</span>
     </div>
 
+    <!-- Sign In Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
+      <div class="form-group mb-4">
         <label for="email" class="form-label">Email address</label>
-        <input 
-          type="email" 
-          id="email" 
-          class="form-control" 
-          formControlName="email"
-          [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-          placeholder="name@company.com"
-          autocomplete="email"
-        >
-        <div class="invalid-feedback" *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched">
+        <div class="input-icon-group">
+          <i class="bi bi-envelope-fill input-icon"></i>
+          <input 
+            type="email" 
+            id="email" 
+            class="form-control input-with-icon" 
+            formControlName="email"
+            [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+            placeholder="name@company.com"
+            autocomplete="email"
+          >
+        </div>
+        <div class="invalid-feedback d-block" *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched">
           Email is required
         </div>
-        <div class="invalid-feedback" *ngIf="loginForm.get('email')?.errors?.['email'] && loginForm.get('email')?.touched">
+        <div class="invalid-feedback d-block" *ngIf="loginForm.get('email')?.errors?.['email'] && loginForm.get('email')?.touched">
           Please enter a valid email address
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group mb-4">
         <label for="password" class="form-label">Password</label>
-        <input 
-          type="password" 
-          id="password" 
-          class="form-control" 
-          formControlName="password"
-          [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-          placeholder="••••••••"
-          autocomplete="current-password"
-        >
-        <div class="invalid-feedback" *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched">
+        <div class="input-icon-group">
+          <i class="bi bi-lock-fill input-icon"></i>
+          <input 
+            type="password" 
+            id="password" 
+            class="form-control input-with-icon" 
+            formControlName="password"
+            [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          >
+        </div>
+        <div class="invalid-feedback d-block" *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched">
           Password is required
         </div>
       </div>
 
       <button 
         type="submit" 
-        class="btn btn-primary w-100" 
+        class="btn btn-primary btn-lg w-100 mt-2 d-flex align-items-center justify-content-center gap-2" 
         [disabled]="loginForm.invalid || isLoading"
       >
-        {{ isLoading ? 'Signing in...' : 'Sign in' }}
+        <div class="spinner-sm" *ngIf="isLoading"></div>
+        <span>{{ isLoading ? 'Signing in...' : 'Sign in' }}</span>
+        <i class="bi bi-arrow-right" *ngIf="!isLoading"></i>
       </button>
     </form>
   </div>
+
+  <!-- FLOATING ANIMATED TREASURE BOX BUTTON -->
+  <button type="button" class="treasure-box-btn" (click)="openDemoModal()" title="Click to view Demo Credentials">
+    <div class="treasure-icon-wrapper">
+      <i class="bi bi-box2-heart-fill treasure-icon"></i>
+    </div>
+    <div class="treasure-text-group">
+      <span class="treasure-label">Demo Credentials</span>
+      <span class="treasure-sublabel">Click to unlock accounts</span>
+    </div>
+    <span class="treasure-badge">DEMO</span>
+  </button>
+
+  <!-- DEMO CREDENTIALS MODAL -->
+  <div class="demo-modal-backdrop fade show" *ngIf="showDemoModal" (click)="closeDemoModal()"></div>
+  <div class="demo-modal-wrapper" *ngIf="showDemoModal" (click)="closeDemoModal()">
+    <div class="demo-modal-card shadow-2xl" (click)="$event.stopPropagation()">
+      <button type="button" class="demo-modal-close" (click)="closeDemoModal()" aria-label="Close">
+        <i class="bi bi-x"></i>
+      </button>
+
+      <div class="demo-modal-header">
+        <div class="demo-header-badge">
+          <i class="bi bi-key-fill"></i>
+        </div>
+        <div>
+          <h4 class="demo-modal-title">Demo Accounts</h4>
+          <p class="demo-modal-subtitle">Use any pre-configured demo account to explore AgileFlow features by role.</p>
+        </div>
+      </div>
+
+      <div class="demo-account-list">
+        <!-- ADMIN ACCOUNT -->
+        <div class="demo-account-card admin-theme">
+          <div class="account-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="role-pill role-admin">ADMIN</span>
+              <strong class="account-name">System Admin</strong>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary-soft" (click)="fillCredentials('admin@agileflow.com', 'Admin@123')">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Auto-Fill
+            </button>
+          </div>
+          <p class="account-desc">Full admin access to user management, roles, and global audit logs.</p>
+          <div class="credentials-row">
+            <div class="cred-item">
+              <span class="cred-label">Email:</span>
+              <code class="cred-val">admin&#64;agileflow.com</code>
+              <button class="copy-btn" (click)="copyToClipboard('admin@agileflow.com', 'Admin Email')" title="Copy Email">
+                <i class="bi bi-copy"></i>
+              </button>
+            </div>
+            <div class="cred-item">
+              <span class="cred-label">Password:</span>
+              <code class="cred-val">Admin&#64;123</code>
+              <button class="copy-btn" (click)="copyToClipboard('Admin@123', 'Admin Password')" title="Copy Password">
+                <i class="bi bi-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROJECT MANAGER ACCOUNT -->
+        <div class="demo-account-card pm-theme">
+          <div class="account-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="role-pill role-pm">PROJECT MANAGER</span>
+              <strong class="account-name">Project Manager</strong>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary-soft" (click)="fillCredentials('pm@gmail.com', 'manager@1234')">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Auto-Fill
+            </button>
+          </div>
+          <p class="account-desc">Create projects, manage sprints, assign team members, and track velocity.</p>
+          <div class="credentials-row">
+            <div class="cred-item">
+              <span class="cred-label">Email:</span>
+              <code class="cred-val">pm&#64;gmail.com</code>
+              <button class="copy-btn" (click)="copyToClipboard('pm@gmail.com', 'PM Email')" title="Copy Email">
+                <i class="bi bi-copy"></i>
+              </button>
+            </div>
+            <div class="cred-item">
+              <span class="cred-label">Password:</span>
+              <code class="cred-val">manager&#64;1234</code>
+              <button class="copy-btn" (click)="copyToClipboard('manager@1234', 'PM Password')" title="Copy Password">
+                <i class="bi bi-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEVELOPER ACCOUNT -->
+        <div class="demo-account-card dev-theme">
+          <div class="account-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <span class="role-pill role-dev">DEVELOPER</span>
+              <strong class="account-name">Developer</strong>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary-soft" (click)="fillCredentials('dev@gmail.com', 'dev@1234')">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Auto-Fill
+            </button>
+          </div>
+          <p class="account-desc">View assigned issues, update ticket statuses, and log daily work hours.</p>
+          <div class="credentials-row">
+            <div class="cred-item">
+              <span class="cred-label">Email:</span>
+              <code class="cred-val">dev&#64;gmail.com</code>
+              <button class="copy-btn" (click)="copyToClipboard('dev@gmail.com', 'Dev Email')" title="Copy Email">
+                <i class="bi bi-copy"></i>
+              </button>
+            </div>
+            <div class="cred-item">
+              <span class="cred-label">Password:</span>
+              <code class="cred-val">dev&#64;1234</code>
+              <button class="copy-btn" (click)="copyToClipboard('dev@1234', 'Dev Password')" title="Copy Password">
+                <i class="bi bi-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST NOTIFICATION -->
+  <div class="demo-toast" *ngIf="copiedToastMessage">
+    <i class="bi bi-check-circle-fill me-2 text-success"></i>
+    <span>{{ copiedToastMessage }}</span>
+  </div>
 </div>
+
+

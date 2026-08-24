@@ -1,83 +1,126 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <div class="d-flex align-items-center gap-3">
-    <button class="btn btn-outline btn-sm" [routerLink]="['/projects']">
-      <i class="bi bi-arrow-left me-1"></i> Back
-    </button>
-    <h2 class="m-0">Issues</h2>
-  </div>
-  <div class="d-flex gap-3 align-items-center">
-    <div class="search-container d-flex">
-      <input type="text" class="form-control" placeholder="Search issues..." [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()">
-      <button class="btn btn-outline ms-2" (click)="onSearch()">
-        <i class="bi bi-search me-1"></i> Search
-      </button>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline btn-sm" [routerLink]="['/projects']">
+          <i class="bi bi-arrow-left me-1"></i> Back
+        </button>
+        <h1 class="page-title">Issues</h1>
+        <span class="badge badge-primary" *ngIf="totalElements > 0">{{ totalElements }} Total</span>
+      </div>
+      <p class="page-subtitle">Track, filter, and manage tasks, bugs, and user stories across this project</p>
     </div>
-    <button class="btn btn-primary" [routerLink]="['/projects', projectId, 'issues', 'new']">
-      <i class="bi bi-plus-lg me-1"></i> Create Issue
-    </button>
-  </div>
-</div>
+    
+    <div class="page-actions flex-wrap">
+      <!-- Search Input Group -->
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" 
+               class="form-control search-input" 
+               placeholder="Search issues..." 
+               [(ngModel)]="searchKeyword" 
+               (keyup.enter)="onSearch()">
+        <button class="btn btn-outline btn-sm" (click)="onSearch()">Search</button>
+      </div>
 
-<div *ngIf="isLoading" class="loading-state">
-  <div class="spinner"></div>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">
-  {{ error }}
-</div>
-
-<div class="card" *ngIf="!isLoading && !error">
-  <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Title</th>
-          <th>Priority</th>
-          <th>Status</th>
-          <th>Assignee</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let issue of issues" class="clickable-row" [routerLink]="['/projects', projectId, 'issues', issue.id]">
-          <td class="text-muted">#{{ issue.id }}</td>
-          <td>
-            <span class="badge" [ngClass]="'badge-type-' + issue.type.toLowerCase()">
-              {{ issue.type }}
-            </span>
-          </td>
-          <td><strong>{{ issue.title }}</strong></td>
-          <td>
-            <span class="badge" [ngClass]="'badge-priority-' + issue.priority.toLowerCase()">
-              {{ issue.priority }}
-            </span>
-          </td>
-          <td>
-            <span class="badge badge-status" [ngClass]="'badge-status-' + issue.status.toLowerCase()">
-              {{ issue.status }}
-            </span>
-          </td>
-          <td>{{ issue.assigneeName || 'Unassigned' }}</td>
-        </tr>
-        <tr *ngIf="issues.length === 0">
-          <td colspan="6" class="text-center py-4">No issues found.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="totalElements > 0">
-    <div class="text-muted text-sm">
-      Showing {{ pageIndex * pageSize + 1 }} to {{ min((pageIndex + 1) * pageSize, totalElements) }} of {{ totalElements }} issues
-    </div>
-    <div class="pagination gap-2 d-flex">
-      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
-        <i class="bi bi-chevron-left me-1"></i> Previous
-      </button>
-      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
-        Next <i class="bi bi-chevron-right ms-1"></i>
+      <!-- Create Issue Button -->
+      <button class="btn btn-primary" [routerLink]="['/projects', projectId, 'issues', 'new']">
+        <i class="bi bi-plus-lg"></i> Create Issue
       </button>
     </div>
   </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state-card">
+    <div class="spinner"></div>
+    <p class="m-0 font-weight-bold">Loading project issues...</p>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Issues Card Table -->
+  <div class="card" *ngIf="!isLoading && !error">
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th style="width: 80px;">Key</th>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Assignee</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let issue of issues" class="clickable-row" [routerLink]="['/projects', projectId, 'issues', issue.id]">
+            <td>
+              <span class="issue-id-badge">#{{ issue.id }}</span>
+            </td>
+            <td>
+              <span class="type-badge" [ngClass]="'badge-type-' + issue.type.toLowerCase()">
+                <i class="bi" 
+                   [class.bi-bug-fill]="issue.type === 'BUG'"
+                   [class.bi-bookmark-star-fill]="issue.type === 'STORY'"
+                   [class.bi-check2-square]="issue.type === 'TASK'"
+                   [class.bi-lightning-fill]="issue.type === 'EPIC'"></i>
+                {{ issue.type }}
+              </span>
+            </td>
+            <td>
+              <span class="issue-title-text">{{ issue.title }}</span>
+            </td>
+            <td>
+              <span class="priority-badge" [ngClass]="'badge-priority-' + issue.priority.toLowerCase()">
+                <i class="bi bi-circle-fill me-1 text-xs"></i>
+                {{ issue.priority }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="'badge-status-' + issue.status.toLowerCase()">
+                {{ issue.status }}
+              </span>
+            </td>
+            <td>
+              <div class="assignee-chip" *ngIf="issue.assigneeName">
+                <i class="bi bi-person-circle assignee-icon"></i>
+                <span class="assignee-name">{{ issue.assigneeName }}</span>
+              </div>
+              <span class="text-muted text-xs" *ngIf="!issue.assigneeName">Unassigned</span>
+            </td>
+          </tr>
+          <tr *ngIf="issues.length === 0">
+            <td colspan="6" class="text-center py-5">
+              <div class="empty-table-state">
+                <i class="bi bi-ticket-detailed empty-icon"></i>
+                <h4 class="empty-title">No Issues Found</h4>
+                <p class="empty-text">No tickets match your search criteria or project scope.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Table Footer / Pagination -->
+    <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-3" *ngIf="totalElements > 0">
+      <div class="text-muted text-sm">
+        Showing <strong>{{ pageIndex * pageSize + 1 }}</strong> to <strong>{{ min((pageIndex + 1) * pageSize, totalElements) }}</strong> of <strong>{{ totalElements }}</strong> issues
+      </div>
+      <div class="pagination gap-2 d-flex">
+        <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+          <i class="bi bi-chevron-left me-1"></i> Previous
+        </button>
+        <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+          Next <i class="bi bi-chevron-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+

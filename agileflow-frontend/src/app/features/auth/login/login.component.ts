@@ -24,6 +24,45 @@ export class LoginComponent {
 
   isLoading = false;
   errorMessage = '';
+  showDemoModal = false;
+  copiedToastMessage = '';
+  private toastTimeout: any;
+
+  openDemoModal(): void {
+    this.showDemoModal = true;
+  }
+
+  closeDemoModal(): void {
+    this.showDemoModal = false;
+  }
+
+  fillCredentials(email: string, pass: string): void {
+    this.loginForm.patchValue({
+      email: email,
+      password: pass
+    });
+    this.loginForm.get('email')?.markAsTouched();
+    this.loginForm.get('password')?.markAsTouched();
+    this.showToast('Credentials loaded into login form!');
+    this.closeDemoModal();
+  }
+
+  copyToClipboard(text: string, label: string): void {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+    }
+    this.showToast(`${label} copied to clipboard!`);
+  }
+
+  private showToast(msg: string): void {
+    this.copiedToastMessage = msg;
+    if (this.toastTimeout) {
+      clearTimeout(this.toastTimeout);
+    }
+    this.toastTimeout = setTimeout(() => {
+      this.copiedToastMessage = '';
+    }, 2500);
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
@@ -54,3 +93,4 @@ export class LoginComponent {
     });
   }
 }
+

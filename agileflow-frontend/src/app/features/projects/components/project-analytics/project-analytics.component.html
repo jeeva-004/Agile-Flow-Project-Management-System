@@ -1,142 +1,101 @@
-<div class="page-header d-flex justify-content-between align-items-center mb-4">
-  <h2>Project Reports & Analytics</h2>
-  <div class="d-flex gap-2">
-    <button class="btn btn-outline" routerLink="/projects">Back to Projects</button>
-  </div>
-</div>
-
-<div *ngIf="isLoading" class="loading-state">
-  <div class="spinner"></div>
-</div>
-
-<div *ngIf="error" class="alert alert-danger">
-  {{ error }}
-</div>
-
-<div *ngIf="!isLoading && !error">
-  <!-- Summary Report -->
-  <div class="card mb-4" *ngIf="summaryReport">
-    <div class="card-header border-bottom">
-      <h4 class="m-0">Executive Summary</h4>
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <h1 class="page-title">Project Reports & Analytics</h1>
+      <p class="page-subtitle">Executive metrics, velocity metrics, and worklog breakdowns</p>
     </div>
-    <div class="card-body">
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-title">Total Issues</div>
-          <div class="metric-value">{{ summaryReport.totalIssues }}</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-title">Completed Issues</div>
-          <div class="metric-value">{{ summaryReport.completedIssues }}</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-title">Completion</div>
-          <div class="metric-value">{{ summaryReport.completionPercentage | number:'1.0-1' }}%</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-title">Total Logged Hours</div>
-          <div class="metric-value">{{ summaryReport.totalWorklogHours }}h</div>
-        </div>
-      </div>
-      
-      <div class="mt-4" *ngIf="summaryReport.memberContribution?.length">
-        <h5>Member Contribution</h5>
-        <div class="table-responsive mt-3">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Member</th>
-                <th>Assigned Issues</th>
-                <th>Logged Hours</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let member of summaryReport.memberContribution">
-                <td><strong>{{ member.userName }}</strong></td>
-                <td>{{ member.assignedIssueCount }}</td>
-                <td>{{ member.totalLoggedHours }}h</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="page-actions">
+      <button class="btn btn-outline" routerLink="/projects">
+        <i class="bi bi-arrow-left me-1"></i> Back to Projects
+      </button>
     </div>
   </div>
 
-  <div class="row">
-    <!-- Status Breakdown -->
-    <div class="col-md-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header border-bottom">
-          <h4 class="m-0">Issues by Status</h4>
-        </div>
-        <div class="card-body">
-          <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let stat of statusBreakdown">
-              {{ stat.status }}
-              <span class="badge badge-primary">{{ stat.count }}</span>
-            </li>
-            <li class="list-group-item text-center text-muted" *ngIf="!statusBreakdown?.length">
-              No data
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Priority Breakdown -->
-    <div class="col-md-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header border-bottom">
-          <h4 class="m-0">Issues by Priority</h4>
-        </div>
-        <div class="card-body">
-          <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let p of priorityBreakdown">
-              {{ p.priority }}
-              <span class="badge badge-{{ getPriorityClass(p.priority) }}">{{ p.count }}</span>
-            </li>
-            <li class="list-group-item text-center text-muted" *ngIf="!priorityBreakdown?.length">
-              No data
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state-card">
+    <div class="spinner"></div>
+    <p class="m-0 font-weight-bold">Loading project analytics...</p>
   </div>
 
-  <div class="row">
-    <!-- Sprint Velocity -->
-    <div class="col-md-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header border-bottom">
-          <h4 class="m-0">Sprint Velocity</h4>
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="d-flex flex-column gap-5">
+    <!-- Executive Summary Card -->
+    <div class="card" *ngIf="summaryReport">
+      <div class="card-header">
+        <h4 class="m-0 font-weight-bold d-flex align-items-center">
+          <i class="bi bi-bar-chart-line me-2 text-primary"></i>Executive Summary
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon-badge primary">
+              <i class="bi bi-ticket-detailed-fill"></i>
+            </div>
+            <div class="metric-info">
+              <span class="metric-title">Total Issues</span>
+              <span class="metric-value">{{ summaryReport.totalIssues }}</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-badge success">
+              <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="metric-info">
+              <span class="metric-title">Completed Issues</span>
+              <span class="metric-value">{{ summaryReport.completedIssues }}</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-badge accent">
+              <i class="bi bi-percent"></i>
+            </div>
+            <div class="metric-info">
+              <span class="metric-title">Completion Rate</span>
+              <span class="metric-value">{{ summaryReport.completionPercentage | number:'1.0-1' }}%</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-badge info">
+              <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="metric-info">
+              <span class="metric-title">Logged Hours</span>
+              <span class="metric-value">{{ summaryReport.totalWorklogHours }}h</span>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
+        
+        <!-- Member Contribution Table -->
+        <div class="mt-5" *ngIf="summaryReport.memberContribution?.length">
+          <h5 class="font-weight-bold mb-3 d-flex align-items-center">
+            <i class="bi bi-people-fill me-2 text-primary"></i>Member Contribution
+          </h5>
           <div class="table-responsive">
-            <table class="table table-sm">
+            <table class="table align-middle">
               <thead>
                 <tr>
-                  <th>Sprint</th>
-                  <th>Completed</th>
-                  <th>Total</th>
-                  <th>Velocity</th>
+                  <th>Member</th>
+                  <th>Assigned Issues</th>
+                  <th>Logged Hours</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let sprint of sprintVelocity">
-                  <td>{{ sprint.sprintName }}</td>
-                  <td>{{ sprint.completedIssues }}</td>
-                  <td>{{ sprint.totalIssues }}</td>
+                <tr *ngFor="let member of summaryReport.memberContribution">
                   <td>
-                    <div class="progress" style="height: 6px;">
-                      <div class="progress-bar" role="progressbar" 
-                           [style.width.%]="sprint.totalIssues ? (sprint.completedIssues / sprint.totalIssues) * 100 : 0"></div>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="avatar-sm">{{ member.userName.charAt(0) }}</div>
+                      <strong>{{ member.userName }}</strong>
                     </div>
                   </td>
-                </tr>
-                <tr *ngIf="!sprintVelocity?.length">
-                  <td colspan="4" class="text-center text-muted">No sprint data</td>
+                  <td><span class="badge badge-neutral">{{ member.assignedIssueCount }} Issues</span></td>
+                  <td><span class="badge badge-info">{{ member.totalLoggedHours }} hrs</span></td>
                 </tr>
               </tbody>
             </table>
@@ -144,21 +103,106 @@
         </div>
       </div>
     </div>
-    
-    <!-- Worklog Summary -->
-    <div class="col-md-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header border-bottom">
-          <h4 class="m-0">Worklog Summary</h4>
+
+    <!-- 2-Column Row 1: Status & Priority -->
+    <div class="row-grid">
+      <!-- Status Breakdown Card -->
+      <div class="card">
+        <div class="card-header">
+          <h4 class="m-0 font-weight-bold d-flex align-items-center">
+            <i class="bi bi-pie-chart-fill me-2 text-primary"></i>Issues by Status
+          </h4>
         </div>
-        <div class="card-body">
-          <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let log of worklogSummary">
-              {{ log.userName }}
-              <span class="badge badge-info">{{ log.totalHours }}h</span>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let stat of statusBreakdown">
+              <span class="font-weight-medium">{{ stat.status }}</span>
+              <span class="badge badge-primary">{{ stat.count }}</span>
             </li>
-            <li class="list-group-item text-center text-muted" *ngIf="!worklogSummary?.length">
-              No worklogs recorded
+            <li class="list-group-item text-center text-muted py-4" *ngIf="!statusBreakdown?.length">
+              No status data recorded
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Priority Breakdown Card -->
+      <div class="card">
+        <div class="card-header">
+          <h4 class="m-0 font-weight-bold d-flex align-items-center">
+            <i class="bi bi-filter-square-fill me-2 text-primary"></i>Issues by Priority
+          </h4>
+        </div>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let p of priorityBreakdown">
+              <span class="font-weight-medium">{{ p.priority }}</span>
+              <span class="badge badge-{{ getPriorityClass(p.priority) }}">{{ p.count }}</span>
+            </li>
+            <li class="list-group-item text-center text-muted py-4" *ngIf="!priorityBreakdown?.length">
+              No priority data recorded
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-Column Row 2: Velocity & Worklogs -->
+    <div class="row-grid">
+      <!-- Sprint Velocity Card -->
+      <div class="card">
+        <div class="card-header">
+          <h4 class="m-0 font-weight-bold d-flex align-items-center">
+            <i class="bi bi-lightning-charge-fill me-2 text-primary"></i>Sprint Velocity
+          </h4>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Sprint</th>
+                  <th>Completed</th>
+                  <th>Total</th>
+                  <th>Velocity Progress</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sprint of sprintVelocity">
+                  <td><strong>{{ sprint.sprintName }}</strong></td>
+                  <td>{{ sprint.completedIssues }}</td>
+                  <td>{{ sprint.totalIssues }}</td>
+                  <td>
+                    <div class="progress-bar-bg">
+                      <div class="progress-bar-fill" role="progressbar" 
+                           [style.width.%]="sprint.totalIssues ? (sprint.completedIssues / sprint.totalIssues) * 100 : 0"></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="!sprintVelocity?.length">
+                  <td colspan="4" class="text-center text-muted py-4">No sprint velocity data available</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Worklog Summary Card -->
+      <div class="card">
+        <div class="card-header">
+          <h4 class="m-0 font-weight-bold d-flex align-items-center">
+            <i class="bi bi-clock me-2 text-primary"></i>Worklog Summary
+          </h4>
+        </div>
+        <div class="card-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let log of worklogSummary">
+              <span class="font-weight-medium">{{ log.userName }}</span>
+              <span class="badge badge-info">{{ log.totalHours }} hrs</span>
+            </li>
+            <li class="list-group-item text-center text-muted py-4" *ngIf="!worklogSummary?.length">
+              No worklogs recorded for this project
             </li>
           </ul>
         </div>
@@ -166,3 +210,4 @@
     </div>
   </div>
 </div>
+

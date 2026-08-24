@@ -1,6 +1,6 @@
 <div class="layout-container" [class.mobile-sidebar-active]="isMobileSidebarOpen">
   <div class="sidebar-backdrop" (click)="closeMobileSidebar()" *ngIf="isMobileSidebarOpen"></div>
-  <app-sidebar class="layout-sidebar" [class.show-mobile]="isMobileSidebarOpen" (closeSidebar)="closeMobileSidebar()" (click)="closeMobileSidebar()"></app-sidebar>
+  <app-sidebar class="layout-sidebar" [class.show-mobile]="isMobileSidebarOpen" (closeSidebar)="closeMobileSidebar()"></app-sidebar>
   <div class="layout-content">
     <app-top-nav class="layout-topnav" (toggleSidebar)="toggleMobileSidebar()"></app-top-nav>
     <main class="layout-main">
@@ -8,3 +8,4 @@
     </main>
   </div>
 </div>
+

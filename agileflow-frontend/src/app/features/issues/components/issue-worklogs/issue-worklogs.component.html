@@ -1,96 +1,102 @@
-<div class="worklogs-section mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="section-title m-0">Time Tracking ({{ totalElements }})</h4>
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h4 class="card-title m-0 d-flex align-items-center gap-2">
+      <i class="bi bi-clock-history text-primary"></i>
+      <span>Time Tracking ({{ totalElements }})</span>
+    </h4>
     <div class="text-muted text-sm font-weight-medium">
-      Logged: <strong>{{ totalHours }}h</strong>
+      Total Logged: <strong class="text-primary">{{ totalHours }}h</strong>
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="loading-state">
-    <div class="spinner"></div>
-  </div>
+  <div class="card-body">
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+    </div>
 
-  <!-- Worklogs List -->
-  <div class="worklogs-list" *ngIf="!isLoading">
-    <div class="worklog-card" *ngFor="let log of worklogs">
-      <div class="worklog-header">
-        <div class="worklog-user">
-          <div class="avatar-sm">{{ log.userName.charAt(0) }}</div>
-          <strong>{{ log.userName }}</strong>
-        </div>
-        <div class="worklog-meta d-flex align-items-center gap-2">
-          <span class="badge badge-hours">{{ log.hoursSpent }}h</span>
-          <span class="worklog-date">{{ log.workDate | date }}</span>
-          <button *ngIf="editingWorkLogId !== log.id" class="btn-icon text-primary" title="Edit Worklog" (click)="startEdit(log)">
-            <i class="bi bi-pencil-square"></i>
-          </button>
-          <button class="btn-icon text-danger" title="Delete Worklog" (click)="deleteWorkLog(log.id)">
-            <i class="bi bi-trash3"></i>
-          </button>
-        </div>
-      </div>
-      <div class="worklog-desc" *ngIf="editingWorkLogId !== log.id">
-        {{ log.description }}
-      </div>
-      <div class="worklog-edit-body mt-2" *ngIf="editingWorkLogId === log.id">
-        <form [formGroup]="editForm" (ngSubmit)="submitEdit(log.id)">
-          <div class="d-flex gap-2 mb-2">
-            <input type="number" class="form-control form-control-sm" formControlName="hoursSpent" min="0.1" step="0.5" style="width: 80px">
-            <input type="date" class="form-control form-control-sm" formControlName="workDate" style="width: 140px">
+    <!-- Worklogs List -->
+    <div class="worklogs-list" *ngIf="!isLoading">
+      <div class="worklog-card" *ngFor="let log of worklogs">
+        <div class="worklog-header">
+          <div class="worklog-user">
+            <div class="avatar-sm">{{ log.userName.charAt(0) }}</div>
+            <strong>{{ log.userName }}</strong>
           </div>
-          <div class="form-group mb-2">
-            <input type="text" class="form-control form-control-sm" formControlName="description">
-          </div>
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-sm" [disabled]="editForm.invalid">
-              <i class="bi bi-check-lg me-1"></i> Save
+          <div class="worklog-meta d-flex align-items-center gap-2">
+            <span class="badge badge-hours">{{ log.hoursSpent }}h</span>
+            <span class="worklog-date">{{ log.workDate | date:'mediumDate' }}</span>
+            <button *ngIf="editingWorkLogId !== log.id" class="btn-icon btn-sm text-primary" title="Edit Worklog" (click)="startEdit(log)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="btn-icon btn-sm text-danger" title="Delete Worklog" (click)="deleteWorkLog(log.id)">
+              <i class="bi bi-trash3"></i>
             </button>
           </div>
-        </form>
-      </div>
-    </div>
-    
-    <div *ngIf="worklogs.length === 0" class="no-worklogs">
-      No time logged yet.
-    </div>
-  </div>
-
-  <!-- Pagination if needed -->
-  <div class="pagination d-flex justify-content-end gap-2 mt-3" *ngIf="totalElements > pageSize">
-    <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
-      <i class="bi bi-chevron-left me-1"></i> Previous
-    </button>
-    <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
-      Next <i class="bi bi-chevron-right ms-1"></i>
-    </button>
-  </div>
-
-  <!-- Add Worklog Form -->
-  <div class="add-worklog-box mt-4">
-    <h5 class="text-sm text-uppercase text-muted mb-3">Log Time</h5>
-    <form [formGroup]="workLogForm" (ngSubmit)="onSubmit()">
-      <div class="form-grid mb-3">
-        <div class="form-group">
-          <label>Hours Spent</label>
-          <input type="number" class="form-control" formControlName="hoursSpent" min="0.1" step="0.5">
         </div>
-        <div class="form-group">
-          <label>Work Date</label>
-          <input type="date" class="form-control" formControlName="workDate">
+        <div class="worklog-desc" *ngIf="editingWorkLogId !== log.id">
+          {{ log.description }}
+        </div>
+        <div class="worklog-edit-body mt-2" *ngIf="editingWorkLogId === log.id">
+          <form [formGroup]="editForm" (ngSubmit)="submitEdit(log.id)">
+            <div class="d-flex gap-2 mb-2">
+              <input type="number" class="form-control form-control-sm" formControlName="hoursSpent" min="0.1" step="0.5" style="width: 90px">
+              <input type="date" class="form-control form-control-sm" formControlName="workDate" style="width: 150px">
+            </div>
+            <div class="form-group mb-2">
+              <input type="text" class="form-control form-control-sm" formControlName="description">
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm" [disabled]="editForm.invalid">
+                <i class="bi bi-check-lg me-1"></i> Save
+              </button>
+            </div>
+          </form>
         </div>
       </div>
       
-      <div class="form-group mb-3">
-        <label>Description</label>
-        <input type="text" class="form-control" formControlName="description" placeholder="What did you work on?">
+      <div *ngIf="worklogs.length === 0" class="no-worklogs">
+        No time logged yet on this issue.
       </div>
-      
-      <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary btn-sm" [disabled]="workLogForm.invalid || isSubmitting">
-          <i class="bi bi-clock-history me-1"></i> {{ isSubmitting ? 'Logging...' : 'Log Work' }}
-        </button>
-      </div>
-    </form>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination d-flex justify-content-end gap-2 mt-3" *ngIf="totalElements > pageSize">
+      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+        <i class="bi bi-chevron-left me-1"></i> Previous
+      </button>
+      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+        Next <i class="bi bi-chevron-right ms-1"></i>
+      </button>
+    </div>
+
+    <!-- Add Worklog Form -->
+    <div class="add-worklog-box mt-4">
+      <h5 class="form-section-title mb-3">Log Spent Time</h5>
+      <form [formGroup]="workLogForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid mb-3">
+          <div class="form-group">
+            <label class="form-label">Hours Spent</label>
+            <input type="number" class="form-control" formControlName="hoursSpent" min="0.1" step="0.5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Work Date</label>
+            <input type="date" class="form-control" formControlName="workDate">
+          </div>
+        </div>
+        
+        <div class="form-group mb-3">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-control" formControlName="description" placeholder="What did you work on?">
+        </div>
+        
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary btn-sm" [disabled]="workLogForm.invalid || isSubmitting">
+            <i class="bi bi-plus-lg me-1"></i> {{ isSubmitting ? 'Logging...' : 'Log Work' }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
+

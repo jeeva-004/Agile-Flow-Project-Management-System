@@ -1,52 +1,58 @@
-<div class="attachments-section mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="section-title m-0">Attachments ({{ totalElements }})</h4>
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h4 class="card-title m-0 d-flex align-items-center gap-2">
+      <i class="bi bi-paperclip text-primary"></i>
+      <span>Attachments ({{ totalElements }})</span>
+    </h4>
     
     <div class="upload-btn-wrapper">
       <button class="btn btn-primary btn-sm" [disabled]="isUploading">
-        <i class="bi bi-paperclip me-1"></i> {{ isUploading ? 'Uploading...' : 'Upload File' }}
+        <i class="bi bi-cloud-upload me-1"></i> {{ isUploading ? 'Uploading...' : 'Upload File' }}
       </button>
       <input type="file" name="myfile" (change)="onFileSelected($event)" [disabled]="isUploading" />
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="loading-state">
-    <div class="spinner"></div>
-  </div>
+  <div class="card-body">
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+    </div>
 
-  <div class="attachments-grid" *ngIf="!isLoading">
-    <div class="attachment-card" *ngFor="let file of attachments">
-      <div class="attachment-icon">
-        <i class="bi bi-file-earmark-text fs-4 text-secondary"></i>
-      </div>
-      <div class="attachment-details">
-        <div class="attachment-name" title="{{ file.originalFileName }}">{{ file.originalFileName }}</div>
-        <div class="attachment-meta">
-          {{ formatBytes(file.fileSize) }} • {{ file.uploadedByName }}
+    <div class="attachments-grid" *ngIf="!isLoading">
+      <div class="attachment-card" *ngFor="let file of attachments">
+        <div class="attachment-icon">
+          <i class="bi bi-file-earmark-text text-primary fs-4"></i>
+        </div>
+        <div class="attachment-details">
+          <div class="attachment-name" title="{{ file.originalFileName }}">{{ file.originalFileName }}</div>
+          <div class="attachment-meta">
+            {{ formatBytes(file.fileSize) }} • {{ file.uploadedByName }}
+          </div>
+        </div>
+        <div class="attachment-actions d-flex gap-1">
+          <button class="btn-icon btn-sm text-primary" title="Download Attachment" (click)="downloadAttachment(file.id, file.originalFileName)">
+            <i class="bi bi-download"></i>
+          </button>
+          <button class="btn-icon btn-sm text-danger" title="Delete Attachment" (click)="deleteAttachment(file.id)">
+            <i class="bi bi-trash3"></i>
+          </button>
         </div>
       </div>
-      <div class="attachment-actions d-flex gap-2">
-        <button class="btn-icon text-primary" title="Download Attachment" (click)="downloadAttachment(file.id, file.originalFileName)">
-          <i class="bi bi-download"></i>
-        </button>
-        <button class="btn-icon text-danger" title="Delete Attachment" (click)="deleteAttachment(file.id)">
-          <i class="bi bi-trash3"></i>
-        </button>
+      
+      <div *ngIf="attachments.length === 0" class="no-attachments">
+        No attachments uploaded yet. Upload files to share with the team.
       </div>
     </div>
-    
-    <div *ngIf="attachments.length === 0" class="no-attachments">
-      No attachments found. Upload a file to share with the team.
+
+    <!-- Pagination -->
+    <div class="pagination d-flex justify-content-end gap-2 mt-3" *ngIf="totalElements > pageSize">
+      <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
+        <i class="bi bi-chevron-left me-1"></i> Previous
+      </button>
+      <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
+        Next <i class="bi bi-chevron-right ms-1"></i>
+      </button>
     </div>
   </div>
-
-  <!-- Pagination if needed -->
-  <div class="pagination d-flex justify-content-end gap-2 mt-3" *ngIf="totalElements > pageSize">
-    <button class="btn btn-outline btn-sm" [disabled]="pageIndex === 0" (click)="changePage(pageIndex - 1)">
-      <i class="bi bi-chevron-left me-1"></i> Previous
-    </button>
-    <button class="btn btn-outline btn-sm" [disabled]="(pageIndex + 1) * pageSize >= totalElements" (click)="changePage(pageIndex + 1)">
-      Next <i class="bi bi-chevron-right ms-1"></i>
-    </button>
-  </div>
 </div>
+

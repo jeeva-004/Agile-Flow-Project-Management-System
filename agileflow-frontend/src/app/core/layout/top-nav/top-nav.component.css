@@ -1,80 +1,127 @@
 .top-nav {
   height: var(--header-height);
-  background-color: #fff;
-  border-bottom: 1px solid var(--border-color);
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 var(--spacing-6);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-xs);
+}
+
+.top-nav-title {
+  font-size: 0.875rem;
+}
+
+.app-brand-crumb {
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.crumb-divider {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+}
+
+.workspace-crumb {
+  color: var(--gray-500);
+  font-weight: 500;
 }
 
 .mobile-menu-btn {
-  display: none !important;
-  background: none;
-  border: none;
+  display: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
   color: var(--gray-700);
-  cursor: pointer;
-  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.mobile-menu-btn:hover {
+  background-color: var(--gray-100);
+  color: var(--gray-900);
 }
 
 @media (max-width: 991.98px) {
   .mobile-menu-btn {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
+    display: inline-flex;
+  }
+  
+  .top-nav {
+    padding: 0 var(--spacing-4);
   }
 }
-
 
 .notification-wrapper {
   position: relative;
 }
 
-.btn-icon.bell-btn {
-  background: none;
-  border: none;
-  font-size: 1.25rem;
-  cursor: pointer;
-  padding: 8px;
+.bell-btn {
+  background: var(--gray-100);
+  border: 1px solid var(--border-color-light);
+  color: var(--gray-700);
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-full);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transition-fast);
   position: relative;
+  transition: all var(--transition-fast);
 }
 
-.btn-icon.bell-btn:hover {
-  background-color: var(--gray-100);
+.bell-btn:hover {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary-subtle);
+}
+
+.bell-icon {
+  font-size: 1.125rem;
 }
 
 .unread-badge {
   position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 0.6rem;
-  padding: 2px 5px;
-  border-radius: 10px;
+  top: -2px;
+  right: -2px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
   background-color: var(--danger);
   color: white;
   border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
 }
 
 .notification-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   right: 0;
-  margin-top: 8px;
-  width: 320px;
-  background-color: #fff;
+  width: 360px;
+  max-width: calc(100vw - 24px);
+  background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  z-index: 50;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  z-index: 1000;
   overflow: hidden;
   animation: dropdownSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@media (max-width: 575.98px) {
+  .notification-dropdown {
+    right: -40px;
+    width: calc(100vw - 32px);
+    max-width: 340px;
+  }
+}
+
 
 @keyframes dropdownSlideDown {
   from {
@@ -87,24 +134,26 @@
   }
 }
 
-
 .dropdown-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-3) var(--spacing-4);
+  padding: var(--spacing-4);
   border-bottom: 1px solid var(--border-color);
   background-color: var(--gray-50);
 }
 
 .dropdown-body {
-  max-height: 350px;
+  max-height: 360px;
   overflow-y: auto;
 }
 
 .notification-item {
-  padding: var(--spacing-3) var(--spacing-4);
-  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--border-color-light);
   cursor: pointer;
   transition: background-color var(--transition-fast);
 }
@@ -114,16 +163,31 @@
 }
 
 .notification-item.unread {
-  background-color: #F0F9FF;
+  background-color: #EEF2FF;
 }
+
 .notification-item.unread:hover {
-  background-color: #E0F2FE;
+  background-color: #E0E7FF;
+}
+
+.notif-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.notif-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .notif-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--gray-800);
+  color: var(--gray-900);
   margin-bottom: 2px;
 }
 
@@ -131,19 +195,29 @@
   font-size: 0.8125rem;
   color: var(--gray-600);
   line-height: 1.4;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .notif-time {
-  font-size: 0.7rem;
-  color: var(--gray-500);
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
 }
 
 .notification-empty {
-  padding: var(--spacing-6) var(--spacing-4);
+  padding: var(--spacing-8) var(--spacing-4);
   text-align: center;
   color: var(--gray-500);
-  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.empty-icon {
+  font-size: 2rem;
+  color: var(--gray-300);
 }
 
 .dropdown-footer {
@@ -159,9 +233,30 @@
   cursor: pointer;
   padding: 0;
   text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
 }
+
 .btn-link:hover {
+  color: var(--primary-hover);
   text-decoration: underline;
+}
+
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--danger);
+  border-color: var(--gray-200);
+  background-color: var(--bg-surface);
+  padding: 0.375rem 0.875rem;
+  transition: all var(--transition-fast);
+}
+
+.logout-btn:hover {
+  background-color: var(--danger-light);
+  color: var(--danger-hover);
+  border-color: var(--danger-light);
 }
 
 .gap-4 { gap: var(--spacing-4); }
@@ -170,3 +265,4 @@
 .text-xs { font-size: 0.75rem; }
 .font-weight-bold { font-weight: 600; }
 .text-center { text-align: center; }
+
