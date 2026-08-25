@@ -1,171 +1,157 @@
-<div align="center">
-  
-# AgileFlow – Enterprise Agile Project Management System
+# AgileFlow – Project Management System
 
-**A comprehensive, enterprise-ready Agile Project Management System designed to streamline project workflows, manage sprints, track issues, and collaborate efficiently.**
-
-![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=java&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![Angular](https://img.shields.io/badge/Angular-20-DD0031?style=for-the-badge&logo=angular&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)
-
-</div>
+AgileFlow is a full-stack, enterprise-ready project management system designed around Agile software development workflows. It bridges project planning and day-to-day issue tracking by allowing software teams to manage projects, plan iterative sprints, assign tasks, log work hours, and track progress through role-based dashboards.
 
 ---
 
-## 📖 About
+## Live Demo
 
-**AgileFlow** is a robust project management solution tailored for modern software development teams. Built to address the complexities of managing enterprise-scale projects, AgileFlow bridges the gap between high-level project planning and day-to-day issue tracking.
-
-It provides teams with a centralized platform to plan sprints, assign tasks, log work, and track real-time progress through intuitive role-based dashboards. Whether you are an Admin overseeing the system, a Project Manager steering the project lifecycle, or a Developer resolving tickets, AgileFlow equips you with the precise tools required for your role.
-
----
-
-## ✨ Features
-
-AgileFlow is packed with features that cover the entire agile development lifecycle:
-
-- **🔐 Authentication & Security**: Secure JWT-based Authentication with strict Role-Based Access Control.
-- **📁 Project Management**: Create, update, and oversee projects while managing dedicated project members.
-- **🏃 Sprint Management**: Plan, execute, and monitor sprints iteratively.
-- **🐞 Issue Tracking**: Comprehensive issue lifecycle management including creation, assignment, priority, and status transitions.
-- **💬 Comments & Attachments**: Foster team collaboration by discussing issues in threads and attaching relevant project files.
-- **⏱️ Worklogs & Activity Feed**: Log time spent on issues and monitor real-time project activities.
-- **📜 Issue History**: Maintain a complete audit trail of modifications on every issue.
-- **📊 Reports & Dashboard**: Customized, data-rich dashboards for Admins, Project Managers, and Developers.
-- **🔔 Notifications**: Stay updated with system alerts regarding assignments and project milestones.
-- **🔍 Search**: Efficient keyword-based search across projects and issues.
+- **Live Frontend Application**: [https://agileflow-org.netlify.app](https://agileflow-org.netlify.app)
+- **Live Backend API Service**: [https://agileflow-backend-popr.onrender.com](https://agileflow-backend-popr.onrender.com)
 
 ---
 
-## 🛠️ Technology Stack
+## Overview
 
-### Frontend
-- **Framework**: Angular 20
-- **Language**: TypeScript
-- **Styling**: HTML5, SCSS
-- **Routing**: Angular Router
+AgileFlow provides a structured platform for modern software development teams to execute projects iteratively:
 
-### Backend
-- **Framework**: Spring Boot 3.5.15
-- **Language**: Java 17
-- **Security**: Spring Security & JWT (JSON Web Tokens)
-- **Data Access**: Spring Data JPA / Hibernate
-
-### Database
-- **Primary Database**: MySQL
-- **Driver**: MySQL Connector/J
-
-### Deployment & Tools
-- **Containerization**: Docker & Docker Compose
-- **Web Server**: Nginx (Frontend)
-- **Target Cloud (Frontend)**: Netlify
-- **Target Cloud (Backend)**: Render
+- **Agile Workflow Support**: Organize work into high-level Projects, plan time-boxed Sprints, create granular Issues (tasks, bugs, stories), and track resolution progress.
+- **Collaborative Execution**: Assign issue owners, hold threaded discussions via comments, upload file attachments, and log time spent on task execution.
+- **Role-Tailored Dashboards**: Present relevant metrics to Admins, Project Managers, and Developers based on their operational focus.
 
 ---
 
-## 🏗️ System Architecture
+## Features
 
-AgileFlow employs a decoupled, client-server architecture ensuring scalability and maintainability.
+### Authentication & Security
+- **JWT-Based Authentication**: Secure authentication pipeline issuing signed JWT tokens upon login.
+- **Role-Based Access Control (RBAC)**: Enforced endpoint-level authorization matching user roles (`ADMIN`, `PROJECT_MANAGER`, `DEVELOPER`).
+
+### Project Management
+- **Project Catalog**: Create and oversee projects with custom keys, descriptions, start/end dates, and status fields.
+- **Project Members**: Assign project members with designated roles to control project-level access.
+
+### Sprint Management
+- **Iterative Sprints**: Create and manage sprints for projects with start dates, end dates, and sprint goals.
+- **Sprint Lifecycle**: Transition sprint states (e.g. Planned, Active, Completed) and monitor sprint velocity.
+
+### Issue Tracking
+- **Issue Lifecycle**: Create, edit, and track issues categorized by type (Task, Bug, Story), priority (Low, Medium, High, Urgent), and status (To Do, In Progress, In Review, Done).
+- **Assignments & Relationships**: Assign issues to developers, link issues to specific sprints and projects.
+- **Audit History**: Track changes across issue fields over time.
+
+### Collaboration & Worklogs
+- **Threaded Comments**: Add and review comments on individual issues to maintain technical discussions.
+- **Attachments**: Upload and download attachments associated with issues.
+- **Worklogs**: Log hours worked per issue with activity descriptions and timestamps.
+
+### Reporting & Analytics
+- **Role-Based Dashboards**: Custom dashboard views aggregated for Admins, Project Managers, and Developers.
+- **Project Analytics**: Real-time breakdowns of issue status distributions, priority metrics, sprint velocity, and worklog summaries.
+
+### Activity Stream & Notifications
+- **Activity Feed**: Audit log recording project actions and state changes across the system.
+- **Notifications**: In-app notifications alerting users to issue assignments and project activities.
+
+---
+
+## User Roles
+
+Authorization is enforced at both the API layer (Spring Security) and frontend route guards.
+
+| Role | Access & Responsibilities |
+|---|---|
+| **Admin** | System-wide administrative access. Manages user accounts, assigns global roles, creates projects, oversees all sprints, issues, and accesses the Admin Dashboard. |
+| **Project Manager** | Manages assigned projects and project members, creates and manages sprints, tracks project analytics/reports, manages issues, and accesses the PM Dashboard. |
+| **Developer** | Operational access. Views assigned projects and sprints, creates and updates assigned issues, logs work hours, posts comments, uploads attachments, and accesses the Developer Dashboard. |
+
+---
+
+## Technology Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | Angular 20, TypeScript, HTML5, Vanilla CSS, Bootstrap Icons |
+| **Backend** | Spring Boot 3.5.15, Java 17, Spring Security, Spring Data JPA / Hibernate |
+| **Database** | TiDB Cloud (MySQL-compatible) |
+| **Authentication** | JSON Web Token (JWT) |
+| **Build Tools** | Maven (Backend), Angular CLI / npm (Frontend) |
+| **Containerization** | Docker (Multi-stage build) |
+| **Deployment** | Render (Backend Docker container), Netlify (Frontend), TiDB Cloud (Database) |
+
+---
+
+## Architecture
+
+AgileFlow follows a decoupled client-server architecture with a RESTful API backend and a single-page frontend application.
 
 ```mermaid
 graph TD
-    A[Client Browser] -->|HTTP / HTTPS| B(Angular 20 Frontend)
-    B -->|REST API - JSON| C{Spring Boot 3 Backend}
-    C -->|JPA / Hibernate| D[(MySQL Database)]
-    C -->|Authentication| E[JWT Security Filter]
-    C -->|File System| F[Attachments Directory]
+    Client[Angular 20 Single-Page Application] -->|HTTPS / REST API| Backend[Spring Boot 3 REST API]
+    Backend -->|JWT Authentication Filter| Security[Spring Security & Authorization]
+    Backend -->|Spring Data JPA / MySQL Driver| DB[(TiDB Cloud Database)]
+    Backend -->|Multipart Storage| Storage[File Storage System]
 ```
+
+- **Frontend**: Single-Page Application built with Angular, utilizing HTTP interceptors for automatic JWT header injection and client-side route guards for RBAC.
+- **Backend**: Layered Spring Boot application (Controllers, Services, Repositories, Entities) using Spring Security filters for stateless JWT validation.
+- **Database**: Relational database schema hosted on TiDB Cloud, managed via Spring Data JPA entities and automatic schema updates.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
-Agile-Flow-Project-Management-System/
-├── agileflow-frontend/           # Angular 20 Frontend Application
+agileflow/
+├── agileflow-frontend/              # Angular Frontend Application
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── core/             # Guards, Interceptors, Services
-│   │   │   ├── features/         # Modules: auth, projects, issues, dashboard, etc.
-│   │   │   └── shared/           # Shared UI components and utilities
-│   │   ├── public/               # Static assets
-│   │   └── ...
-│   ├── Dockerfile                # Nginx Deployment Configuration
+│   │   │   ├── core/                # Guards, Interceptors, Core Services
+│   │   │   ├── features/            # Auth, Projects, Issues, Sprints, Dashboard
+│   │   │   └── shared/              # Shared UI components & models
+│   │   └── environments/            # Dev and Production environment configs
+│   ├── angular.json
 │   └── package.json
-├── agileflow-backend/            # Spring Boot 3 Backend Application
-│   ├── src/main/java/.../
-│   │   ├── auth/                 # Authentication & User Management
-│   │   ├── project/              # Project & Sprint Management
-│   │   ├── issue/                # Issue Tracking & History
-│   │   ├── dashboard/            # Role-Specific Dashboards
-│   │   ├── analytics/            # Reports & Analytics
-│   │   └── ...
-│   ├── Dockerfile                # Backend Deployment Configuration
+│
+├── agileflow-backend/               # Spring Boot Backend Application
+│   ├── src/main/java/com/agileflow/agileflow_backend/
+│   │   ├── auth/                    # Auth controller, JWT service, user entities
+│   │   ├── project/                 # Project controllers & services
+│   │   ├── sprint/                  # Sprint management module
+│   │   ├── issue/                   # Issue tracking & history
+│   │   ├── dashboard/               # Role-specific dashboard services
+│   │   ├── config/                  # SecurityConfig & Data Initializer
+│   │   └── security/                # Custom UserDetailsService & JWT filters
+│   ├── src/main/resources/
+│   │   ├── application.properties   # Main Spring config
+│   │   └── application-prod.properties # Production profile config
+│   ├── Dockerfile                   # Multi-stage Docker build config
+│   ├── .dockerignore
 │   └── pom.xml
-├── docker-compose.yml            # Local Infrastructure Setup
-└── DEPLOYMENT.md                 # Detailed Deployment Guide
+│
+└── README.md                        # Root Documentation
 ```
 
 ---
 
-## 🗄️ Database Overview
+## Local Development Setup
 
-The system's data model is normalized for efficiency and data integrity:
-
-- **`User` / `Role`**: Manages credentials, profile data, and RBAC (Admin, PM, Developer).
-- **`Project`**: Core entity for project details, linked to `ProjectMember`.
-- **`Sprint`**: Represents iterative development cycles within a project context.
-- **`Issue`**: Tracks tasks, bugs, or user stories assigned to team members.
-- **`Comment` / `Attachment`**: Facilitates collaboration on specific issues.
-- **`WorkLog`**: Logs time entries for issues.
-- **`IssueHistory` / `Activity`**: Maintains audit trails for modifications and broader project events.
-- **`Notification`**: System alerts directed to specific users.
-
----
-
-## 🔌 API Overview
-
-The backend exposes secured, modular REST APIs categorized by domain:
-
-- **Authentication** (`/api/auth/**`): User login and registration.
-- **Users** (`/api/users/**`): Profile management and user listing.
-- **Projects** (`/api/projects/**`): Full CRUD for projects, member management, and search.
-- **Sprints** (`/api/sprints/**`): Sprint planning and status management.
-- **Issues** (`/api/issues/**`): Issue creation, updates, transitions, and history.
-- **Collaboration** (`/api/comments/**`, `/api/attachments/**`, `/api/worklogs/**`): Issue interactions.
-- **Dashboards & Analytics** (`/api/dashboard/**`, `/api/analytics/**`, `/api/reports/**`): Aggregated metrics for different roles.
-- **System** (`/api/activities/**`, `/api/notifications/**`): Timelines and user alerts.
-
----
-
-## 📸 Screenshots
-
-
-| Login | Dashboard |
-|:---:|:---:|
-| ![Login Placeholder](docs/screenshots/login-placeholder.png) | ![Dashboard Placeholder](docs/screenshots/dashboard-placeholder.png) |
-
-| Projects | Issues |
-|:---:|:---:|
-| ![Projects Placeholder](docs/screenshots/projects-placeholder.png) | ![Issues Placeholder](docs/screenshots/issues-placeholder.png) |
-
----
-
-## 🚀 Installation & Local Setup
+### Prerequisites
+- **Java 17** JDK
+- **Node.js** (v18+) & **npm**
+- **MySQL** or local database instance
 
 ### 1. Database Setup
-Ensure you have MySQL installed and running. Create a database named `agileflow_db` (or as defined in your `.env`).
+Create a database named `agileflow_db` in your local MySQL instance.
 
 ### 2. Backend Setup
 ```bash
 cd agileflow-backend
-# Make sure to configure application properties or provide a .env file based on .env.example
-mvn clean install
+# Set environment variables or configure application-dev.properties
+mvn clean package -DskipTests
 mvn spring-boot:run
 ```
-The backend will be available at `http://localhost:8080`.
+The backend API will run at `http://localhost:8080/api/v1`.
 
 ### 3. Frontend Setup
 ```bash
@@ -175,83 +161,9 @@ npm start
 ```
 The frontend will be available at `http://localhost:4200`.
 
-### 🐳 Running via Docker (Recommended)
-You can spin up the entire stack using Docker Compose:
-```bash
-docker compose up -d --build
-```
-
 ---
 
-## 🌍 Deployment
+## Production Deployment
 
-AgileFlow is designed to be easily deployed to modern cloud platforms.
-
-### Frontend Deployment (Netlify)
-1. Connect your GitHub repository to Netlify.
-2. Set the Base directory to `agileflow-frontend`.
-3. Set the Build command to `npm run build`.
-4. Set the Publish directory to `dist/agileflow-frontend/browser`.
-5. Add a `_redirects` file in the `public` folder with `/* /index.html 200` to support Angular's SPA routing.
-
-### Backend Deployment (Render)
-1. Create a new Web Service on Render and connect your repository.
-2. Set the Root Directory to `agileflow-backend`.
-3. Set the Environment to `Java`.
-4. Set the Build command to `mvn clean package -DskipTests`.
-5. Set the Start command to `java -jar target/agileflow-backend-0.0.1-SNAPSHOT.jar`.
-6. Add necessary Environment Variables (e.g., `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`).
-
----
-
-## 👥 User Roles
-
-| Role | Responsibilities |
-|---|---|
-| **Admin** | Possesses system-wide access. Responsible for global configurations, user management, and overseeing all projects. |
-| **Project Manager (PM)** | Creates and manages projects, plans sprints, allocates resources, tracks overall progress, and views project analytics. |
-| **Developer** | Works on assigned issues, transitions issue statuses, logs work hours, and collaborates via comments and attachments. |
-
----
-
-## 🔑 Demo Credentials
-
-Use the following credentials to explore the application across different roles:
-
-| Role | Email | Password |
-|---|---|---|
-| **Admin** | `admin@agileflow.com` | `Admin@123` |
-| **Project Manager** | `pm@gmail.com` | `manager@1234` |
-| **Developer** | `dev@gmail.com` | `dev@1234` |
-
----
-
-## 🌟 Key Highlights
-
-This project serves as a comprehensive demonstration of:
-- **Enterprise Architecture**: Decoupled systems with a robust API gateway.
-- **Clean Code**: Adherence to SOLID principles and layered architecture in Spring Boot.
-- **Role-Based Security**: Advanced security configurations protecting sensitive endpoints.
-- **RESTful APIs**: Standardized, well-structured endpoints with uniform error handling.
-- **Modular Design**: Feature-based module organization in Angular for scalability.
-- **Production Deployment**: Containerized workflows and ready-to-deploy cloud configurations.
-
----
-
-## 🔮 Future Improvements
-
-- **External Integrations**: Webhooks for Slack, GitHub, or Jira integration.
-- **Advanced Agile Metrics**: Implementation of interactive Burndown and Velocity charts.
-- **Email Notifications**: Asynchronous email delivery for critical project updates and assignments.
-- **Enhanced Security**: Introduction of Two-Factor Authentication (2FA).
-
----
-
-## 👨‍💻 Author
-
-**AgileFlow** was conceptualized and developed with a focus on modern software engineering practices.
-
-- **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/jeeva--m/)
-- **Email**: (devjeeva.m@gmail.com)
-
----
+- **Backend**: Containerized via [`agileflow-backend/Dockerfile`](file:///e:/agileflow/agileflow-backend/Dockerfile) and deployed on **Render** with environment variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`, `SPRING_PROFILES_ACTIVE=prod`).
+- **Frontend**: Built using `ng build` and hosted on **Netlify** configured with SPA route redirects.
