@@ -21,21 +21,35 @@ if (-not $port) { $port = "8080" }
 $frontendPort = $env:FRONTEND_PORT
 if (-not $frontendPort) { $frontendPort = "4200" }
 
-Write-Host "Checking if MySQL is running on $dbHost:$dbPort..." -ForegroundColor Cyan
-$portCheck = Get-NetTCPConnection -LocalPort $dbPort -ErrorAction SilentlyContinue
-if (-not $portCheck) {
-    Write-Host "MySQL is NOT running on port $dbPort. Attempting to start MySQL service..." -ForegroundColor Yellow
-    # Try starting default MySQL service name (requires Admin privileges)
-    Start-Service -Name "MySQL" -ErrorAction SilentlyContinue
-    Start-Sleep -Seconds 3
+if ($dbHost -eq "localhost" -or $dbHost -eq "127.0.0.1") {
+    Write-Host "Checking if MySQL is running on $dbHost:$dbPort..." -ForegroundColor Cyan
     $portCheck = Get-NetTCPConnection -LocalPort $dbPort -ErrorAction SilentlyContinue
     if (-not $portCheck) {
-        Write-Warning "Could not verify MySQL is running. Please make sure your native MySQL is started on port $dbPort."
+        Write-Host "MySQL is NOT running on port $dbPort. Attempting to start MySQL service..." -ForegroundColor Yellow
+        # Try starting default MySQL service name (requires Admin privileges)
+        Start-Service -Name "MySQL" -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 3
+        $portCheck = Get-NetTCPConnection -LocalPort $dbPort -ErrorAction SilentlyContinue
+        if (-not $portCheck) {
+            Write-Warning "Could not verify MySQL is running. Please make sure your native MySQL is started on port $dbPort."
+        } else {
+            Write-Host "MySQL service started successfully!" -ForegroundColor Green
+        }
     } else {
-        Write-Host "MySQL service started successfully!" -ForegroundColor Green
+        Write-Host "MySQL is active on port $dbPort." -ForegroundColor Green
     }
 } else {
-    Write-Host "MySQL is active on port $dbPort." -ForegroundColor Green
+    Write-Host "Checking connection to remote database host $dbHost:$dbPort..." -ForegroundColor Cyan
+    try {
+        $tcpClient = New-Object System.Net.Sockets.TcpClient
+        $tcpClient.Connect($dbHost, [int]$dbPort)
+        if ($tcpClient.Connected) {
+            Write-Host "Remote database host $dbHost:$dbPort is reachable!" -ForegroundColor Green
+            $tcpClient.Close()
+        }
+    } catch {
+        Write-Warning "Could not reach remote database host $dbHost:$dbPort ($($_.Exception.Message))"
+    }
 }
 
 # Install backend dependencies & compile
@@ -64,7 +78,7 @@ Pop-Location
 Write-Host "`nLaunching backend and frontend concurrently..." -ForegroundColor Green
 
 # Prepare backend execution command
-$backendCmd = "cd agileflow-backend; `$env:DB_HOST='$dbHost'; `$env:DB_PORT='$dbPort'; `$env:DB_NAME='$($env:DB_NAME)'; `$env:DB_USER='$($env:DB_USER)'; `$env:DB_PASSWORD='$($env:DB_PASSWORD)'; `$env:PORT='$port'; `$env:JWT_SECRET='$($env:JWT_SECRET)'; `$env:JWT_EXPIRATION='$($env:JWT_EXPIRATION)'; `$env:UPLOAD_DIR='$($env:UPLOAD_DIR)'; ./mvnw spring-boot:run"
+$backendCmd = "cd agileflow-backend; `$env:SPRING_PROFILES_ACTIVE='$($env:SPRING_PROFILES_ACTIVE)'; `$env:DB_HOST='$dbHost'; `$env:DB_PORT='$dbPort'; `$env:DB_NAME='$($env:DB_NAME)'; `$env:DB_USER='$($env:DB_USER)'; `$env:DB_PASSWORD='$($env:DB_PASSWORD)'; `$env:DB_SSL_MODE='$($env:DB_SSL_MODE)'; `$env:PORT='$port'; `$env:JWT_SECRET='$($env:JWT_SECRET)'; `$env:JWT_EXPIRATION='$($env:JWT_EXPIRATION)'; `$env:UPLOAD_DIR='$($env:UPLOAD_DIR)'; ./mvnw spring-boot:run"
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $backendCmd
 
 # Prepare frontend execution command
