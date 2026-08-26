@@ -1,0 +1,9 @@
+[build]
+  base = "agileflow-frontend"
+  publish = "agileflow-frontend/dist/agileflow-frontend/browser"
+  command = "npm run build --prefix agileflow-frontend"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
